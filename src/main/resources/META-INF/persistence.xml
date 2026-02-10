@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+  <!-- Define Persistence Unit -->
+  <persistence-unit name="vegetablePU" transaction-type="JTA">
+    <jta-data-source>java:/jboss/datasources/vegetable_prod</jta-data-source>
+    <class>senadi.gob.ec.adminob.model.Declaration</class>
+    <class>senadi.gob.ec.adminob.model.ExploitedSelled</class>
+    <class>senadi.gob.ec.adminob.model.FormPaymentRate</class>
+    <class>senadi.gob.ec.adminob.model.Methodology</class>
+    <class>senadi.gob.ec.adminob.model.Person</class>
+    <class>senadi.gob.ec.adminob.model.PersonVegetable</class>
+    <class>senadi.gob.ec.adminob.model.SimilaryVariety</class>
+    <class>senadi.gob.ec.adminob.model.VarietyCharacters</class>
+    <class>senadi.gob.ec.adminob.model.VegetableAnnexes</class>
+    <class>senadi.gob.ec.adminob.model.VegetableAnnexesData</class>
+    <class>senadi.gob.ec.adminob.model.VegetableForms</class>
+    <class>senadi.gob.ec.adminob.model.VegetableMethodology</class>
+    <class>senadi.gob.ec.adminob.model.VegetablePriority</class>
+    <class>senadi.gob.ec.adminob.model.VegetableProtection</class>
+    <class>senadi.gob.ec.adminob.model.History</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties/>
+  </persistence-unit>
+</persistence>

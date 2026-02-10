@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:x="http://xpert.com/faces">
+    <h:head>
+        <meta charset="utf-8" />
+        <meta name="viewport"    content="width=device-width, initial-scale=1.0" />
+        <meta name="description" content="" />
+
+        <title>OBTENCIONES VEGETALES</title>
+
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+
+        <link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}" />
+
+        <!-- Custom styles for our template -->
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap-theme.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/main.css']}" />
+        <!-- My own style css -->
+
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}" />
+    </h:head>
+    <h:body>
+        <!-- Start Page Loading -->
+        <div id="loader-wrapper">
+            <div id="loader"></div>        
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+        <p:growl id="mensajes" showDetail="true" life="4000"/>
+        <h:form id="allform" enctype="multipart/form-data" style=" background: #e3e3e3; min-height: calc(100vh - 424px);">
+            <div class="menu">
+                <a href="#" class="logo"  title="Logo Senadi" ><img src="#{resource['images/sena_2.png']}" width="161px"/></a>
+
+                <i id="edit_action" class="material-icons prefix" style="color: white; margin-left: 20px; display: inline-block">person</i>
+
+                <p:outputLabel value="#{vegetableBean.login.login}" style="color: white; font-size: 18px" />
+
+                <div style="float: right; display: inline-block; margin-top: 5px">
+
+                    <p:commandLink styleClass="btn_logout" actionListener="#{loginBean.logout}"
+                                   oncomplete="logout(xhr, status, args)"
+                                   title="CERRAR SESIÓN" immediate="true">
+                        <i class="material-icons" style="font-size: 30px; ">exit_to_app</i>
+                    </p:commandLink>
+                </div>
+            </div>
+
+            <br/>
+            <div style="text-align: center !important; margin: 0 auto !important;">
+                <p:outputLabel value="OBTENCIONES VEGETALES" 
+                               style="color: black; font-size: 16px"/>
+            </div>
+
+            <p:panelGrid columns="1" style="text-align: center !important; margin: 0 auto !important; width: 80%" id="panTot">                
+                <p:panelGrid columns="3" columnClasses="thirty-five-percent, twenty-percent, forty-five-percent" style="width: 100%; float: right">
+                    <p:selectOneRadio id="line" value="#{vegetableBean.radioOption}" layout="lineDirection">
+                        <f:selectItem itemLabel="Todos" itemValue="Todos"/>
+                        <f:selectItem itemLabel="Procesos Inciados" itemValue="Iniciados"/>
+                        <f:selectItem itemLabel="Pagados" itemValue="Pagados"/>
+                        <f:selectItem itemLabel="Vista Previa" itemValue="Vista"/>
+                        <p:ajax update="mensajes tablaDeObtenciones dates checkd" listener="#{vegetableBean.onRadioSelected}"/>
+                    </p:selectOneRadio>
+                    <p:selectBooleanCheckbox itemLabel="Buscar Por F. Presentación" value="#{vegetableBean.byDate}" id="checkd">
+                        <p:ajax update="mensajes dates" listener="#{vegetableBean.onCheckSelected}"/>
+                    </p:selectBooleanCheckbox>
+                    <p:panel id="dates"
+                             style="#{vegetableBean.byDate?'display:block':'display:none'}">
+                        <p:outputLabel value="Desde:" />
+                        <p:calendar value="#{vegetableBean.startDate}" style="width:  200px"/>
+                        <p:outputLabel value="Hasta:"/>
+                        <p:calendar value="#{vegetableBean.endDate}"/>
+                        <p:commandButton value="BUSCAR" class="btn_peque" actionListener="#{vegetableBean.searchVegetables}"
+                                         update="mensajes tablaDeObtenciones"/>
+                    </p:panel>
+
+                </p:panelGrid>
+
+                <p:dataTable id="tablaDeObtenciones" var="vegetable"
+                             value="#{vegetableBean.vegetables}" widgetVar="tablaDeObtenciones"
+                             emptyMessage="No hay Datos para mostrar"                                              
+                             filteredValue="#{vegetableBean.vegetablesFilter}"
+                             binding="#{vegetableBean.vegetableTable}"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             rows="20"
+                             rowsPerPageTemplate="20,50,100,150,200,250,300"                                 
+                             style="border: black !important" 
+                             rowKey="#{vegetable.id}" rowIndexVar="index">
+                    <p:column headerText="#" style="text-align: center; width: 5%" exportable="false">
+                        #{vegetableBean.vegetables.size() - index}
+                    </p:column>
+                    <p:column headerText="Casillero" style="text-align: center; width: 20%" filterBy="#{vegetable.locker}" >
+                        <h:outputText value="#{vegetable.locker}" />
+                    </p:column>
+                    <p:column headerText="Trámite" style="text-align: center; width: 10%" filterBy="#{vegetable.applicationNumber}" >
+                        <h:outputText value="#{vegetable.applicationNumber}" />
+                    </p:column>
+                    <p:column headerText="Fecha Creación" style="text-align: center;" filterBy="#{vegetable.createDate}" >
+                        <h:outputText value="#{vegetable.createDate}" >
+                            <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Guayaquil"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Taxón Botánico" style="text-align: center;" filterBy="#{vegetable.botanicalTaxon}" >
+                        <h:outputText value="#{vegetable.botanicalTaxon}" />
+                    </p:column>
+                    <p:column headerText="Designación Provisional" style="text-align: center;" filterBy="#{vegetable.provitionalDesignation}" 
+                              rendered="false">
+                        <h:outputText value="#{vegetable.provitionalDesignation}" />
+                    </p:column>
+                    <p:column headerText="Fecha Presentación" style="text-align: center;" filterBy="#{vegetable.applicationDate}" >
+                        <h:outputText value="#{vegetable.applicationDate}" >
+                            <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Guayaquil"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Grupo Varietal" style="text-align: center;" filterBy="#{vegetable.varietalGroup}" >
+                        <h:outputText value="#{vegetable.varietalGroup}" />
+                    </p:column>
+                    <p:column headerText="Estado" style="text-align: center;">
+                        <h:outputText value="#{vegetable.status eq 'SAVED'?'Guardado':(vegetable.status eq 'PREVIEW'?'Vista previa':
+                                               (vegetable.status eq 'FINISHED' and vegetable.paymentReceiptId eq null?'Pendiente de Pago':
+                                               (vegetable.status eq 'DELIVERED'?'Proceso iniciado':'Pagado')))}" styleClass="#{vegetable.status eq 'DELIVERED'?'start_p_label':''}"/>
+                    </p:column>
+                    <p:column headerText="Usuario Asignado" style="text-align: center;" filterBy="#{vegetable.assignedUser}">
+                        <h:outputText value="#{vegetable.assignedUser eq null ? 'sin asignación':vegetable.assignedUser}" style="#{vegetable.assignedUser eq null ?'':'font-weight: bold'}"/>
+                    </p:column>
+                    <p:column headerText="Acciones" style="text-align: center; width: 150px" exportable="false" >
+                        <p:commandLink class="link" title="Visualizar Formulario" 
+                                       actionListener="#{vegetableBean.viewFormulario}"
+                                       oncomplete="if(args.doit){otherpage(args.url);}" 
+                                       process="@this" 
+                                       update="mensajes"                                       
+                                       rendered="#{vegetable.status != 'SAVED'}" >
+                            <h:graphicImage library="images" name="pdf.png"/>
+                        </p:commandLink>
+                        <p:commandLink class="link" title="Visualizar Comprobante" 
+                                       actionListener="#{vegetableBean.viewVoucher}"
+                                       oncomplete="if(args.doit){otherpage(args.url);}" 
+                                       process="@this" 
+                                       update="mensajes"                                       
+                                       rendered="#{vegetable.status != 'SAVED' and vegetable.status != 'PREVIEW'}" >
+                            <h:graphicImage library="images" name="voucher.png"/>                            
+                        </p:commandLink>
+                        <p:commandLink class="link" title="Asginarme el trámite"
+                                       rendered="#{vegetable.status eq 'DELIVERED'}"
+                                       actionListener="#{vegetableBean.assignApplication}"                                       
+                                       process="@this" 
+                                       update="mensajes tablaDeObtenciones">
+                            <i class="pi pi-user-plus" style="font-size: 2rem"></i>
+                            <p:confirm header="CONFIRMAR" message="SEGURO DE ASIGNARSE EL TRÁMITE #{vegetable.applicationNumber} AL USUARIO #{vegetableBean.login.login}?"/> 
+                        </p:commandLink>
+                        <p:commandLink class="link" title="Historial #{vegetable.applicationNumber}"
+                                       process="@this" update="mensajes dlgHistorial" actionListener="#{vegetableBean.prepararHistorial}"
+                                       oncomplete="PF('dlgHistorial').show();">                            
+                            <i class="pi pi-history" style="font-size: 2rem"></i>
+                        </p:commandLink>
+                    </p:column>
+                    <f:facet name="footer">
+                        <p:outputLabel id="num_registros" value="#{vegetableBean.vegetables.size()} registros." style="float: left; font-size: 12px"/>                        
+                        <h:commandLink title="Exportar a excel..." rendered="#{!loginBean.lectura}" immediate="true" style="float: right">
+                            <p:graphicImage class="excel" width="20px" height="20px" library="images" name="excel.png"/>
+                            <p:dataExporter type="xlsx" target="tablaDeObtenciones" fileName="obtenciones"/>
+                        </h:commandLink>
+                        <br/>
+                    </f:facet>
+                </p:dataTable>
+            </p:panelGrid>                      
+
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                <p:graphicImage name="/images/ajax-loader.gif" />
+            </p:dialog>
+
+            <p:confirmDialog global="true" showEffect="explode" hideEffect="explode">
+                <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes btn_peque" update="allform:tablaDeDatos"/>
+                <p:commandButton value="No" type="button"  styleClass="ui-confirmdialog-no btn_peque" />
+            </p:confirmDialog>
+            <br/>
+        </h:form>
+
+        <p:dialog id="dlgHistorial" modal="true" resizable="true"
+                  header="HISTORIAL OBTENCIÓN #{vegetableBean.vegetableForms.applicationNumber}" fitViewport="true"
+                  widgetVar="dlgHistorial" style="font-size: 11px;" showEffect="explode" 
+                  hideEffect="explode" closeOnEscape="true">
+            <p:ajax event="close" update="dlgHistorial" resetValues="true" />                
+            <h:form id="frmHistory" >
+                <p:inputTextarea id='historialText' value="#{vegetableBean.historial}" rows="10" cols="165" 
+                                 readonly="true" style="width: 100%; background: white !important;"/>
+            </h:form>
+        </p:dialog>
+
+        <div id="footer"></div>
+
+        <p:idleMonitor timeout="#{1000*60*30}" id="idleSesion">
+            <p:ajax event="idle" listener="#{idleMonitorCtrl.idleListener}"
+                    oncomplete="PF('idleDialog').show()" />
+        </p:idleMonitor>
+        <p:dialog header="Sesión Caducada" resizable="false"
+                  widgetVar="idleDialog" modal="true" closable="false" style="font-size: 12px">
+            <h:form id="sesionCaducaForm">
+                <div class="titlePage">
+                    <!--<h:outputText value="Sesión Caducada " />-->
+                    <p:commandButton styleClass="nav-link js-scroll-trigger"
+                                     actionListener="#{loginBean.logout}" 
+                                     oncomplete="logout(xhr, status, args)" class="btn_peque"
+                                     value="ACEPTAR" immediate="true" style="font-size: 12px; text-align: center; margin: 0 auto;"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+
+        <!-- <script src="resources/assets/js/headroom.min.js"></script>
+        <script src="resources/assets/js/jQuery.headroom.min.js"></script>
+        <script src="resources/assets/js/template.js"></script> -->
+
+    </h:body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+                $('h1').css('color', '#222222');
+                $("#footer").load("footer.html");
+            }, 150);
+        });
+
+        //<![CDATA[
+        function popupwindow(url, title, args) {
+            if (args.doit) {
+                //window.open(url, title, 'location=yes,height=400,width=400,scrollbars=yes,status=yes').focus();
+                window.open(url, title);
+            }
+        }
+
+        function otherpage(url) {
+            setTimeout(function () {
+                window.open(url, '_blank');
+            }, 0);
+        }
+        function logout(xhr, status, args) {
+            setTimeout(function () {
+                window.location = 'login.xhtml';
+            }, 500);
+        }
+        //]]>
+    </script>
+</html>
