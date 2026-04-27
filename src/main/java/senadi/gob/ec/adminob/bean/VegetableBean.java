@@ -44,6 +44,10 @@ public class VegetableBean implements Serializable {
     private boolean byDate;
 
     private String historial;
+    private String newAssignedUser;
+    private String statusObservation;
+    private StatusFlow pendingStatusFlow;
+    private StatusFlow previousStatusFlow;
 
     //private List<Country>
     public VegetableBean() {
@@ -54,7 +58,12 @@ public class VegetableBean implements Serializable {
         Controller c = new Controller();
         login = c.getLogin();
         radioOption = "Todos";
-        vegetables = c.buscarTodos();
+        try {
+            vegetables = c.buscarTodos();
+        } catch (Exception ex) {
+            vegetables = new java.util.ArrayList<>();
+            System.err.println("No se pudo cargar el listado de obtenciones: " + ex);
+        }
     }
 
     public void viewFormulario(ActionEvent ae) {
@@ -89,14 +98,24 @@ public class VegetableBean implements Serializable {
 
     public void onRadioSelected() {
         Controller c = new Controller();
-        vegetables = c.buscarTodosByType(radioOption);
+        try {
+            vegetables = c.buscarTodosByType(radioOption);
+        } catch (Exception ex) {
+            vegetables = new java.util.ArrayList<>();
+            Operations.message(Operations.ERROR, "NO SE PUDO CONSULTAR LA BASE LOCAL");
+        }
         cleanDate();
     }
 
     public void searchVegetables(ActionEvent ae) {
         if (Operations.validateDate(startDate) && Operations.validateDate(endDate)) {
             Controller c = new Controller();
-            vegetables = c.buscarTodosByTypeAndDate(radioOption, startDate, endDate);
+            try {
+                vegetables = c.buscarTodosByTypeAndDate(radioOption, startDate, endDate);
+            } catch (Exception ex) {
+                vegetables = new java.util.ArrayList<>();
+                Operations.message(Operations.ERROR, "NO SE PUDO CONSULTAR LA BASE LOCAL");
+            }
         } else {
             Operations.message(Operations.ERROR, "INGRESE UN RANGO DE FECHAS CORRECTO");
         }
@@ -110,34 +129,223 @@ public class VegetableBean implements Serializable {
     public void assignApplication(ActionEvent ae) {
         vegetableForms = (VegetableForms) vegetableTable.getRowData();
         if (vegetableForms != null && vegetableForms.getId() != null) {
+            Controller c = new Controller();
+            VegetableForms current = c.getVegetableFormsById(vegetableForms.getId());
 
-            if (vegetableForms.getAssignedUser() != null && vegetableForms.getAssignedUser().equals(login.getLogin())) {
-                Operations.message(Operations.AVISO, "EL TRAMITE " + vegetableForms.getApplicationNumber() + " YA ESTA ASIGNADO AL USUARIO ACTUAL");
+            if (current == null || current.getId() == null) {
+                Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
                 return;
             }
-            vegetableForms.setAssignedUser(login.getLogin());
-            vegetableForms.setAssignedDate(new Date());
-            vegetableForms.setStatusFlow(StatusFlow.PENDING);
-            Controller c = new Controller();
-            if (c.updateVegetableForms(vegetableForms)) {
-                History history = new History();
-                history.setApplicationNumber(vegetableForms.getApplicationNumber());
-                history.setFecha(new Timestamp(System.currentTimeMillis()));
-                history.setHistoryUser(login.getLogin());
-                history.setDescription("Tramite " + vegetableForms.getApplicationNumber() + " asignado a " + login.getLogin());
-
-                if (c.saveHistory(history)) {
-                    onRadioSelected();
-                    Operations.message(Operations.INFORMACION, "SE HA ASIGNADO CORRECTAMENTE EL TRAMITE " + vegetableForms.getApplicationNumber() + " AL USUARIO " + login.getLogin());
-                    System.out.println("assign " + vegetableForms.getApplicationNumber() + " to " + login.getLogin() + " completed");
+            if (current.getAssignedUser() != null && !current.getAssignedUser().trim().isEmpty()) {
+                if (current.getAssignedUser().equalsIgnoreCase(login.getLogin())) {
+                    Operations.message(Operations.AVISO, "EL TRAMITE " + current.getApplicationNumber() + " YA ESTA ASIGNADO AL USUARIO ACTUAL");
                 } else {
-                    Operations.message(Operations.AVISO, "SE HA ASIGNADO CORRECTAMENTE EL TRAMITE " + vegetableForms.getApplicationNumber()
-                            + " AL USUARIO " + login.getLogin() + " PERO NO SE GUARDO EL HISTORIAL");
+                    Operations.message(Operations.ERROR, "EL TRAMITE " + current.getApplicationNumber() + " YA ESTA ASIGNADO AL USUARIO " + current.getAssignedUser());
                 }
+                return;
+            }
+
+            current.setAssignedUser(login.getLogin());
+            current.setAssignedDate(new Date());
+            current.setStatusFlow(StatusFlow.PENDING);
+
+            if (c.updateVegetableForms(current)) {
+                saveHistoryEntry(current.getApplicationNumber(), "Tramite " + current.getApplicationNumber() + " asignado a " + login.getLogin());
+                onRadioSelected();
+                Operations.message(Operations.INFORMACION, "SE HA ASIGNADO CORRECTAMENTE EL TRAMITE " + current.getApplicationNumber() + " AL USUARIO " + login.getLogin());
             } else {
-                Operations.message(Operations.AVISO, "NO SE PUDO ASIGNAR EL TRAMITE " + vegetableForms.getApplicationNumber() + " al usuario " + login.getLogin());
+                Operations.message(Operations.AVISO, "NO SE PUDO ASIGNAR EL TRAMITE " + current.getApplicationNumber() + " AL USUARIO " + login.getLogin());
             }
         }
+    }
+
+    public void prepareStatusFlowChange() {
+        vegetableForms = (VegetableForms) vegetableTable.getRowData();
+        if (vegetableForms == null || vegetableForms.getId() == null) {
+            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            return;
+        }
+
+        Controller c = new Controller();
+        VegetableForms current = c.getVegetableFormsById(vegetableForms.getId());
+        if (current == null || current.getId() == null) {
+            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            return;
+        }
+        if (!isAssignedToCurrentUser(current)) {
+            Operations.message(Operations.ERROR, "SOLO EL USUARIO ASIGNADO PUEDE CAMBIAR EL ESTADO DE GESTION");
+            onRadioSelected();
+            return;
+        }
+
+        previousStatusFlow = current.getStatusFlow();
+        pendingStatusFlow = vegetableForms.getStatusFlow();
+        vegetableForms.setStatusFlow(previousStatusFlow);
+
+        if (pendingStatusFlow == null) {
+            Operations.message(Operations.AVISO, "SELECCIONE UN ESTADO DE GESTION VALIDO");
+            onRadioSelected();
+            return;
+        }
+        if (previousStatusFlow == pendingStatusFlow) {
+            onRadioSelected();
+            return;
+        }
+
+        statusObservation = "";
+        PrimeFaces.current().ajax().addCallbackParam("openStatusDialog", true);
+    }
+
+    public void confirmStatusFlowChange() {
+        if (vegetableForms == null || vegetableForms.getId() == null) {
+            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            return;
+        }
+        if (statusObservation == null || statusObservation.trim().isEmpty()) {
+            Operations.message(Operations.ERROR, "DEBE INGRESAR UNA OBSERVACION PARA CAMBIAR EL ESTADO DE GESTION");
+            return;
+        }
+
+        Controller c = new Controller();
+        VegetableForms current = c.getVegetableFormsById(vegetableForms.getId());
+        if (current == null || current.getId() == null) {
+            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            return;
+        }
+        if (!isAssignedToCurrentUser(current)) {
+            Operations.message(Operations.ERROR, "SOLO EL USUARIO ASIGNADO PUEDE CAMBIAR EL ESTADO DE GESTION");
+            onRadioSelected();
+            return;
+        }
+        if (pendingStatusFlow == null) {
+            Operations.message(Operations.AVISO, "NO EXISTE UN NUEVO ESTADO DE GESTION PARA GUARDAR");
+            return;
+        }
+
+        current.setStatusFlow(pendingStatusFlow);
+        String movement = previousStatusFlow == null
+                ? "Estado de gestion establecido en " + getStatusFlowLabel(pendingStatusFlow) + " por " + login.getLogin()
+                : "Estado de gestion cambiado de " + getStatusFlowLabel(previousStatusFlow) + " a " + getStatusFlowLabel(pendingStatusFlow) + " por " + login.getLogin();
+
+        if (c.updateVegetableForms(current)) {
+            saveHistoryEntry(current.getApplicationNumber(), movement, statusObservation);
+            pendingStatusFlow = null;
+            previousStatusFlow = null;
+            statusObservation = "";
+            onRadioSelected();
+            PrimeFaces.current().executeScript("PF('dlgStatusFlow').hide();");
+            Operations.message(Operations.INFORMACION, "SE ACTUALIZO EL ESTADO DE GESTION DEL TRAMITE " + current.getApplicationNumber());
+        } else {
+            Operations.message(Operations.ERROR, "NO SE PUDO ACTUALIZAR EL ESTADO DE GESTION");
+        }
+    }
+
+    public void prepareReassign(ActionEvent ae) {
+        vegetableForms = (VegetableForms) vegetableTable.getRowData();
+        if (vegetableForms != null) {
+            newAssignedUser = vegetableForms.getAssignedUser();
+        }
+    }
+
+    public void reassignApplication() {
+        if (vegetableForms == null || vegetableForms.getId() == null) {
+            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            return;
+        }
+        if (newAssignedUser == null || newAssignedUser.trim().isEmpty()) {
+            Operations.message(Operations.AVISO, "INGRESE EL USUARIO AL QUE DESEA REASIGNAR EL TRAMITE");
+            return;
+        }
+
+        Controller c = new Controller();
+        VegetableForms current = c.getVegetableFormsById(vegetableForms.getId());
+        if (current == null || current.getId() == null) {
+            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            return;
+        }
+        if (!isAssignedToCurrentUser(current)) {
+            Operations.message(Operations.ERROR, "SOLO EL USUARIO ASIGNADO PUEDE REASIGNAR ESTE TRAMITE");
+            return;
+        }
+
+        String targetUser = newAssignedUser.trim();
+        if (targetUser.equalsIgnoreCase(current.getAssignedUser())) {
+            Operations.message(Operations.AVISO, "INGRESE UN USUARIO DIFERENTE PARA REASIGNAR");
+            return;
+        }
+
+        String previousUser = current.getAssignedUser();
+        current.setAssignedUser(targetUser);
+        current.setAssignedDate(new Date());
+        if (current.getStatusFlow() == null) {
+            current.setStatusFlow(StatusFlow.PENDING);
+        }
+
+        if (c.updateVegetableForms(current)) {
+            saveHistoryEntry(current.getApplicationNumber(), "Tramite " + current.getApplicationNumber() + " reasignado de "
+                    + previousUser + " a " + targetUser + " por " + login.getLogin());
+            onRadioSelected();
+            PrimeFaces.current().executeScript("PF('dlgReassign').hide();");
+            Operations.message(Operations.INFORMACION, "SE REASIGNO CORRECTAMENTE EL TRAMITE " + current.getApplicationNumber() + " AL USUARIO " + targetUser);
+        } else {
+            Operations.message(Operations.ERROR, "NO SE PUDO REASIGNAR EL TRAMITE");
+        }
+    }
+
+    private void saveHistoryEntry(String applicationNumber, String description) {
+        saveHistoryEntry(applicationNumber, description, null);
+    }
+
+    private void saveHistoryEntry(String applicationNumber, String description, String observation) {
+        Controller c = new Controller();
+        History history = new History();
+        history.setApplicationNumber(applicationNumber);
+        history.setFecha(new Timestamp(System.currentTimeMillis()));
+        history.setHistoryUser(login.getLogin());
+        if (observation != null && !observation.trim().isEmpty()) {
+            history.setDescription(description + ". Observación: " + observation.trim());
+        } else {
+            history.setDescription(description);
+        }
+        c.saveHistory(history);
+    }
+
+    public boolean isAssignedToCurrentUser(VegetableForms vegetable) {
+        return vegetable != null
+                && vegetable.getAssignedUser() != null
+                && login != null
+                && login.getLogin() != null
+                && vegetable.getAssignedUser().equalsIgnoreCase(login.getLogin());
+    }
+
+    public List<StatusFlow> getStatusFlows() {
+        return java.util.Arrays.asList(StatusFlow.values());
+    }
+
+    public String getStatusFlowLabel(StatusFlow statusFlow) {
+        if (statusFlow == null) {
+            return "SIN GESTION";
+        }
+        switch (statusFlow) {
+            case ATTENDED:
+                return "ATENDIDO";
+            case PENDING:
+                return "PENDIENTE";
+            case DENIED:
+                return "NEGADO";
+            case EXPIRED:
+                return "CADUCADO";
+            default:
+                return statusFlow.name();
+        }
+    }
+
+    public String getPendingStatusFlowLabel() {
+        return getStatusFlowLabel(pendingStatusFlow);
+    }
+
+    public String getPreviousStatusFlowLabel() {
+        return getStatusFlowLabel(previousStatusFlow);
     }
 
     public void prepararHistorial(ActionEvent ae) {
@@ -307,5 +515,21 @@ public class VegetableBean implements Serializable {
      */
     public void setHistorial(String historial) {
         this.historial = historial;
+    }
+
+    public String getNewAssignedUser() {
+        return newAssignedUser;
+    }
+
+    public void setNewAssignedUser(String newAssignedUser) {
+        this.newAssignedUser = newAssignedUser;
+    }
+
+    public String getStatusObservation() {
+        return statusObservation;
+    }
+
+    public void setStatusObservation(String statusObservation) {
+        this.statusObservation = statusObservation;
     }
 }

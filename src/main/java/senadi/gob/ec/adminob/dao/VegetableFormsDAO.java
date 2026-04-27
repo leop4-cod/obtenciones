@@ -24,7 +24,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
     @Override
     public List<VegetableForms> buscarTodos() {
         try {
-            Query query = this.getEntityManager().createQuery("Select v from VegetableForms v order by v.id");
+            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v order by v.id");
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.setMaxResults(300).getResultList();
         } finally {
@@ -49,7 +49,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                 break;
         }
         try {
-            Query query = this.getEntityManager().createQuery("Select v from VegetableForms v "+parameter+" order by v.id");            
+            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v "+parameter+" order by v.id");            
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.setMaxResults(300).getResultList();
         } finally {
@@ -80,7 +80,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                 break;
         }
         try {
-            Query query = this.getEntityManager().createQuery("Select v from VegetableForms v "+parameter+" order by v.id");            
+            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v "+parameter+" order by v.id");            
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.setMaxResults(300).getResultList();
         } finally {
@@ -90,7 +90,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
 
     public List<VegetableForms> getVegetableFormsByOwnerId(Integer id) {
         try {
-            Query query = this.getEntityManager().createQuery("Select v from VegetableForms v where v.ownerId = :id order by v.id desc");
+            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v where v.ownerId = :id order by v.id desc");
             query.setParameter("id", id);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             return query.getResultList();
@@ -101,7 +101,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
 
     public VegetableForms getVegetableFormsById(Integer id) {
         try {
-            Query query = this.getEntityManager().createQuery("Select v from VegetableForms v where v.id = :id");
+            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v where v.id = :id");
             query.setParameter("id", id);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             List<VegetableForms> vfs = query.getResultList();
@@ -117,7 +117,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
 
     public VegetableForms getVegetableFormsByApplicationNumber(String applicationNumber) {
         try {
-            Query query = this.getEntityManager().createQuery("Select v from VegetableForms v where v.applicationNumber = :appnumber");
+            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v where v.applicationNumber = :appnumber");
             query.setParameter("appnumber", applicationNumber);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
             List<VegetableForms> vegs = query.getResultList();
@@ -133,7 +133,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
 
     public List<VegetableForms> getVegetableFormsPaymentByOwnerId(Integer ownerId) {
         try {
-            Query query = this.getEntityManager().createQuery("Select v from VegetableForms v where v.ownerId = :ownerid and v.paymentReceiptId is not null and v.status = :status");
+            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v where v.ownerId = :ownerid and v.paymentReceiptId is not null and v.status = :status");
             query.setParameter("ownerid", ownerId);
             query.setParameter("status", Status.FINISHED);
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");

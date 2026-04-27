@@ -14,6 +14,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -183,7 +184,7 @@ public class VegetableForms implements Serializable {
     @Transient
     private String locker;
 
-    @OneToOne(mappedBy = "vegetableForms", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "vegetableForms", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private VegetablePriority vegetablePriority;
 
     @OneToMany(mappedBy = "vegetableForms", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -207,10 +208,10 @@ public class VegetableForms implements Serializable {
     @OneToMany(mappedBy = "vegetableForms", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PersonVegetable> personVegetables = new ArrayList<>();
     
-    @OneToOne(mappedBy = "vegetableForms", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "vegetableForms", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Declaration declaration;
     
-    @OneToOne(mappedBy = "vegetableForms", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "vegetableForms", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private FormPaymentRate formPaymentRate;        
 
     public VegetableForms() {
@@ -957,9 +958,25 @@ public class VegetableForms implements Serializable {
      * @return the locker
      */
     public String getLocker() {
-        Controller c = new Controller();
-        Owners ow = c.getOwnerById(getOwnerId());
-        return ow.getCasillero()+" - "+ow.getFirsName()+" "+ow.getLastName();        
+        if (locker != null && !locker.trim().isEmpty()) {
+            return locker;
+        }
+        try {
+            Controller c = new Controller();
+            Owners ow = c.getOwnerById(getOwnerId());
+            if (ow == null) {
+                return "SIN CASILLERO";
+            }
+            String casillero = ow.getCasillero() == null ? "SIN CASILLERO" : ow.getCasillero();
+            String nombres = ((ow.getFirsName() == null ? "" : ow.getFirsName()) + " "
+                    + (ow.getLastName() == null ? "" : ow.getLastName())).trim();
+            if (nombres.isEmpty()) {
+                return casillero;
+            }
+            return casillero + " - " + nombres;
+        } catch (Exception ex) {
+            return "SIN CASILLERO";
+        }
     }
 
     /**

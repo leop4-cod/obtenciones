@@ -6,8 +6,6 @@ package senadi.gob.ec.adminob.util;
 
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
 import senadi.gob.ec.adminob.bean.LoginBean;
@@ -70,6 +68,11 @@ public class Controller {
             System.err.println("No se pudo actualizar la obtencion vegetal "+vegetable.getApplicationNumber()+": "+ex);
             return false;
         }
+    }
+
+    public VegetableForms getVegetableFormsById(Integer id) {
+        VegetableFormsDAO vd = new VegetableFormsDAO(null);
+        return vd.getVegetableFormsById(id);
     }
     
     public List<History> getHistoriesByAppNumber(String applicationNumber){

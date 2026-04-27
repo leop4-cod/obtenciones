@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,8 +39,8 @@ public class FormPaymentRate implements Serializable{
     @Column(name = "create_date")    
     private Timestamp createDate;
     
-    @OneToOne
-    @JoinColumn(name = "vegetable_form_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vegetable_form_id", unique = true)
     private VegetableForms vegetableForms;
 
     /**

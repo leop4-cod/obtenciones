@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -49,8 +50,8 @@ public class VegetablePriority implements Serializable{
     @Transient
     private String country;
     
-    @OneToOne
-    @JoinColumn(name = "vegetable_form_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vegetable_form_id", unique = true)
     private VegetableForms vegetableForms;
 
     /**
