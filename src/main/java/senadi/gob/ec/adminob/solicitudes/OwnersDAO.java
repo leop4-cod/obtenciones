@@ -132,6 +132,39 @@ public class OwnersDAO {
         }
     }
     
+    public java.util.Map<Integer, String> getLockersByOwnerIds(java.util.List<Integer> ownerIds) {
+        java.util.Map<Integer, String> result = new java.util.HashMap<>();
+        if (ownerIds == null || ownerIds.isEmpty()) return result;
+
+        java.util.Set<Integer> unique = new java.util.LinkedHashSet<>(ownerIds);
+        StringBuilder sb = new StringBuilder();
+        for (Integer id : unique) {
+            if (sb.length() > 0) sb.append(",");
+            sb.append(id);
+        }
+        String query = "SELECT o.id, o.firstname, o.lastname, lo.id AS casillero "
+                + "FROM owners o INNER JOIN lockers lo ON o.id = lo.owner_id "
+                + "WHERE o.id IN (" + sb + ")";
+        try {
+            Connection con = Operations.doConnectionToCasilleros();
+            PreparedStatement pst = con.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String cas = rs.getString("casillero");
+                if (cas == null) cas = "SIN CASILLERO";
+                String fn = rs.getString("firstname");
+                String ln = rs.getString("lastname");
+                String nombres = ((fn == null ? "" : fn) + " " + (ln == null ? "" : ln)).trim();
+                result.put(id, nombres.isEmpty() ? cas : cas + " - " + nombres);
+            }
+            con.close();
+        } catch (Exception ex) {
+            System.err.println("Error en getLockersByOwnerIds: " + ex);
+        }
+        return result;
+    }
+
     public Owners getOwnerById(Integer ownerId) {
 
         String query = "Select o.id, o.firstname, o.lastname,"

@@ -1,20 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package senadi.gob.ec.adminob.dao;
 
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import senadi.gob.ec.adminob.enums.Status;
 import senadi.gob.ec.adminob.model.VegetableForms;
-import senadi.gob.ec.adminob.util.Operations;
 
-/**
- *
- * @author michael
- */
 public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
 
     public VegetableFormsDAO(VegetableForms t) {
@@ -24,122 +15,172 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
     @Override
     public List<VegetableForms> buscarTodos() {
         try {
-            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v order by v.id");
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            return query.setMaxResults(300).getResultList();
+            return getEntityManager()
+                .createQuery("SELECT DISTINCT v FROM VegetableForms v ORDER BY v.id",
+                             VegetableForms.class)
+                .setHint("javax.persistence.cache.storeMode", "REFRESH")
+                .setMaxResults(300)
+                .getResultList();
         } finally {
-            this.getEntityManager().close();
-        }
-    }
-    
-    public List<VegetableForms> buscarTodosByType(String type) {
-        String parameter = "";
-        switch (type) {
-            case "Iniciados":
-                parameter = "where v.status = 'DELIVERED'";
-                break;
-            case "Pagados":
-                parameter = "where v.status = 'FINISHED' and v.paymentReceiptId is not null";
-                break;
-            case "Vista":
-                parameter = "where v.status = 'PREVIEW'";
-                break;
-            default:
-                parameter = "";
-                break;
-        }
-        try {
-            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v "+parameter+" order by v.id");            
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            return query.setMaxResults(300).getResultList();
-        } finally {
-            this.getEntityManager().close();
-        }
-    }
-    
-    public List<VegetableForms> buscarTodosByTypeAndDate(String type, Date start, Date end) {
-        
-        String ini = Operations.formatDate(start);
-        String fin = Operations.formatDate(end);
-        
-        
-        String fecha = " v.applicationDate BETWEEN '"+ini+"' and '"+fin+"'";
-        String parameter = "";
-        switch (type) {
-            case "Iniciados":
-                parameter = "where v.status = 'DELIVERED' and "+fecha;
-                break;
-            case "Pagados":
-                parameter = "where v.status = 'FINISHED' and v.paymentReceiptId is not null and "+fecha;
-                break;
-            case "Vista":
-                parameter = "where v.status = 'PREVIEW' and" + fecha;
-                break;
-            default:
-                parameter = "where "+fecha;
-                break;
-        }
-        try {
-            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v "+parameter+" order by v.id");            
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            return query.setMaxResults(300).getResultList();
-        } finally {
-            this.getEntityManager().close();
+            getEntityManager().close();
         }
     }
 
-    public List<VegetableForms> getVegetableFormsByOwnerId(Integer id) {
+    /**
+     * Filtra por tipo de solicitud.
+     * Tipos soportados: "Iniciados", "Pagados", "Vista". Cualquier otro devuelve todos.
+     * "Pagados" busca trámites que tengan al menos un ComprobantePago registrado.
+     */
+    public List<VegetableForms> buscarTodosByType(String type) {
         try {
-            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v where v.ownerId = :id order by v.id desc");
-            query.setParameter("id", id);
+            TypedQuery<VegetableForms> query;
+            switch (type == null ? "" : type) {
+                case "Iniciados":
+                    query = getEntityManager().createQuery(
+                        "SELECT DISTINCT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id",
+                        VegetableForms.class);
+                    query.setParameter("st", Status.DELIVERED);
+                    break;
+                case "Pagados":
+                    query = getEntityManager().createQuery(
+                        "SELECT DISTINCT v FROM VegetableForms v " +
+                        "WHERE v.status = :st AND EXISTS " +
+                        "  (SELECT 1 FROM ComprobantePago cp WHERE cp.vegetableFormId = v.id) " +
+                        "ORDER BY v.id",
+                        VegetableForms.class);
+                    query.setParameter("st", Status.FINISHED);
+                    break;
+                case "Vista":
+                    query = getEntityManager().createQuery(
+                        "SELECT DISTINCT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id",
+                        VegetableForms.class);
+                    query.setParameter("st", Status.PREVIEW);
+                    break;
+                default:
+                    query = getEntityManager().createQuery(
+                        "SELECT DISTINCT v FROM VegetableForms v ORDER BY v.id",
+                        VegetableForms.class);
+                    break;
+            }
             query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            return query.getResultList();
+            return query.setMaxResults(300).getResultList();
         } finally {
-            this.getEntityManager().close();
+            getEntityManager().close();
+        }
+    }
+
+    /**
+     * Filtra por tipo y rango de fechas.
+     * Las fechas se pasan como parámetros tipados — sin concatenación de strings.
+     */
+    public List<VegetableForms> buscarTodosByTypeAndDate(String type, Date start, Date end) {
+        try {
+            TypedQuery<VegetableForms> query;
+            switch (type == null ? "" : type) {
+                case "Iniciados":
+                    query = getEntityManager().createQuery(
+                        "SELECT DISTINCT v FROM VegetableForms v " +
+                        "WHERE v.status = :st AND v.applicationDate BETWEEN :start AND :end " +
+                        "ORDER BY v.id",
+                        VegetableForms.class);
+                    query.setParameter("st", Status.DELIVERED);
+                    break;
+                case "Pagados":
+                    query = getEntityManager().createQuery(
+                        "SELECT DISTINCT v FROM VegetableForms v " +
+                        "WHERE v.status = :st " +
+                        "AND EXISTS (SELECT 1 FROM ComprobantePago cp WHERE cp.vegetableFormId = v.id) " +
+                        "AND v.applicationDate BETWEEN :start AND :end " +
+                        "ORDER BY v.id",
+                        VegetableForms.class);
+                    query.setParameter("st", Status.FINISHED);
+                    break;
+                case "Vista":
+                    query = getEntityManager().createQuery(
+                        "SELECT DISTINCT v FROM VegetableForms v " +
+                        "WHERE v.status = :st AND v.applicationDate BETWEEN :start AND :end " +
+                        "ORDER BY v.id",
+                        VegetableForms.class);
+                    query.setParameter("st", Status.PREVIEW);
+                    break;
+                default:
+                    query = getEntityManager().createQuery(
+                        "SELECT DISTINCT v FROM VegetableForms v " +
+                        "WHERE v.applicationDate BETWEEN :start AND :end " +
+                        "ORDER BY v.id",
+                        VegetableForms.class);
+                    break;
+            }
+            // Parámetros de fecha tipados — nunca interpolados en el string JPQL
+            query.setParameter("start", start, javax.persistence.TemporalType.DATE);
+            query.setParameter("end",   end,   javax.persistence.TemporalType.DATE);
+            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
+            return query.setMaxResults(300).getResultList();
+        } finally {
+            getEntityManager().close();
         }
     }
 
     public VegetableForms getVegetableFormsById(Integer id) {
         try {
-            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v where v.id = :id");
-            query.setParameter("id", id);
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            List<VegetableForms> vfs = query.getResultList();
-            if (vfs.isEmpty()) {
-                return new VegetableForms();
-            } else {
-                return vfs.get(0);
-            }
+            List<VegetableForms> result = getEntityManager()
+                .createQuery(
+                    "SELECT DISTINCT v FROM VegetableForms v WHERE v.id = :id",
+                    VegetableForms.class)
+                .setParameter("id", id)
+                .setHint("javax.persistence.cache.storeMode", "REFRESH")
+                .setMaxResults(1)
+                .getResultList();
+            return result.isEmpty() ? new VegetableForms() : result.get(0);
         } finally {
-            this.getEntityManager().close();
+            getEntityManager().close();
+        }
+    }
+
+    public List<VegetableForms> getVegetableFormsByOwnerId(Integer id) {
+        try {
+            return getEntityManager()
+                .createQuery(
+                    "SELECT DISTINCT v FROM VegetableForms v WHERE v.ownerId = :id ORDER BY v.id DESC",
+                    VegetableForms.class)
+                .setParameter("id", id)
+                .setHint("javax.persistence.cache.storeMode", "REFRESH")
+                .getResultList();
+        } finally {
+            getEntityManager().close();
         }
     }
 
     public VegetableForms getVegetableFormsByApplicationNumber(String applicationNumber) {
         try {
-            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v where v.applicationNumber = :appnumber");
-            query.setParameter("appnumber", applicationNumber);
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            List<VegetableForms> vegs = query.getResultList();
-            if (vegs.isEmpty()) {
-                return new VegetableForms();
-            } else {
-                return vegs.get(0);
-            }
+            List<VegetableForms> result = getEntityManager()
+                .createQuery(
+                    "SELECT DISTINCT v FROM VegetableForms v WHERE v.applicationNumber = :appnumber",
+                    VegetableForms.class)
+                .setParameter("appnumber", applicationNumber)
+                .setHint("javax.persistence.cache.storeMode", "REFRESH")
+                .setMaxResults(1)
+                .getResultList();
+            return result.isEmpty() ? new VegetableForms() : result.get(0);
         } finally {
-            this.getEntityManager().close();
+            getEntityManager().close();
         }
     }
 
     public List<VegetableForms> getVegetableFormsPaymentByOwnerId(Integer ownerId) {
         try {
-            Query query = this.getEntityManager().createQuery("Select distinct v from VegetableForms v where v.ownerId = :ownerid and v.paymentReceiptId is not null and v.status = :status");
-            query.setParameter("ownerid", ownerId);
-            query.setParameter("status", Status.FINISHED);
-            query.setHint("javax.persistence.cache.storeMode", "REFRESH");
-            return query.getResultList();
+            return getEntityManager()
+                .createQuery(
+                    "SELECT DISTINCT v FROM VegetableForms v " +
+                    "WHERE v.ownerId = :ownerid AND v.status = :status " +
+                    "AND EXISTS (SELECT 1 FROM ComprobantePago cp WHERE cp.vegetableFormId = v.id)",
+                    VegetableForms.class)
+                .setParameter("ownerid", ownerId)
+                .setParameter("status",  Status.FINISHED)
+                .setHint("javax.persistence.cache.storeMode", "REFRESH")
+                .getResultList();
         } finally {
-            this.getEntityManager().close();
+            getEntityManager().close();
         }
     }
 }

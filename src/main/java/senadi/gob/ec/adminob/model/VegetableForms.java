@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import senadi.gob.ec.adminob.enums.DenominationType;
+import senadi.gob.ec.adminob.enums.FlowPhase;
 import senadi.gob.ec.adminob.enums.PersonType;
 import senadi.gob.ec.adminob.enums.Status;
 import senadi.gob.ec.adminob.enums.StatusFlow;
@@ -164,8 +165,7 @@ public class VegetableForms implements Serializable {
     @Column(name = "varietal_group")
     private String varietalGroup;
     
-    @Column(name = "payment_receipt_id")
-    private Integer paymentReceiptId;
+    // paymentReceiptId eliminado — reemplazado por entidad ComprobantePago (relación 1:N)
     
     @Column(name = "discount_file")
     private String discountFile;
@@ -180,7 +180,11 @@ public class VegetableForms implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status_flow")
     private StatusFlow statusFlow;
-    
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "flow_phase")
+    private FlowPhase flowPhase;
+
     @Transient
     private String locker;
 
@@ -915,29 +919,21 @@ public class VegetableForms implements Serializable {
         this.varietalGroup = varietalGroup;
     }
     
-    public List<Person> getPersonsType(String type){
+    public List<Person> getPersonsType(String type) {
+        PersonType tipoFiltro;
+        try {
+            tipoFiltro = PersonType.valueOf(type);
+        } catch (IllegalArgumentException | NullPointerException ex) {
+            return new ArrayList<>();
+        }
         List<PersonVegetable> persons = getPersonVegetables();
         List<Person> people = new ArrayList<>();
-        for (int i = 0; i < persons.size(); i++) {
-            if(persons.get(i).getPersonType().equals(PersonType.APPLICANT)){
-                people.add(persons.get(i).getPerson());
+        for (PersonVegetable pv : persons) {
+            if (tipoFiltro == pv.getPersonType()) {
+                people.add(pv.getPerson());
             }
         }
         return people;
-    }
-
-    /**
-     * @return the paymentReceiptId
-     */
-    public Integer getPaymentReceiptId() {
-        return paymentReceiptId;
-    }
-
-    /**
-     * @param paymentReceiptId the paymentReceiptId to set
-     */
-    public void setPaymentReceiptId(Integer paymentReceiptId) {
-        this.paymentReceiptId = paymentReceiptId;
     }
 
     /**
@@ -955,28 +951,12 @@ public class VegetableForms implements Serializable {
     }
 
     /**
-     * @return the locker
+     * Devuelve el casillero precargado por Controller.precargarLockers().
+     * NO realiza consultas a base de datos — eso lo hace precargarLockers()
+     * una sola vez por listado, evitando N+1 queries.
      */
     public String getLocker() {
-        if (locker != null && !locker.trim().isEmpty()) {
-            return locker;
-        }
-        try {
-            Controller c = new Controller();
-            Owners ow = c.getOwnerById(getOwnerId());
-            if (ow == null) {
-                return "SIN CASILLERO";
-            }
-            String casillero = ow.getCasillero() == null ? "SIN CASILLERO" : ow.getCasillero();
-            String nombres = ((ow.getFirsName() == null ? "" : ow.getFirsName()) + " "
-                    + (ow.getLastName() == null ? "" : ow.getLastName())).trim();
-            if (nombres.isEmpty()) {
-                return casillero;
-            }
-            return casillero + " - " + nombres;
-        } catch (Exception ex) {
-            return "SIN CASILLERO";
-        }
+        return (locker != null && !locker.trim().isEmpty()) ? locker : "SIN CASILLERO";
     }
 
     /**
@@ -1026,6 +1006,21 @@ public class VegetableForms implements Serializable {
      */
     public void setStatusFlow(StatusFlow statusFlow) {
         this.statusFlow = statusFlow;
+    }
+
+    public FlowPhase getFlowPhase() { return flowPhase; }
+    public void setFlowPhase(FlowPhase flowPhase) { this.flowPhase = flowPhase; }
+
+    @javax.persistence.Transient
+    public String getManagementStatus() {
+        if (statusFlow == null) return "SIN GESTIÓN";
+        switch (statusFlow) {
+            case ATTENDED: return "ATENDIDO";
+            case PENDING:  return "PENDIENTE";
+            case DENIED:   return "NEGADO";
+            case EXPIRED:  return "CADUCADO";
+            default:       return statusFlow.name();
+        }
     }
 
 }

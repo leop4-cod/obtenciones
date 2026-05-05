@@ -1,28 +1,45 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package senadi.gob.ec.adminob.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
+ * Fábrica de EntityManager para uso con RESOURCE_LOCAL.
  *
- * @author Michael Y.
+ * Reglas:
+ *  - EMF se crea UNA sola vez al arrancar la aplicación (static initializer).
+ *    EntityManagerFactory es thread-safe y costoso de construir.
+ *  - getEntityManager() devuelve un EM NUEVO en cada llamada.
+ *    EntityManager NO es thread-safe; cada operación de DAO debe usar
+ *    el suyo propio y cerrarlo en el bloque finally.
  */
-public class EntityManagerM {
+public final class EntityManagerM {
 
-    private static EntityManager em = null;
+    private static final Logger LOG = Logger.getLogger(EntityManagerM.class.getName());
 
-    public static EntityManager getEntityManager() {
-        if (em == null || !em.isOpen()) {
-            EntityManagerFactory emf = Persistence.createEntityManagerFactory("vegetablePU");
-            em = emf.createEntityManager();
+    private static final EntityManagerFactory EMF;
+
+    static {
+        try {
+            EMF = Persistence.createEntityManagerFactory("vegetablePU");
+            LOG.info("EntityManagerFactory inicializado correctamente para 'vegetablePU'.");
+        } catch (Exception ex) {
+            LOG.log(Level.SEVERE, "No se pudo crear EntityManagerFactory para 'vegetablePU'.", ex);
+            throw new ExceptionInInitializerError(ex);
         }
-        return em;
+    }
+
+    private EntityManagerM() {
+    }
+
+    /**
+     * Devuelve un EntityManager nuevo.
+     * El llamador es responsable de cerrarlo en un bloque finally.
+     */
+    public static EntityManager getEntityManager() {
+        return EMF.createEntityManager();
     }
 }

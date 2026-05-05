@@ -74,6 +74,25 @@ public class Controller {
         VegetableFormsDAO vd = new VegetableFormsDAO(null);
         return vd.getVegetableFormsById(id);
     }
+
+    public void precargarLockers(List<VegetableForms> vegetables) {
+        if (vegetables == null || vegetables.isEmpty()) return;
+        List<Integer> ids = new java.util.ArrayList<>();
+        for (VegetableForms vf : vegetables) {
+            if (vf.getOwnerId() != null) ids.add(vf.getOwnerId());
+        }
+        if (ids.isEmpty()) return;
+        OwnersDAO od = new OwnersDAO();
+        java.util.Map<Integer, String> lockerMap = od.getLockersByOwnerIds(ids);
+        for (VegetableForms vf : vegetables) {
+            if (vf.getOwnerId() == null) {
+                vf.setLocker("SIN CASILLERO");
+            } else {
+                String locker = lockerMap.get(vf.getOwnerId());
+                vf.setLocker(locker != null ? locker : "SIN CASILLERO");
+            }
+        }
+    }
     
     public List<History> getHistoriesByAppNumber(String applicationNumber){
         HistoryDAO hd = new HistoryDAO(null);

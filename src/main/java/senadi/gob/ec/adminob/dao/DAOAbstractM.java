@@ -1,22 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package senadi.gob.ec.adminob.dao;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 
 /**
+ * DAO base para transacciones RESOURCE_LOCAL manuales.
  *
- * @author michael
- * @param <T>
+ * Cada instancia obtiene su propio EntityManager en el constructor y
+ * lo cierra en el bloque finally de cada operación, garantizando que
+ * no haya fugas de conexión aunque ocurra una excepción.
+ *
+ * @param <T> tipo de entidad JPA
  */
 public abstract class DAOAbstractM<T> {
 
     private T instancia;
-
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     public DAOAbstractM(T t) {
         instancia = t;
@@ -27,10 +26,6 @@ public abstract class DAOAbstractM<T> {
         return entityManager;
     }
 
-    public void setEntityManager(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
     public T getInstancia() {
         return instancia;
     }
@@ -39,57 +34,64 @@ public abstract class DAOAbstractM<T> {
         this.instancia = instancia;
     }
 
+    /** Persiste la entidad en una transacción atómica. */
     public void persist() throws Exception {
-        this.entityManager.getTransaction().begin();
+        entityManager.getTransaction().begin();
         try {
-            this.entityManager.persist(instancia);
-            this.entityManager.getTransaction().commit();
-            this.entityManager.close();
+            entityManager.persist(instancia);
+            entityManager.getTransaction().commit();
         } catch (Exception e) {
-            if (this.entityManager.getTransaction().isActive()) // Arreglar el Error y reintentar
-            {
-                this.entityManager.getTransaction().rollback();
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
             }
             throw e;
+        } finally {
+            entityManager.close();
         }
     }
 
+    /** Hace merge (INSERT o UPDATE) en una transacción atómica. */
     public void update() throws Exception {
-        this.entityManager.getTransaction().begin();
+        entityManager.getTransaction().begin();
         try {
-            instancia = this.entityManager.merge(instancia);
-            this.entityManager.getTransaction().commit();
-            this.entityManager.close();
+            instancia = entityManager.merge(instancia);
+            entityManager.getTransaction().commit();
         } catch (Exception e) {
-            if (this.entityManager.getTransaction().isActive()) {
-                this.entityManager.getTransaction().rollback(); // Arreglar el Error y reiintentar
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
             }
             throw e;
+        } finally {
+            entityManager.close();
         }
     }
 
+    /** Elimina la entidad en una transacción atómica. */
     public void remove() throws Exception {
-        this.entityManager.getTransaction().begin();
+        entityManager.getTransaction().begin();
         try {
-            this.entityManager.remove(instancia);
-            this.entityManager.getTransaction().commit();
-            this.entityManager.close();
+            T managed = entityManager.merge(instancia);
+            entityManager.remove(managed);
+            entityManager.getTransaction().commit();
         } catch (Exception e) {
-            if (this.entityManager.getTransaction().isActive()) {
-                this.entityManager.getTransaction().rollback(); // Arreglar el Error y reiintentar
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
             }
             throw e;
+        } finally {
+            entityManager.close();
         }
     }
 
-    public void clearInstance() {
-        this.getEntityManager().clear();
-    }
-
+    /** Busca por clave primaria Long. Cierra el EM internamente. */
+    @SuppressWarnings("unchecked")
     public T findById(Long id) {
-        return (T) this.entityManager.find(this.instancia.getClass(), id);
+        try {
+            return (T) entityManager.find(instancia.getClass(), id);
+        } finally {
+            entityManager.close();
+        }
     }
 
     public abstract List<T> buscarTodos();
-
 }
