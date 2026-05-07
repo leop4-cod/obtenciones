@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RUTA: src/main/webapp/index.xhtml -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Obtenciones Vegetales — SENADI</title>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}" />
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}" />
+    </h:head>
+
+    <h:body>
+        <p:growl id="mensajes" showDetail="true" life="4000"/>
+
+        <h:form id="allform" enctype="multipart/form-data">
+
+            <!-- ════════════════════ HEADER ════════════════════ -->
+            <div class="sn-header">
+                <a href="index.xhtml" class="sn-header-brand">
+                    <img src="#{resource['images/sena_2.png']}" alt="SENADI"/>
+                    <div class="sn-header-title">
+                        SENADI
+                        <small>Obtenciones Vegetales</small>
+                    </div>
+                </a>
+
+                <div class="sn-header-user">
+                    <div class="sn-user-pill">
+                        <i class="pi pi-user"></i>
+                        <p:outputLabel value="#{vegetableBean.login.login}" style="color:white; font-size:13px; font-weight:700;"/>
+                    </div>
+                    <p:commandLink actionListener="#{loginBean.logout}"
+                                   oncomplete="logout(xhr, status, args)"
+                                   title="Cerrar sesión" immediate="true"
+                                   styleClass="sn-logout-btn">
+                        <i class="pi pi-sign-out"></i>
+                    </p:commandLink>
+                </div>
+            </div>
+
+            <!-- línea dorada decorativa -->
+            <div class="sn-header-gold-line"></div>
+
+            <!-- ════════════════════ CONTENIDO ════════════════════ -->
+            <div class="sn-wrap-wide">
+
+                <!-- ════════════════════ SECCIÓN UPLOAD ════════════════════ -->
+                <div class="sn-card sn-upload-section">
+                    <div class="sn-card-header">
+                        <h3><i class="pi pi-cloud-upload" style="margin-right:8px;"></i>Carga de Documentos</h3>
+                    </div>
+                    <div class="sn-card-body">
+
+                        <h:panelGroup id="seleccionInfo">
+                            <h:panelGroup rendered="#{not empty vegetableBean.vegetableForms}">
+                                <div class="sn-info-green sn-active-case">
+                                    <i class="pi pi-check-circle"></i>
+                                    <span>
+                                        TRÁMITE ACTIVO:&#160;<strong>#{vegetableBean.vegetableForms.applicationNumber}</strong>
+                                        &#160;— Cargue los documentos requeridos a continuación.
+                                    </span>
+                                </div>
+                            </h:panelGroup>
+                        </h:panelGroup>
+
+                        <h:panelGroup id="panelUpload">
+
+                            <h:panelGroup rendered="#{empty vegetableBean.vegetableForms}">
+                                <div class="sn-info-amber sn-upload-hint">
+                                    <i class="pi pi-info-circle"></i>
+                                    <div>
+                                        <strong>Paso 1:</strong> Haga clic en el botón
+                                        <span class="sn-inline-upload-icon">
+                                            <i class="pi pi-cloud-upload"></i>
+                                        </span>
+                                        de la fila que desea gestionar para habilitar la carga de documentos.
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+
+                            <h:panelGroup rendered="#{not empty vegetableBean.vegetableForms}">
+                                <div class="row sn-upload-grid">
+                                    <div class="col-md-4">
+                                        <div class="sn-upload-card">
+                                            <h5><i class="pi pi-file-pdf" style="color:#dc2626;"></i>Formulario (PDF · máx 10 MB)</h5>
+                                            <p:fileUpload listener="#{vegetableBean.upload}"
+                                                          mode="advanced" dragDropSupport="true"
+                                                          update=":mensajes tablaDeObtenciones" sizeLimit="10000000"
+                                                          allowTypes="/(\.|\/)(pdf)$/i"
+                                                          label="Buscar" uploadLabel="Cargar"
+                                                          cancelLabel="Cancelar" auto="false"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="sn-upload-card">
+                                            <h5><i class="pi pi-image" style="color:#2563eb;"></i>Fotografías (JPG/PNG · mín 3 · máx 5 MB)</h5>
+                                            <p:fileUpload listener="#{vegetableBean.upload}"
+                                                          mode="advanced" multiple="true" dragDropSupport="true"
+                                                          update=":mensajes tablaDeObtenciones" sizeLimit="5000000" fileLimit="10"
+                                                          allowTypes="/(\.|\/)(jpe?g|png)$/i"
+                                                          label="Buscar Fotos" uploadLabel="Cargar Fotos"
+                                                          auto="false"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="sn-upload-card">
+                                            <h5><i class="pi pi-money-bill" style="color:var(--sn-gold);"></i>Comprobante de Pago (PDF · máx 5 MB)</h5>
+                                            <p:fileUpload listener="#{vegetableBean.upload}"
+                                                          mode="advanced" dragDropSupport="true"
+                                                          update=":mensajes tablaDeObtenciones" sizeLimit="5000000"
+                                                          allowTypes="/(\.|\/)(pdf)$/i"
+                                                          label="Buscar Pago" uploadLabel="Cargar Pago"
+                                                          auto="false"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+
+                        </h:panelGroup>
+                    </div>
+                </div>
+
+                <!-- Requisitos de ingreso -->
+                <div class="sn-req-box">
+                    <div style="color:var(--sn-dark); font-family:'Playfair Display',serif; font-size:15px; font-weight:700; margin-bottom:12px;">
+                        <i class="pi pi-check-circle" style="margin-right:6px; color:var(--sn-green);"></i>
+                        Requisitos Obligatorios para Ingreso por Ventanilla
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="sn-req-item">
+                                <i class="pi pi-file-pdf" style="color:#dc2626;"></i>
+                                <div>
+                                    <strong>Formulario de Protección (PDF)</strong>
+                                    <span>Documento oficial firmado. Máx 10 MB.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="sn-req-item">
+                                <i class="pi pi-image" style="color:#2563eb;"></i>
+                                <div>
+                                    <strong>Fotografías a Color (JPG/PNG)</strong>
+                                    <span>Proporción A4, máx 5 MB c/u.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="sn-req-item">
+                                <i class="pi pi-money-bill" style="color:var(--sn-gold);"></i>
+                                <div>
+                                    <strong>Comprobante de Pago (PDF)</strong>
+                                    <span>Tasa respectiva cancelada. Máx 5 MB.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección tabla -->
+                <div class="sn-card">
+                    <div class="sn-card-header">
+                        <h3><i class="pi pi-list" style="margin-right:8px;"></i>Registros de Solicitudes</h3>
+                        <div style="margin-left:auto;">
+                            <h:link outcome="registro" styleClass="sn-btn-new">
+                                <i class="pi pi-plus-circle"></i> Nuevo Registro
+                            </h:link>
+                        </div>
+                    </div>
+
+                    <div class="sn-card-body">
+
+                        <!-- Filtros -->
+                        <p:panelGrid columns="3"
+                                     columnClasses="thirty-five-percent, twenty-percent, forty-five-percent"
+                                     style="width:100%; margin-bottom:16px;"
+                                     styleClass="ui-panelgrid-blank">
+                            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px;">
+                                <p:selectOneRadio id="line" value="#{vegetableBean.radioOption}" layout="lineDirection">
+                                    <f:selectItem itemLabel="Todos"              itemValue="Todos"/>
+                                    <f:selectItem itemLabel="Procesos Iniciados" itemValue="Iniciados"/>
+                                    <f:selectItem itemLabel="Pagados"            itemValue="Pagados"/>
+                                    <f:selectItem itemLabel="Vista Previa"       itemValue="Vista"/>
+                                    <p:ajax update=":mensajes tablaDeObtenciones dates checkd"
+                                            listener="#{vegetableBean.onRadioSelected}"/>
+                                </p:selectOneRadio>
+                            </div>
+
+                            <div style="display:flex; align-items:center;">
+                                <p:selectBooleanCheckbox id="checkd"
+                                                         itemLabel="Buscar por F. Presentación"
+                                                         value="#{vegetableBean.byDate}">
+                                    <p:ajax update=":mensajes dates" listener="#{vegetableBean.onCheckSelected}"/>
+                                </p:selectBooleanCheckbox>
+                            </div>
+
+                            <p:panel id="dates"
+                                     style="#{vegetableBean.byDate ? 'display:block' : 'display:none'}"
+                                     styleClass="ui-panelgrid-blank">
+                                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                                    <p:outputLabel value="Desde:" style="font-weight:700; font-size:12px;"/>
+                                    <p:calendar value="#{vegetableBean.startDate}" style="width:160px"/>
+                                    <p:outputLabel value="Hasta:"  style="font-weight:700; font-size:12px;"/>
+                                    <p:calendar value="#{vegetableBean.endDate}"   style="width:160px"/>
+                                    <p:commandButton value="BUSCAR" styleClass="sn-btn-primary"
+                                                     actionListener="#{vegetableBean.searchVegetables}"
+                                                     update=":mensajes tablaDeObtenciones"
+                                                     icon="pi pi-search"/>
+                                </div>
+                            </p:panel>
+                        </p:panelGrid>
+
+                        <!-- TABLA -->
+                        <p:dataTable id="tablaDeObtenciones"
+                                     var="vegetable"
+                                     value="#{vegetableBean.vegetables}"
+                                     widgetVar="tablaDeObtenciones"
+                                     binding="#{vegetableBean.vegetableTable}"
+                                     emptyMessage="No hay datos para mostrar"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rows="20"
+                                     rowsPerPageTemplate="20,50,100,150,200,250,300"
+                                     rowKey="#{vegetable.id}"
+                                     rowIndexVar="index"
+                                     style="width:100%;">
+
+                            <p:column headerText="#" style="text-align:center; width:3%;" exportable="false">
+                                <span style="font-size:11px; color:#888;">#{vegetableBean.vegetables.size() - index}</span>
+                            </p:column>
+
+                            <p:column headerText="Casillero" style="text-align:center; width:16%;" filterBy="#{vegetable.locker}">
+                                <h:outputText value="#{vegetable.locker}" style="font-size:11px;"/>
+                            </p:column>
+
+                            <p:column headerText="Trámite" style="text-align:center; width:10%;" filterBy="#{vegetable.applicationNumber}">
+                                <span style="font-weight:700; color:var(--sn-dark); font-size:11px;">
+                                    <h:outputText value="#{vegetable.applicationNumber}"/>
+                                </span>
+                            </p:column>
+
+                            <p:column headerText="F. Creación" style="text-align:center; width:9%;">
+                                <h:outputText value="#{vegetable.createDate}" style="font-size:11px;">
+                                    <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Guayaquil"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Taxón Botánico" filterBy="#{vegetable.botanicalTaxon}">
+                                <h:outputText value="#{vegetable.botanicalTaxon}" style="font-size:11px; font-style:italic;"/>
+                            </p:column>
+
+                            <p:column headerText="F. Presentación" style="text-align:center; width:9%;">
+                                <h:outputText value="#{vegetable.applicationDate}" style="font-size:11px;">
+                                    <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Guayaquil"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Grupo Varietal" filterBy="#{vegetable.varietalGroup}">
+                                <h:outputText value="#{vegetable.varietalGroup}" style="font-size:11px;"/>
+                            </p:column>
+
+                            <p:column headerText="Estado" style="text-align:center; width:9%;">
+                                <span class="sn-badge sn-badge-#{vegetable.status}">
+                                    <h:outputText value="#{vegetable.status eq 'SAVED' ? 'Guardado' :
+                                                          (vegetable.status eq 'PREVIEW' ? 'Vista prev.' :
+                                                          (vegetable.status eq 'DELIVERED' ? 'En Proceso' : 'Pagado'))}"/>
+                                </span>
+                            </p:column>
+
+                            <p:column headerText="Asignado a" filterBy="#{vegetable.assignedUser}" style="text-align:center;">
+                                <h:outputText value="#{vegetable.assignedUser eq null ? '—' : vegetable.assignedUser}"
+                                              style="font-size:11px; #{vegetable.assignedUser eq null ? 'color:#bbb;' : 'font-weight:700; color:var(--sn-green);'}"/>
+                            </p:column>
+
+                            <p:column headerText="Gestión" style="text-align:center; width:155px;">
+                                <p:selectOneMenu value="#{vegetable.statusFlow}"
+                                                 rendered="#{vegetableBean.isAssignedToCurrentUser(vegetable)}"
+                                                 style="width:140px; font-size:12px;">
+                                    <f:selectItems value="#{vegetableBean.statusFlows}" var="flow"
+                                                   itemValue="#{flow}"
+                                                   itemLabel="#{vegetableBean.getStatusFlowLabel(flow)}"/>
+                                    <p:ajax listener="#{vegetableBean.prepareStatusFlowChange}"
+                                            process="@this"
+                                            update=":mensajes :dlgStatusFlow tablaDeObtenciones"
+                                            oncomplete="if(args.openStatusDialog){PF('dlgStatusFlow').show();}"/>
+                                </p:selectOneMenu>
+                                <h:outputText value="#{vegetableBean.getStatusFlowLabel(vegetable.statusFlow)}"
+                                              style="font-size:11px; color:#555;"
+                                              rendered="#{!vegetableBean.isAssignedToCurrentUser(vegetable)}"/>
+                            </p:column>
+
+                            <!-- ══ ACCIONES ══ -->
+                            <p:column headerText="Acciones" style="text-align:center; width:205px;" exportable="false">
+                                <div class="acciones-grupo">
+
+                                    <h:link outcome="actualizar" styleClass="accion-btn btn-edit" title="Editar registro">
+                                        <f:param name="id" value="#{vegetable.id}"/>
+                                        <i class="pi pi-pencil"></i>
+                                    </h:link>
+
+                                    <p:commandButton styleClass="accion-btn btn-pdf"
+                                                     title="Ver Formulario PDF"
+                                                     icon="pi pi-file-pdf"
+                                                     rendered="#{vegetable.status != 'SAVED'}"
+                                                     actionListener="#{vegetableBean.viewFormulario}"
+                                                     oncomplete="if(args.doit){otherpage(args.url);}"
+                                                     process="@this" update=":mensajes"/>
+
+                                    <p:commandButton styleClass="accion-btn btn-voucher"
+                                                     title="Ver Comprobante de Pago"
+                                                     icon="pi pi-money-bill"
+                                                     rendered="#{vegetable.status != 'SAVED' and vegetable.status != 'PREVIEW'}"
+                                                     actionListener="#{vegetableBean.viewVoucher}"
+                                                     oncomplete="if(args.doit){otherpage(args.url);}"
+                                                     process="@this" update=":mensajes"/>
+
+                                    <p:commandButton styleClass="accion-btn btn-assign"
+                                                     title="Asignarme este trámite"
+                                                     icon="pi pi-user-plus"
+                                                     rendered="#{empty vegetable.assignedUser}"
+                                                     onclick="if(!confirm('¿Confirma asignarse el trámite #{vegetable.applicationNumber}?')) return false;"
+                                                     actionListener="#{vegetableBean.assignApplication}"
+                                                     process="@this" update=":mensajes tablaDeObtenciones">
+                                        <f:setPropertyActionListener value="#{vegetable}"
+                                                                     target="#{vegetableBean.vegetableForms}"/>
+                                    </p:commandButton>
+
+                                    <p:commandButton styleClass="accion-btn btn-reassign"
+                                                     title="Reasignar trámite"
+                                                     icon="pi pi-users"
+                                                     rendered="#{vegetableBean.isAssignedToCurrentUser(vegetable)}"
+                                                     actionListener="#{vegetableBean.prepareReassign}"
+                                                     process="@this"
+                                                     update=":mensajes :dlgReassign"
+                                                     oncomplete="PF('dlgReassign').show();">
+                                        <f:setPropertyActionListener value="#{vegetable}"
+                                                                     target="#{vegetableBean.vegetableForms}"/>
+                                    </p:commandButton>
+
+                                    <span style="position:relative; display:inline-block;">
+                                        <p:commandButton styleClass="accion-btn btn-upload"
+                                                         title="Cargar documentación"
+                                                         icon="pi pi-cloud-upload"
+                                                         process="@this"
+                                                         update=":mensajes allform:seleccionInfo allform:panelUpload">
+                                            <f:setPropertyActionListener value="#{vegetable}"
+                                                                         target="#{vegetableBean.vegetableForms}"/>
+                                        </p:commandButton>
+                                        <h:outputText
+                                            rendered="#{vegetableBean.hasUploadedFiles(vegetable.id)}"
+                                            value="#{vegetableBean.getUploadedFileCount(vegetable.id)}"
+                                            style="position:absolute; top:-6px; right:-6px;
+                                                   background:var(--sn-green); color:white; border-radius:50%;
+                                                   width:16px; height:16px; font-size:9px; font-weight:800;
+                                                   display:flex; align-items:center; justify-content:center;
+                                                   line-height:16px; text-align:center; pointer-events:none;"/>
+                                    </span>
+
+                                    <p:commandButton styleClass="accion-btn btn-view-uploaded"
+                                                     title="Ver archivos subidos"
+                                                     icon="pi pi-eye"
+                                                     rendered="#{vegetableBean.hasUploadedFiles(vegetable.id)}"
+                                                     actionListener="#{vegetableBean.prepareViewUploaded}"
+                                                     process="@this"
+                                                     update=":mensajes :dlgArchivos"
+                                                     oncomplete="PF('dlgArchivos').show();">
+                                        <f:setPropertyActionListener value="#{vegetable}"
+                                                                     target="#{vegetableBean.vegetableForms}"/>
+                                    </p:commandButton>
+
+                                    <p:commandButton styleClass="accion-btn btn-history"
+                                                     title="Ver historial"
+                                                     icon="pi pi-history"
+                                                     actionListener="#{vegetableBean.prepararHistorial}"
+                                                     process="@this"
+                                                     update=":mensajes :dlgHistorial"
+                                                     oncomplete="PF('dlgHistorial').show();">
+                                        <f:setPropertyActionListener value="#{vegetable}"
+                                                                     target="#{vegetableBean.vegetableForms}"/>
+                                    </p:commandButton>
+
+                                </div>
+                            </p:column>
+
+                            <f:facet name="footer">
+                                <div class="ov-table-footer" style="display:flex; justify-content:space-between; align-items:center;">
+                                    <p:outputLabel id="num_registros"
+                                                   value="#{vegetableBean.vegetables.size()} registros"
+                                                   style="float:left; font-size:12px; color:var(--sn-muted); font-weight:600;"/>
+                                    <h:commandLink title="Exportar a Excel"
+                                                   rendered="#{!loginBean.lectura}"
+                                                   immediate="true" style="float:right;">
+                                        <p:graphicImage class="excel" width="20" height="20"
+                                                        library="images" name="excel.png"/>
+                                        <p:dataExporter type="xlsx" target="tablaDeObtenciones" fileName="obtenciones"/>
+                                    </h:commandLink>
+                                </div>
+                            </f:facet>
+                        </p:dataTable>
+
+                    </div><!-- sn-card-body -->
+                </div><!-- sn-card -->
+
+            </div><!-- sn-wrap-wide -->
+
+            <!-- Spinner AJAX -->
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                      closable="false" resizable="false" showHeader="false">
+                <p:graphicImage name="/images/ajax-loader.gif"/>
+            </p:dialog>
+
+        </h:form>
+
+        <!-- ══ DIÁLOGO: HISTORIAL ══ -->
+        <p:dialog id="dlgHistorial" modal="true" resizable="true"
+                  header="HISTORIAL — #{vegetableBean.vegetableForms.applicationNumber}"
+                  fitViewport="true" widgetVar="dlgHistorial"
+                  style="font-size:11px;" showEffect="explode" hideEffect="explode"
+                  closeOnEscape="true">
+            <h:form id="frmHistory">
+                <p:inputTextarea value="#{vegetableBean.historial}"
+                                 rows="12" cols="160" readonly="true"
+                                 style="width:100%; font-family:monospace; background:white;"/>
+            </h:form>
+        </p:dialog>
+
+        <!-- ══ DIÁLOGO: ARCHIVOS SUBIDOS ══ -->
+        <p:dialog id="dlgArchivos" modal="true" resizable="true"
+                  header="ARCHIVOS SUBIDOS — #{vegetableBean.vegetableForms.applicationNumber}"
+                  widgetVar="dlgArchivos" style="width:700px; min-width:400px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmArchivos">
+                <p:dataTable value="#{vegetableBean.archivosSubidos}" var="arch"
+                             emptyMessage="No hay archivos subidos."
+                             style="font-size:12px;">
+                    <p:column headerText="Archivo" style="width:55%">
+                        <h:outputText value="#{arch.nombreArchivo}"/>
+                    </p:column>
+                    <p:column headerText="Fecha" style="width:25%">
+                        <h:outputText value="#{arch.fechaCarga}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Ver" style="width:20%; text-align:center;">
+                        <h:outputLink value="#{request.contextPath}/file-view?id=#{arch.id}"
+                                      target="_blank"
+                                      style="background:var(--sn-green); color:white; padding:4px 12px;
+                                             border-radius:5px; font-size:11px; text-decoration:none;
+                                             display:inline-block;">
+                            <i class="pi pi-external-link" style="margin-right:4px;"/>
+                            Abrir
+                        </h:outputLink>
+                    </p:column>
+                </p:dataTable>
+                <div style="text-align:right; margin-top:10px;">
+                    <p:commandButton value="CERRAR" type="button" styleClass="sn-btn-secondary"
+                                     onclick="PF('dlgArchivos').hide();"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <!-- ══ DIÁLOGO: REASIGNAR ══ -->
+        <p:dialog id="dlgReassign" modal="true" resizable="false"
+                  header="REASIGNAR — #{vegetableBean.vegetableForms.applicationNumber}"
+                  widgetVar="dlgReassign" style="width:440px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmReassign">
+                <p:panelGrid columns="1" style="width:100%">
+                    <p:outputLabel value="Usuario destino:" style="font-weight:700; font-size:13px;"/>
+                    <p:inputText value="#{vegetableBean.newAssignedUser}"
+                                 style="width:100%" placeholder="Ej: jperez"/>
+                    <p:commandButton value="GUARDAR REASIGNACIÓN" styleClass="sn-btn-primary"
+                                     actionListener="#{vegetableBean.reassignApplication}"
+                                     process="@form"
+                                     update=":mensajes :allform:tablaDeObtenciones frmReassign"
+                                     oncomplete="PF('dlgReassign').hide()"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <!-- ══ DIÁLOGO: CAMBIO ESTADO GESTIÓN ══ -->
+        <p:dialog id="dlgStatusFlow" modal="true" resizable="false"
+                  header="CONFIRMAR CAMBIO DE ESTADO"
+                  widgetVar="dlgStatusFlow" style="width:500px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmStatusFlow">
+                <p:panelGrid columns="1" style="width:100%">
+                    <p:outputLabel value="Trámite: #{vegetableBean.vegetableForms.applicationNumber}"
+                                   style="font-weight:800; font-size:13px; color:var(--sn-dark);"/>
+                    <p:outputLabel value="Estado actual: #{vegetableBean.previousStatusFlowLabel}"
+                                   style="font-size:13px;"/>
+                    <p:outputLabel value="Nuevo estado: #{vegetableBean.pendingStatusFlowLabel}"
+                                   style="font-weight:800; color:var(--sn-green); font-size:13px;"/>
+                    <p:separator/>
+                    <p:outputLabel value="Observación (obligatoria):" style="font-weight:700; font-size:12px;"/>
+                    <p:inputTextarea value="#{vegetableBean.statusObservation}"
+                                     rows="4" autoResize="false" style="width:100%"
+                                     placeholder="Describa el motivo del cambio..."/>
+                    <p:panelGrid columns="2">
+                        <p:commandButton value="GUARDAR" styleClass="sn-btn-primary"
+                                         actionListener="#{vegetableBean.confirmStatusFlowChange}"
+                                         process="@form" icon="pi pi-check"
+                                         update=":mensajes :allform:tablaDeObtenciones frmStatusFlow"
+                                         oncomplete="if(!args.validationFailed) PF('dlgStatusFlow').hide()"/>
+                        <p:commandButton value="CERRAR" type="button" styleClass="sn-btn-secondary"
+                                         icon="pi pi-times"
+                                         onclick="PF('dlgStatusFlow').hide();"/>
+                    </p:panelGrid>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <!-- Monitor sesión idle: 30 minutos -->
+        <p:idleMonitor timeout="#{1000*60*30}" id="idleSesion">
+            <p:ajax event="idle" listener="#{idleMonitorCtrl.idleListener}"
+                    oncomplete="PF('idleDialog').show()"/>
+        </p:idleMonitor>
+        <p:dialog header="Sesión Caducada" resizable="false"
+                  widgetVar="idleDialog" modal="true" closable="false"
+                  style="font-size:12px; min-width:280px;">
+            <h:form id="sesionCaducaForm">
+                <div style="text-align:center; padding:10px;">
+                    <p style="margin-bottom:14px; color:var(--sn-dark);">Su sesión ha expirado por inactividad.</p>
+                    <p:commandButton styleClass="sn-btn-primary"
+                                     actionListener="#{loginBean.logout}"
+                                     oncomplete="logout(xhr, status, args)"
+                                     value="ACEPTAR" immediate="true"
+                                     icon="pi pi-sign-in"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+    </h:body>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+            }, 150);
+        });
+        //<![CDATA[
+        function otherpage(url) {
+            setTimeout(function () { window.open(url, '_blank'); }, 0);
+        }
+        function logout(xhr, status, args) {
+            setTimeout(function () { window.location = 'login.xhtml'; }, 500);
+        }
+        //]]>
+    </script>
+</html>
