@@ -4,21 +4,34 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.sql.Timestamp;
+import java.text.Normalizer;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIData;
 import javax.faces.event.ActionEvent;
-import javax.faces.context.FacesContext;
-import javax.faces.application.FacesMessage;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 import senadi.gob.ec.adminob.dao.ComprobantePagoDAO;
+import senadi.gob.ec.adminob.dao.VegetableFormsDAO;
 import senadi.gob.ec.adminob.enums.FlowPhase;
+import senadi.gob.ec.adminob.enums.Status;
 import senadi.gob.ec.adminob.enums.StatusFlow;
 import senadi.gob.ec.adminob.model.ComprobantePago;
 import senadi.gob.ec.adminob.model.History;
@@ -413,6 +426,317 @@ public class VegetableBean implements Serializable {
      * - Registra el archivo en la tabla comprobante_pago (relación 1:N).
      * - La ruta base se configura via propiedad de sistema "upload.base.path".
      */
+    public void importarExcel(FileUploadEvent event) {
+        UploadedFile file = event.getFile();
+        if (file == null) {
+            Operations.message(Operations.ERROR, "NO SE RECIBIO EL ARCHIVO EXCEL");
+            return;
+        }
+
+        String fileName = file.getFileName() == null ? "" : file.getFileName().toLowerCase(Locale.ROOT);
+        if (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls")) {
+            Operations.message(Operations.ERROR, "FORMATO NO PERMITIDO. SUBA UN ARCHIVO .XLSX O .XLS");
+            return;
+        }
+
+        int imported = 0;
+        int skipped = 0;
+        int duplicated = 0;
+        int failed = 0;
+
+        try (InputStream in = file.getInputStream(); Workbook workbook = WorkbookFactory.create(in)) {
+            DataFormatter formatter = new DataFormatter(new Locale("es", "EC"));
+            Sheet sheet = findBaseDatosSheet(workbook);
+            if (sheet == null) {
+                Operations.message(Operations.AVISO, "NO SE ENCONTRO LA HOJA 'BASE DE DATOS' EN EL EXCEL");
+                return;
+            }
+
+            Row headerRow = findHeaderRow(sheet, formatter);
+            if (headerRow == null) {
+                Operations.message(Operations.AVISO, "NO SE ENCONTRO LA FILA DE ENCABEZADOS. USE UNA COLUMNA LLAMADA TRAMITE.");
+                return;
+            }
+
+            Map<String, Integer> columns = buildHeaderMap(headerRow, formatter);
+            Set<String> existingNumbers = getExistingApplicationNumbers();
+
+            for (int i = headerRow.getRowNum() + 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null || isBlankRow(row, formatter)) {
+                    skipped++;
+                    continue;
+                }
+
+                String applicationNumber = firstValue(row, columns, formatter,
+                        "tramite nro", "tramite no", "tramite numero", "tramite", "numero tramite",
+                        "application number", "applicationnumber", "solicitud");
+                if (applicationNumber == null || applicationNumber.trim().isEmpty()) {
+                    skipped++;
+                    continue;
+                }
+
+                String key = applicationNumber.trim().toUpperCase(Locale.ROOT);
+                if (existingNumbers.contains(key)) {
+                    duplicated++;
+                    continue;
+                }
+
+                try {
+                    VegetableForms form = new VegetableForms();
+                    form.setApplicationNumber(limit(applicationNumber.trim(), 80));
+                    form.setCreateDate(toTimestamp(firstCell(row, columns, "fecha admision de solicitud", "f creacion", "fecha creacion", "create date")));
+                    form.setApplicationDate(toDate(firstCell(row, columns, "fecha admision de solicitud", "f presentacion", "fecha presentacion", "application date")));
+                    form.setBotanicalTaxon(firstValue(row, columns, formatter, "taxon botanico", "taxon", "botanical taxon"));
+                    form.setCommonName(firstValue(row, columns, formatter, "nombre comun", "common name"));
+                    // Campos de denominacion se dejan fuera en la carga masiva inicial
+                    // porque en algunas bases historicas tienen restricciones cortas.
+                    form.setGenericDenomination(null);
+                    form.setProvitionalDesignation(null);
+                    form.setVarietalGroup(limit(firstValue(row, columns, formatter, "tipo de cultivo", "grupo varietal", "varietal group"), 80));
+                    form.setAssignedUser(null);
+                    String etapaActual = firstValue(row, columns, formatter, "etapa actual", "estado", "status");
+                    String estadoExpediente = firstValue(row, columns, formatter, "estado del expediente");
+                    form.setStatus(parseStatus(etapaActual + " " + estadoExpediente));
+                    form.setStatusFlow(parseStatusFlow(etapaActual + " " + estadoExpediente));
+                    // No se guarda la observacion consolidada en BD porque algunas
+                    // instalaciones tienen additional_information con longitud menor.
+                    form.setAdditionalInformation(null);
+                    form.setFlowPhase(form.getAssignedUser() == null || form.getAssignedUser().trim().isEmpty()
+                            ? FlowPhase.INITIAL : FlowPhase.ASSIGNED);
+
+                    if (form.getCreateDate() == null) {
+                        form.setCreateDate(new Timestamp(System.currentTimeMillis()));
+                    }
+                    if (form.getApplicationDate() == null) {
+                        form.setApplicationDate(new Date());
+                    }
+
+                    new VegetableFormsDAO(form).persist();
+                    existingNumbers.add(key);
+                    imported++;
+                } catch (Exception rowError) {
+                    failed++;
+                    System.err.println("[IMPORT EXCEL] Fila " + (i + 1) + " omitida (" + applicationNumber + "): "
+                            + rowError.getClass().getSimpleName() + " - " + rowError.getMessage());
+                }
+            }
+
+            try {
+                onRadioSelected();
+            } catch (Exception refreshError) {
+                System.err.println("[IMPORT EXCEL] Importacion realizada, pero no se pudo refrescar la tabla: "
+                        + refreshError.getMessage());
+            }
+            Operations.message(Operations.INFORMACION,
+                    "IMPORTACION COMPLETADA. NUEVOS: " + imported
+                    + " | DUPLICADOS: " + duplicated
+                    + " | OMITIDOS: " + skipped
+                    + " | FALLIDOS: " + failed);
+        } catch (Exception e) {
+            java.util.logging.Logger.getLogger(getClass().getName())
+                .log(java.util.logging.Level.SEVERE, "Error importando Excel", e);
+            Operations.message(Operations.ERROR, "IMPORTADOR BASE DE DATOS V3 - ERROR GENERAL: " + e.getMessage());
+        }
+    }
+
+    private Map<String, Integer> buildHeaderMap(Row headerRow, DataFormatter formatter) {
+        Map<String, Integer> headers = new HashMap<>();
+        if (headerRow == null) return headers;
+        for (Cell cell : headerRow) {
+            String key = normalize(formatter.formatCellValue(cell));
+            if (!key.isEmpty()) headers.put(key, cell.getColumnIndex());
+        }
+        return headers;
+    }
+
+    private Sheet findBaseDatosSheet(Workbook workbook) {
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+            Sheet sheet = workbook.getSheetAt(i);
+            if (sheet != null && "base de datos".equals(normalize(sheet.getSheetName()))) {
+                return sheet;
+            }
+        }
+        return null;
+    }
+
+    private Sheet findDataSheet(Workbook workbook, DataFormatter formatter) {
+        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+            Sheet sheet = workbook.getSheetAt(i);
+            if (sheet != null && findHeaderRow(sheet, formatter) != null) {
+                return sheet;
+            }
+        }
+        return null;
+    }
+
+    private Row findHeaderRow(Sheet sheet, DataFormatter formatter) {
+        if (sheet == null) return null;
+        for (int i = sheet.getFirstRowNum(); i <= sheet.getLastRowNum(); i++) {
+            Row row = sheet.getRow(i);
+            if (row == null || isBlankRow(row, formatter)) continue;
+
+            Map<String, Integer> headers = buildHeaderMap(row, formatter);
+            if (hasAnyHeader(headers, "tramite nro", "tramite no", "tramite numero", "tramite", "numero tramite", "application number", "applicationnumber", "solicitud")) {
+                return row;
+            }
+        }
+        return null;
+    }
+
+    private boolean hasAnyHeader(Map<String, Integer> headers, String... names) {
+        for (String name : names) {
+            if (headers.containsKey(normalize(name))) return true;
+        }
+        return false;
+    }
+
+    private Set<String> getExistingApplicationNumbers() {
+        Set<String> result = new HashSet<>();
+        Controller c = new Controller();
+        List<VegetableForms> all = c.buscarTodos();
+        if (all != null) {
+            for (VegetableForms vf : all) {
+                if (vf.getApplicationNumber() != null && !vf.getApplicationNumber().trim().isEmpty()) {
+                    result.add(vf.getApplicationNumber().trim().toUpperCase(Locale.ROOT));
+                }
+            }
+        }
+        return result;
+    }
+
+    private boolean isBlankRow(Row row, DataFormatter formatter) {
+        for (Cell cell : row) {
+            String value = formatter.formatCellValue(cell);
+            if (value != null && !value.trim().isEmpty()) return false;
+        }
+        return true;
+    }
+
+    private String firstValue(Row row, Map<String, Integer> columns, DataFormatter formatter, String... names) {
+        Cell cell = firstCell(row, columns, names);
+        if (cell == null) return null;
+        String value = formatter.formatCellValue(cell);
+        return value == null ? null : value.trim();
+    }
+
+    private Cell firstCell(Row row, Map<String, Integer> columns, String... names) {
+        for (String name : names) {
+            Integer index = columns.get(normalize(name));
+            if (index != null) return row.getCell(index);
+        }
+        return null;
+    }
+
+    private String normalize(String value) {
+        if (value == null) return "";
+        return Normalizer.normalize(value, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase(Locale.ROOT)
+                .replace("#", "")
+                .replace(".", " ")
+                .replace("_", " ")
+                .replace("-", " ")
+                .replace("/", " ")
+                .replace("(", " ")
+                .replace(")", " ")
+                .trim()
+                .replaceAll("\\s+", " ");
+    }
+
+    private Timestamp toTimestamp(Cell cell) {
+        Date date = toDate(cell);
+        return date == null ? null : new Timestamp(date.getTime());
+    }
+
+    private Date toDate(Cell cell) {
+        if (cell == null) return null;
+        try {
+            if (DateUtil.isCellDateFormatted(cell)) return cell.getDateCellValue();
+            try {
+                double numericValue = cell.getNumericCellValue();
+                if (numericValue > 20000 && DateUtil.isValidExcelDate(numericValue)) {
+                    return DateUtil.getJavaDate(numericValue);
+                }
+            } catch (Exception ignored) {
+            }
+            String raw = new DataFormatter(new Locale("es", "EC")).formatCellValue(cell);
+            if (raw == null || raw.trim().isEmpty()) return null;
+            String[] patterns = {"yyyy-MM-dd", "dd/MM/yyyy", "d/M/yyyy", "dd-MM-yyyy", "d-M-yyyy"};
+            for (String pattern : patterns) {
+                try {
+                    return new SimpleDateFormat(pattern).parse(raw.trim());
+                } catch (Exception ignored) {
+                }
+            }
+        } catch (Exception ignored) {
+            return null;
+        }
+        return null;
+    }
+
+    private Status parseStatus(String value) {
+        String text = normalize(value);
+        if (text.contains("pagado") || text.contains("finished") || text.contains("dominio publico")
+                || text.contains("concesion") || text.contains("renuncia") || text.contains("vencimiento")) {
+            return Status.FINISHED;
+        }
+        if (text.contains("proceso") || text.contains("iniciado") || text.contains("delivered")) return Status.DELIVERED;
+        if (text.contains("vista") || text.contains("preview")) return Status.PREVIEW;
+        return Status.SAVED;
+    }
+
+    private StatusFlow parseStatusFlow(String value) {
+        String text = normalize(value);
+        if (text.contains("finished") || text.contains("attended") || text.contains("atendido")
+                || text.contains("dominio publico") || text.contains("concesion")
+                || text.contains("renuncia") || text.contains("vencimiento")) return StatusFlow.ATTENDED;
+        if (text.contains("reject") || text.contains("denied") || text.contains("negado")) return StatusFlow.DENIED;
+        if (text.contains("expired") || text.contains("expirado")) return StatusFlow.EXPIRED;
+        return StatusFlow.PENDING;
+    }
+
+    private String cleanDash(String value) {
+        if (value == null) return null;
+        String text = value.trim();
+        return text.equals("-") || text.equals("—") || text.isEmpty() ? null : text;
+    }
+
+    private String limit(String value, int maxLength) {
+        if (value == null) return null;
+        String text = value.trim();
+        if (text.isEmpty()) return null;
+        return text.length() <= maxLength ? text : text.substring(0, maxLength);
+    }
+
+    private String buildRegistryObservation(Row row, Map<String, Integer> columns, DataFormatter formatter) {
+        String solicitante = firstValue(row, columns, formatter, "solicitante titular");
+        String pais = firstValue(row, columns, formatter, "pais origen solicitante titular");
+        String cultivo = firstValue(row, columns, formatter, "tipo de cultivo");
+        String certificado = firstValue(row, columns, formatter, "numero de certificado de obtentor");
+        String obsTecnica = firstValue(row, columns, formatter, "observacion tecnica");
+        String obsLegal = firstValue(row, columns, formatter, "observacion legal");
+        String etapa = firstValue(row, columns, formatter, "etapa actual");
+        String expediente = firstValue(row, columns, formatter, "estado del expediente");
+
+        StringBuilder sb = new StringBuilder("Importado desde Registro Nacional.");
+        appendObservation(sb, "Solicitante/Titular", solicitante);
+        appendObservation(sb, "Pais", pais);
+        appendObservation(sb, "Tipo cultivo", cultivo);
+        appendObservation(sb, "Certificado", certificado);
+        appendObservation(sb, "Etapa actual", etapa);
+        appendObservation(sb, "Estado expediente", expediente);
+        appendObservation(sb, "Obs. tecnica", obsTecnica);
+        appendObservation(sb, "Obs. legal", obsLegal);
+        return sb.toString();
+    }
+
+    private void appendObservation(StringBuilder sb, String label, String value) {
+        if (value != null && !value.trim().isEmpty()) {
+            sb.append(" ").append(label).append(": ").append(value.trim()).append(".");
+        }
+    }
+
     public void upload(FileUploadEvent event) {
         try {
             UploadedFile file = event.getFile();

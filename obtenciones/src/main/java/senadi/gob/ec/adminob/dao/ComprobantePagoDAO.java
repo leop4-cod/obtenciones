@@ -1,5 +1,7 @@
 package senadi.gob.ec.adminob.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.List;
 import senadi.gob.ec.adminob.model.ComprobantePago;
 
@@ -61,6 +63,22 @@ public class ComprobantePagoDAO extends DAOAbstractM<ComprobantePago> {
                 .setParameter("vfid", vegetableFormId)
                 .getSingleResult();
             return count > 0;
+        } finally {
+            getEntityManager().close();
+        }
+    }
+    
+    public void delete(Integer id) throws Exception {
+        try {
+            ComprobantePago cp = getEntityManager()
+                .createQuery("SELECT c FROM ComprobantePago c WHERE c.id = :id", ComprobantePago.class)
+                .setParameter("id", id)
+                .getSingleResult();
+            getEntityManager().getTransaction().begin();
+            getEntityManager().remove(cp);
+            getEntityManager().getTransaction().commit();
+        } catch (javax.persistence.NoResultException e) {
+            // Already deleted
         } finally {
             getEntityManager().close();
         }

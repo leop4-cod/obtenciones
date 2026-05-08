@@ -18,7 +18,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
         EntityManager em = getEntityManager();
         try {
             return em.createQuery(
-                    "SELECT v FROM VegetableForms v ORDER BY v.id",
+                    "SELECT v FROM VegetableForms v ORDER BY v.id DESC",
                     VegetableForms.class)
                 .getResultList();
         } finally {
@@ -49,7 +49,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
             switch (t) {
                 case "Iniciados":
                     query = em.createQuery(
-                        "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id",
+                        "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.DELIVERED);
                     break;
@@ -59,14 +59,14 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                         "SELECT v FROM VegetableForms v " +
                         "WHERE v.status = :st AND EXISTS " +
                         "(SELECT 1 FROM ComprobantePago cp WHERE cp.vegetableFormId = v.id) " +
-                        "ORDER BY v.id",
+                        "ORDER BY v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.FINISHED);
                     break;
 
                 case "Vista":
                     query = em.createQuery(
-                        "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id",
+                        "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.PREVIEW);
                     break;
@@ -77,12 +77,12 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                 default:
                     // 🔥 AQUÍ ESTÁ LA CLAVE → SIEMPRE TRAE TODO
                     query = em.createQuery(
-                        "SELECT v FROM VegetableForms v ORDER BY v.id",
+                        "SELECT v FROM VegetableForms v ORDER BY v.id DESC",
                         VegetableForms.class);
                     break;
             }
 
-            return query.setMaxResults(300).getResultList();
+            return query.getResultList();
 
         } finally {
             em.close();
@@ -169,7 +169,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v " +
                         "WHERE v.status = :st AND v.applicationDate BETWEEN :start AND :end " +
-                        "ORDER BY v.id",
+                        "ORDER BY v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.DELIVERED);
                     break;
@@ -180,7 +180,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                         "WHERE v.status = :st " +
                         "AND EXISTS (SELECT 1 FROM ComprobantePago cp WHERE cp.vegetableFormId = v.id) " +
                         "AND v.applicationDate BETWEEN :start AND :end " +
-                        "ORDER BY v.id",
+                        "ORDER BY v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.FINISHED);
                     break;
@@ -189,7 +189,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v " +
                         "WHERE v.status = :st AND v.applicationDate BETWEEN :start AND :end " +
-                        "ORDER BY v.id",
+                        "ORDER BY v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.PREVIEW);
                     break;
@@ -201,7 +201,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v " +
                         "WHERE v.applicationDate BETWEEN :start AND :end " +
-                        "ORDER BY v.id",
+                        "ORDER BY v.id DESC",
                         VegetableForms.class);
                     break;
             }
@@ -209,7 +209,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
             query.setParameter("start", start, javax.persistence.TemporalType.DATE);
             query.setParameter("end", end, javax.persistence.TemporalType.DATE);
 
-            return query.setMaxResults(300).getResultList();
+            return query.getResultList();
 
         } finally {
             em.close();

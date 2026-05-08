@@ -15,6 +15,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
+import org.primefaces.model.file.UploadedFiles;
 import senadi.gob.ec.adminob.dao.ComprobantePagoDAO;
 import senadi.gob.ec.adminob.dao.VegetableFormsDAO;
 import senadi.gob.ec.adminob.enums.DenominationType;
@@ -38,8 +39,15 @@ public class RegistroBean implements Serializable {
     private LoginBean login;
     private List<ComprobantePago> archivosSubidos;
 
-    private static final long MAX_FILE_SIZE = 10L * 1024 * 1024;
+    private UploadedFile archivoFormulario;
+    private UploadedFiles archivosFotos;
+    private UploadedFile archivoPago;
 
+    
+    private static final long MAX_FORM_PDF_SIZE = 10L * 1024 * 1024;
+    private static final long MAX_PAYMENT_PDF_SIZE = 5L * 1024 * 1024;
+    private static final long MAX_PHOTO_SIZE = 5L * 1024 * 1024;
+    
     @PostConstruct
     public void init() {
         form = new VegetableForms();
@@ -96,21 +104,25 @@ public class RegistroBean implements Serializable {
     }
 
     public String updateRegistro() {
-        if (form == null || form.getId() == null) {
-            addError("No hay registro seleccionado para actualizar.");
-            return null;
-        }
+
+        System.out.println("ENTRO A UPDATE");
+
         try {
-            // Usa actualizarCamposEditables: carga entidad MANAGED en EM nuevo,
-            // copia solo campos escalares → evita LazyInitializationException
-            // sobre las colecciones @OneToMany detachadas.
+
             new VegetableFormsDAO(null).actualizarCamposEditables(form);
+
             registrarHistorial(form, "Registro actualizado");
+
             addInfo("CAMBIOS GUARDADOS CORRECTAMENTE");
-            return "index?faces-redirect=true";
+
+            return null;
+
         } catch (Exception e) {
+
             addError("ERROR AL ACTUALIZAR: " + e.getMessage());
+
             e.printStackTrace();
+
             return null;
         }
     }
@@ -119,66 +131,123 @@ public class RegistroBean implements Serializable {
         return "index?faces-redirect=true";
     }
 
+    private boolean guardarArchivo(UploadedFile file) throws Exception {
+        if (file == null || file.getSize() == 0) {
+            return false;
+        }
+
+        if (!editMode || form == null || form.getId() == null) {
+            throw new IllegalStateException("Guarde el registro antes de subir archivos.");
+        }
+
+        Integer tramiteId = form.getId();
+        String nombreOriginal = file.getFileName();
+        String nombreMin = nombreOriginal.toLowerCase();
+        long tamano = file.getSize();
+
+        boolean esPhoto = nombreMin.endsWith(".jpg") || nombreMin.endsWith(".jpeg")
+                || nombreMin.endsWith(".png");
+        boolean esPdf = nombreMin.endsWith(".pdf");
+
+        if (!esPhoto && !esPdf) {
+            throw new IllegalArgumentException("TIPO NO PERMITIDO: " + nombreOriginal + ". Use PDF, JPG o PNG.");
+        }
+
+        long limite = esPhoto ? MAX_PHOTO_SIZE : MAX_FORM_PDF_SIZE;
+        if (nombreMin.contains("pago") || nombreMin.contains("voucher") || nombreMin.contains("comprobante")) {
+            limite = MAX_PAYMENT_PDF_SIZE;
+        }
+        if (tamano > limite) {
+            throw new IllegalArgumentException("EL ARCHIVO SUPERA EL LIMITE DE " + (limite / (1024 * 1024)) + " MB: " + nombreOriginal);
+        }
+
+        String baseDir = AppConfig.get("upload.base.path", "UPLOAD_BASE_PATH",
+            "C:" + File.separator + "uploads");
+        String rutaDestino = baseDir + File.separator + tramiteId + File.separator;
+
+        File carpeta = new File(rutaDestino);
+        if (!carpeta.exists() && !carpeta.mkdirs()) {
+            throw new IllegalStateException("NO SE PUDO CREAR EL DIRECTORIO: " + rutaDestino);
+        }
+
+        String ext = nombreMin.substring(nombreMin.lastIndexOf('.'));
+        String tipo = esPdf ? "comprobante" : "foto";
+        String nombreUnico = tipo + "_" + tramiteId + "_" + System.currentTimeMillis() + ext;
+        File destino = new File(rutaDestino + nombreUnico);
+
+        try (InputStream in = file.getInputStream()) {
+            Files.copy(in, destino.toPath());
+        }
+
+        if (!destino.exists()) {
+            throw new IllegalStateException("ERROR AL GUARDAR EN DISCO: " + nombreOriginal);
+        }
+
+        ComprobantePago cp = new ComprobantePago();
+        cp.setVegetableFormId(tramiteId);
+        cp.setNombreArchivo(nombreOriginal);
+        cp.setRutaArchivo(destino.getAbsolutePath());
+        cp.setFechaCarga(new Timestamp(System.currentTimeMillis()));
+        cp.setCargadoPor(login != null ? login.getLogin() : "SISTEMA");
+        cp.setTamanoBytes(tamano);
+        new ComprobantePagoDAO(cp).persist();
+
+        return true;
+    }
+
     public void uploadArchivo(FileUploadEvent event) {
         try {
             UploadedFile file = event.getFile();
             if (file == null) return;
 
-            if (!editMode || form == null || form.getId() == null) {
-                addError("Guarde el registro antes de subir archivos.");
-                return;
+            if (guardarArchivo(file)) {
+                archivosSubidos = new ComprobantePagoDAO(null).getByVegetableFormId(form.getId());
+                addInfo("ARCHIVO SUBIDO: " + file.getFileName());
             }
-
-            Integer tramiteId = form.getId();
-            String nombreOriginal = file.getFileName();
-            String nombreMin = nombreOriginal.toLowerCase();
-            long tamano = file.getSize();
-
-            if (tamano > MAX_FILE_SIZE) {
-                addError("EL ARCHIVO SUPERA EL LÍMITE DE 10 MB: " + nombreOriginal);
-                return;
-            }
-
-            String baseDir = AppConfig.get("upload.base.path", "UPLOAD_BASE_PATH",
-                "C:" + File.separator + "uploads");
-            String rutaDestino = baseDir + File.separator + tramiteId + File.separator;
-
-            File carpeta = new File(rutaDestino);
-            if (!carpeta.exists() && !carpeta.mkdirs()) {
-                addError("NO SE PUDO CREAR EL DIRECTORIO: " + rutaDestino);
-                return;
-            }
-
-            String ext = nombreMin.contains(".") ? nombreMin.substring(nombreMin.lastIndexOf('.')) : ".bin";
-            String tipo = nombreMin.endsWith(".pdf") ? "doc"
-                : (nombreMin.endsWith(".jpg") || nombreMin.endsWith(".jpeg") || nombreMin.endsWith(".png")) ? "foto"
-                : "archivo";
-            String nombreUnico = tipo + "_" + tramiteId + "_" + System.currentTimeMillis() + ext;
-            File destino = new File(rutaDestino + nombreUnico);
-
-            try (InputStream in = file.getInputStream()) {
-                Files.copy(in, destino.toPath());
-            }
-
-            if (!destino.exists()) {
-                addError("ERROR AL GUARDAR EN DISCO: " + nombreOriginal);
-                return;
-            }
-
-            ComprobantePago cp = new ComprobantePago();
-            cp.setVegetableFormId(tramiteId);
-            cp.setNombreArchivo(nombreOriginal);
-            cp.setRutaArchivo(destino.getAbsolutePath());
-            cp.setFechaCarga(new Timestamp(System.currentTimeMillis()));
-            cp.setCargadoPor(login != null ? login.getLogin() : "SISTEMA");
-            cp.setTamanoBytes(tamano);
-            new ComprobantePagoDAO(cp).persist();
-
-            archivosSubidos = new ComprobantePagoDAO(null).getByVegetableFormId(tramiteId);
-            addInfo("ARCHIVO SUBIDO: " + nombreOriginal);
-
         } catch (Exception e) {
             addError("ERROR AL SUBIR ARCHIVO: " + e.getMessage());
+        }
+    }
+
+    public void subirTodosLosArchivos() {
+        if (!editMode || form == null || form.getId() == null) {
+            addError("Guarde el registro antes de subir archivos.");
+            return;
+        }
+
+        int guardados = 0;
+        try {
+            if (archivoFormulario != null && archivoFormulario.getSize() > 0) {
+                if (guardarArchivo(archivoFormulario)) {
+                    guardados++;
+                }
+            }
+            if (archivosFotos != null) {
+                for (UploadedFile foto : archivosFotos.getFiles()) {
+                    if (foto != null && foto.getSize() > 0) {
+                        if (guardarArchivo(foto)) {
+                            guardados++;
+                        }
+                    }
+                }
+            }
+            if (archivoPago != null && archivoPago.getSize() > 0) {
+                if (guardarArchivo(archivoPago)) {
+                    guardados++;
+                }
+            }
+
+            if (guardados > 0) {
+                archivosSubidos = new ComprobantePagoDAO(null).getByVegetableFormId(form.getId());
+                addInfo("Se guardaron " + guardados + " archivo(s). ");
+                archivoFormulario = null;
+                archivosFotos = null;
+                archivoPago = null;
+            } else {
+                addError("No se seleccionó ningún archivo para cargar.");
+            }
+        } catch (Exception e) {
+            addError("ERROR AL SUBIR ARCHIVOS: " + e.getMessage());
         }
     }
 
@@ -227,7 +296,40 @@ public class RegistroBean implements Serializable {
             default: return fp.name();
         }
     }
+    public void eliminarArchivo(ComprobantePago archivo) {
 
+        try {
+
+            if (archivo == null) {
+                addError("Archivo no válido.");
+                return;
+            }
+
+            // ELIMINAR ARCHIVO FÍSICO
+            if (archivo.getRutaArchivo() != null) {
+
+                File f = new File(archivo.getRutaArchivo());
+
+                if (f.exists()) {
+                    f.delete();
+                }
+            }
+
+            // ELIMINAR DE BASE DE DATOS
+            new ComprobantePagoDAO(null).delete(archivo.getId());
+
+            // RECARGAR TABLA
+            archivosSubidos = new ComprobantePagoDAO(null)
+                    .getByVegetableFormId(form.getId());
+
+            addInfo("ARCHIVO ELIMINADO CORRECTAMENTE");
+
+        } catch (Exception e) {
+
+            addError("ERROR AL ELIMINAR ARCHIVO: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     public List<Status> getStatusList() { return Arrays.asList(Status.values()); }
     public List<DenominationType> getDenominationTypes() { return Arrays.asList(DenominationType.values()); }
     public List<VarietyTransferType> getVarietyTransferTypes() { return Arrays.asList(VarietyTransferType.values()); }
@@ -251,4 +353,13 @@ public class RegistroBean implements Serializable {
     public void setForm(VegetableForms form) { this.form = form; }
     public List<ComprobantePago> getArchivosSubidos() { return archivosSubidos; }
     public LoginBean getLogin() { return login; }
+    
+    public UploadedFile getArchivoFormulario() { return archivoFormulario; }
+    public void setArchivoFormulario(UploadedFile archivoFormulario) { this.archivoFormulario = archivoFormulario; }
+    
+    public UploadedFiles getArchivosFotos() { return archivosFotos; }
+    public void setArchivosFotos(UploadedFiles archivosFotos) { this.archivosFotos = archivosFotos; }
+
+    public UploadedFile getArchivoPago() { return archivoPago; }
+    public void setArchivoPago(UploadedFile archivoPago) { this.archivoPago = archivoPago; }
 }

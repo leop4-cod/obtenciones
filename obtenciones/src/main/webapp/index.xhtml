@@ -171,7 +171,15 @@
                 <div class="sn-card">
                     <div class="sn-card-header">
                         <h3><i class="pi pi-list" style="margin-right:8px;"></i>Registros de Solicitudes</h3>
-                        <div style="margin-left:auto;">
+                        <div style="margin-left:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                            <p:fileUpload listener="#{vegetableBean.importarExcel}"
+                                          mode="advanced" auto="true"
+                                          dragDropSupport="false"
+                                          update=":mensajes tablaDeObtenciones"
+                                          sizeLimit="10000000"
+                                          allowTypes="/(\.|\/)(xls|xlsx)$/i"
+                                          label="Importar Base de Datos"
+                                          styleClass="sn-import-excel"/>
                             <h:link outcome="registro" styleClass="sn-btn-new">
                                 <i class="pi pi-plus-circle"></i> Nuevo Registro
                             </h:link>
@@ -236,7 +244,7 @@
                                      style="width:100%;">
 
                             <p:column headerText="#" style="text-align:center; width:3%;" exportable="false">
-                                <span style="font-size:11px; color:#888;">#{vegetableBean.vegetables.size() - index}</span>
+                                <span style="font-size:11px; color:#888;">#{index + 1}</span>
                             </p:column>
 
                             <p:column headerText="Casillero" style="text-align:center; width:16%;" filterBy="#{vegetable.locker}">

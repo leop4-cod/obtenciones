@@ -86,7 +86,7 @@
                 </h:panelGroup>
             </div>
 
-            <h:form id="frmRegistro">
+            <h:form id="frmRegistro" enctype="multipart/form-data">
 
                 <!-- ── BANNER EDICIÓN ── -->
                 <h:panelGroup rendered="#{registroBean.editMode}">
@@ -116,7 +116,11 @@
                 </h:panelGroup>
 
                 <div class="sn-card">
-                    <p:tabView id="tabsRegistro" dynamic="true" cache="true">
+
+                    <p:tabView id="tabsRegistro"
+                                widgetVar="tabsRegistro"
+                                dynamic="false"
+                                cache="false">
 
                         <!-- ══ TAB 1: DATOS DE LA VARIEDAD ══ -->
                         <p:tab title="Datos de la Variedad" id="tabDatos">
@@ -267,7 +271,7 @@
                                 <div>
                                     <button type="button" class="sn-tab-btn"
                                             onclick="PF('tabsRegistro').select(1); return false;">
-                                        Información Técnica <i class="pi pi-chevron-right"/>
+                                        Información Técnica <i class="pi pi-chevron-right"></i>
                                     </button>
                                 </div>
                             </div>
@@ -352,13 +356,13 @@
                                 <div>
                                     <button type="button" class="sn-tab-btn"
                                             onclick="PF('tabsRegistro').select(0); return false;">
-                                        <i class="pi pi-chevron-left"/> Datos de la Variedad
+                                        <i class="pi pi-chevron-left"></i> Datos de la Variedad
                                     </button>
                                 </div>
                                 <div>
                                     <button type="button" class="sn-tab-btn"
                                             onclick="PF('tabsRegistro').select(2); return false;">
-                                        Estado del Trámite <i class="pi pi-chevron-right"/>
+                                        Estado del Trámite <i class="pi pi-chevron-right"></i>
                                     </button>
                                 </div>
                             </div>
@@ -467,13 +471,13 @@
                                 <div>
                                     <button type="button" class="sn-tab-btn"
                                             onclick="PF('tabsRegistro').select(1); return false;">
-                                        <i class="pi pi-chevron-left"/> Información Técnica
+                                        <i class="pi pi-chevron-left"></i> Información Técnica
                                     </button>
                                 </div>
                                 <div>
                                     <button type="button" class="sn-tab-btn"
                                             onclick="PF('tabsRegistro').select(3); return false;">
-                                        Documentos <i class="pi pi-chevron-right"/>
+                                        Documentos <i class="pi pi-chevron-right"></i>
                                     </button>
                                 </div>
                             </div>
@@ -482,145 +486,278 @@
                         <!-- ══ TAB 4: DOCUMENTOS ══ -->
                         <p:tab title="Documentos y Archivos" id="tabDocs">
 
-                            <h:panelGroup rendered="#{!registroBean.editMode}">
-                                <div class="sn-info-amber">
-                                    <i class="pi pi-info-circle" style="font-size:20px; flex-shrink:0;"></i>
-                                    <div>
-                                        <strong>Primero guarde el registro.</strong><br/>
-                                        Para subir documentos, complete los datos en las pestañas anteriores,
-                                        presione <em>Guardar Registro</em> y luego regrese a editar para cargar los archivos.
-                                    </div>
-                                </div>
-                            </h:panelGroup>
+                            <!-- ════════════════════ SECCIÓN UPLOAD ════════════════════ -->
+                            <div class="sn-card sn-upload-section">
 
-                            <h:panelGroup id="panelDocs" rendered="#{registroBean.editMode}">
+                                <div class="sn-card-header">
+                                    <h3>
+                                        <i class="pi pi-cloud-upload" style="margin-right:8px;"></i>
+                                        Carga de Documentos
+                                    </h3>
+                                </div>
+
+                                <div class="sn-card-body">
+
+                                    <h:panelGroup id="seleccionInfo">
+
+                                        <h:panelGroup rendered="#{registroBean.editMode}">
+                                            <div class="sn-info-green sn-active-case">
+                                                <i class="pi pi-check-circle"></i>
+                                                <span>
+                                                    TRÁMITE ACTIVO:
+                                                    <strong>
+                                                        #{registroBean.form.applicationNumber}
+                                                    </strong>
+                                                    — Seleccione los 3 documentos y presione "Subir Todos".
+                                                </span>
+                                            </div>
+                                        </h:panelGroup>
+
+                                    </h:panelGroup>
+
+                                    <h:panelGroup id="panelUpload">
+
+                                        <h:panelGroup rendered="#{!registroBean.editMode}">
+                                            <div class="sn-info-amber sn-upload-hint">
+                                                <i class="pi pi-info-circle"></i>
+
+                                                <div>
+                                                    <strong>Paso 1:</strong>
+                                                    Primero guarde el registro para habilitar la carga de documentos.
+                                                </div>
+                                            </div>
+                                        </h:panelGroup>
+
+                                        <h:panelGroup rendered="#{registroBean.editMode}">
+
+                                            <div class="row sn-upload-grid">
+
+                                                <!-- FORMULARIO -->
+                                                <div class="col-md-4">
+                                                    <div class="sn-upload-card">
+                                                        <h5>
+                                                            <i class="pi pi-file-pdf" style="color:#dc2626;"></i>
+                                                            Formulario (PDF · máx 10 MB)
+                                                        </h5>
+                                                        <p:fileUpload value="#{registroBean.archivoFormulario}"
+                                                                      mode="simple"
+                                                                      skinSimple="true"
+                                                                      sizeLimit="10000000"
+                                                                      allowTypes="/(\.|\/)(pdf)$/i"/>
+                                                    </div>
+                                                </div>
+
+                                                <!-- FOTOS -->
+                                                <div class="col-md-4">
+                                                    <div class="sn-upload-card">
+                                                        <h5>
+                                                            <i class="pi pi-image" style="color:#2563eb;"></i>
+                                                            Fotografías (JPG/PNG · máx 5 MB)
+                                                        </h5>
+                                                        <p:fileUpload value="#{registroBean.archivosFotos}"
+                                                                      mode="simple"
+                                                                      skinSimple="true"
+                                                                      multiple="true"
+                                                                      sizeLimit="5000000"
+                                                                      allowTypes="/(\.|\/)(jpe?g|png)$/i"/>
+                                                    </div>
+                                                </div>
+
+                                                <!-- PAGO -->
+                                                <div class="col-md-4">
+                                                    <div class="sn-upload-card">
+                                                        <h5>
+                                                            <i class="pi pi-money-bill" style="color:var(--sn-gold);"></i>
+                                                            Comprobante de Pago (PDF · máx 5 MB)
+                                                        </h5>
+                                                        <p:fileUpload value="#{registroBean.archivoPago}"
+                                                                      mode="simple"
+                                                                      skinSimple="true"
+                                                                      sizeLimit="5000000"
+                                                                      allowTypes="/(\.|\/)(pdf)$/i"/>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <!-- BOTÓN SUBIR TODOS -->
+                                            <div style="text-align:center; margin-top:20px;">
+                                                <p:commandButton value="Subir Todos los Documentos"
+                                                                 icon="pi pi-cloud-upload"
+                                                                 action="#{registroBean.subirTodosLosArchivos}"
+                                                                 ajax="false"
+                                                                 styleClass="sn-btn-primary"
+                                                                 style="min-width:250px; font-size:14px;"/>
+                                            </div>
+
+                                        </h:panelGroup>
+
+                                    </h:panelGroup>
+
+                                </div>
+
+                            </div>
+
+                            <!-- TABLA ARCHIVOS -->
+                            <div style="margin-top:20px;">
+
                                 <div class="sn-sec-title">
-                                    <i class="pi pi-cloud-upload"></i> Cargar Documentos al Registro
-                                    <span style="font-size:11px; color:var(--sn-muted); font-weight:400; margin-left:8px;">
-                                        (Trámite: #{registroBean.form.applicationNumber != null
-                                            ? registroBean.form.applicationNumber
-                                            : concat('ID ', registroBean.form.id)})
+                                    <i class="pi pi-folder-open"></i>
+
+                                    Archivos Cargados
+
+                                    <span style="
+                                        background:var(--sn-green);
+                                        color:white;
+                                        border-radius:12px;
+                                        padding:2px 9px;
+                                        font-size:10px;
+                                        margin-left:8px;
+                                        font-weight:800;">
+
+                                        #{registroBean.archivosSubidos.size()}
+
                                     </span>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="sn-upload-card">
-                                            <h6><i class="pi pi-file-pdf" style="color:#dc2626;"></i>
-                                                Formulario PDF (máx 10 MB)</h6>
-                                            <p:fileUpload listener="#{registroBean.uploadArchivo}"
-                                                          mode="advanced" dragDropSupport="true"
-                                                          update=":mensajes :frmRegistro:panelDocs"
-                                                          sizeLimit="10000000"
-                                                          allowTypes="/(\.|\/)(pdf)$/i"
-                                                          label="Seleccionar" uploadLabel="Subir"
-                                                          cancelLabel="Cancelar" auto="false"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="sn-upload-card">
-                                            <h6><i class="pi pi-image" style="color:#2563eb;"></i>
-                                                Fotografías JPG/PNG (máx 5 MB c/u)</h6>
-                                            <p:fileUpload listener="#{registroBean.uploadArchivo}"
-                                                          mode="advanced" multiple="true" dragDropSupport="true"
-                                                          update=":mensajes :frmRegistro:panelDocs"
-                                                          sizeLimit="5000000" fileLimit="10"
-                                                          allowTypes="/(\.|\/)(jpe?g|png)$/i"
-                                                          label="Seleccionar fotos" uploadLabel="Subir fotos"
-                                                          cancelLabel="Cancelar" auto="false"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="sn-upload-card">
-                                            <h6><i class="pi pi-money-bill" style="color:var(--sn-gold);"></i>
-                                                Comprobante de Pago PDF (máx 5 MB)</h6>
-                                            <p:fileUpload listener="#{registroBean.uploadArchivo}"
-                                                          mode="advanced" dragDropSupport="true"
-                                                          update=":mensajes :frmRegistro:panelDocs"
-                                                          sizeLimit="5000000"
-                                                          allowTypes="/(\.|\/)(pdf)$/i"
-                                                          label="Seleccionar pago" uploadLabel="Subir pago"
-                                                          cancelLabel="Cancelar" auto="false"/>
-                                        </div>
-                                    </div>
-                                </div>
+                                <p:dataTable value="#{registroBean.archivosSubidos}"
+                                            var="arch"
+                                            emptyMessage="Aún no hay archivos cargados para este registro."
+                                            style="font-size:12px;">
 
-                                <div style="margin-top:20px;">
-                                    <div class="sn-sec-title">
-                                        <i class="pi pi-folder-open"></i>
-                                        Archivos Cargados
-                                        <span style="background:var(--sn-green); color:white; border-radius:12px;
-                                                     padding:2px 9px; font-size:10px; margin-left:8px; font-weight:800;">
-                                            #{registroBean.archivosSubidos.size()}
-                                        </span>
-                                    </div>
-                                    <p:dataTable value="#{registroBean.archivosSubidos}" var="arch"
-                                                 emptyMessage="Aún no hay archivos cargados para este registro."
-                                                 style="font-size:12px;">
-                                        <p:column headerText="Archivo" style="width:45%">
-                                            <h:outputText value="#{arch.nombreArchivo}"/>
-                                        </p:column>
-                                        <p:column headerText="Fecha" style="width:22%; text-align:center;">
-                                            <h:outputText value="#{arch.fechaCarga}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
-                                            </h:outputText>
-                                        </p:column>
-                                        <p:column headerText="Subido por" style="width:15%; text-align:center;">
-                                            <h:outputText value="#{arch.cargadoPor}"/>
-                                        </p:column>
-                                        <p:column headerText="Tamaño" style="width:10%; text-align:center;">
-                                            <h:outputText value="#{arch.tamanoBytes / 1024} KB"/>
-                                        </p:column>
-                                        <p:column headerText="Ver" style="width:8%; text-align:center;">
-                                            <h:outputLink value="#{request.contextPath}/file-view?id=#{arch.id}"
-                                                          target="_blank"
-                                                          style="background:var(--sn-green); color:white; padding:3px 10px;
-                                                                 border-radius:5px; font-size:11px; text-decoration:none;">
-                                                <i class="pi pi-external-link"/>
-                                            </h:outputLink>
-                                        </p:column>
-                                    </p:dataTable>
-                                </div>
-                            </h:panelGroup>
+                                    <p:column headerText="Archivo" style="width:45%">
+                                        <h:outputText value="#{arch.nombreArchivo}"/>
+                                    </p:column>
 
+                                    <p:column headerText="Fecha"
+                                            style="width:22%; text-align:center;">
+
+                                        <h:outputText value="#{arch.fechaCarga}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm"
+                                                            timeZone="America/Guayaquil"/>
+                                        </h:outputText>
+
+                                    </p:column>
+
+                                    <p:column headerText="Subido por"
+                                            style="width:15%; text-align:center;">
+
+                                        <h:outputText value="#{arch.cargadoPor}"/>
+
+                                    </p:column>
+
+                                    <p:column headerText="Tamaño"
+                                            style="width:10%; text-align:center;">
+
+                                        <h:outputText value="#{arch.tamanoBytes / 1024} KB"/>
+
+                                    </p:column>
+
+                                    <p:column headerText="Ver"
+                                            style="width:8%; text-align:center;">
+                                        <h:outputLink
+                                                value="#{request.contextPath}/file-view?id=#{arch.id}"
+                                                target="_blank"
+                                                style="
+                                                background:var(--sn-green);
+                                                color:white;
+                                                padding:3px 10px;
+                                                border-radius:5px;
+                                                font-size:11px;
+                                                text-decoration:none;">
+
+                                            <i class="pi pi-external-link"/>
+
+                                        </h:outputLink>
+                                    </p:column>
+
+                                    <p:column headerText="Eliminar"
+                                            style="width:10%; text-align:center;">
+
+                                        <p:commandButton
+                                                icon="pi pi-trash"
+                                                title="Eliminar archivo"
+                                                actionListener="#{registroBean.eliminarArchivo(arch)}"
+                                                update=":frmRegistro :mensajes"
+                                                process="@this"
+                                                styleClass="ui-button-danger ui-button-sm">
+
+                                            <p:confirm
+                                                    header="Confirmación"
+                                                    message="¿Eliminar este archivo?"
+                                                    icon="pi pi-trash"/>
+
+                                        </p:commandButton>
+
+                                    </p:column>
+                                </p:dataTable>
+
+                            </div>
+
+                            <!-- BOTONES -->
                             <div class="sn-tab-nav">
+
                                 <div>
-                                    <button type="button" class="sn-tab-btn"
+                                    <button type="button"
+                                            class="sn-tab-btn"
                                             onclick="PF('tabsRegistro').select(2); return false;">
-                                        <i class="pi pi-chevron-left"/> Estado del Trámite
+
+                                        <i class="pi pi-chevron-left"></i>
+                                        Estado del Trámite
+
                                     </button>
                                 </div>
+
                                 <div style="display:flex; gap:10px;">
+
                                     <p:commandButton id="btnCancelarTab4"
-                                                     value="Cancelar"
-                                                     icon="pi pi-times"
-                                                     action="#{registroBean.cancelar}"
-                                                     immediate="true"
-                                                     styleClass="sn-btn-secondary"
-                                                     style="min-width:110px;"/>
+                                                    value="Cancelar"
+                                                    icon="pi pi-times"
+                                                    action="#{registroBean.cancelar}"
+                                                    immediate="true"
+                                                    styleClass="sn-btn-secondary"
+                                                    style="min-width:110px;"/>
+
                                     <p:commandButton id="btnGuardarTab4Nuevo"
-                                                     rendered="#{!registroBean.editMode}"
-                                                     value="Guardar Registro"
-                                                     icon="pi pi-save"
-                                                     action="#{registroBean.saveRegistro}"
-                                                     process="@form"
-                                                     update=":mensajes"
-                                                     styleClass="sn-btn-primary"
-                                                     style="min-width:150px;"/>
+                                                    rendered="#{!registroBean.editMode}"
+                                                    value="Guardar Registro"
+                                                    icon="pi pi-save"
+                                                    action="#{registroBean.saveRegistro}"
+                                                    process="@form"
+                                                    update=":mensajes"
+                                                    styleClass="sn-btn-primary"
+                                                    style="min-width:150px;"/>
+
                                     <p:commandButton id="btnGuardarTab4Edicion"
-                                                     rendered="#{registroBean.editMode}"
-                                                     value="Guardar Cambios"
-                                                     icon="pi pi-check"
-                                                     action="#{registroBean.updateRegistro}"
-                                                     process="@form"
-                                                     update=":mensajes"
-                                                     styleClass="sn-btn-primary"
-                                                     style="min-width:150px;"/>
+                                                    rendered="#{registroBean.editMode}"
+                                                    value="Guardar Cambios"
+                                                    icon="pi pi-check"
+                                                    action="#{registroBean.updateRegistro}"
+                                                    process="@form"
+                                                    update=":mensajes"
+                                                    styleClass="sn-btn-primary"
+                                                    style="min-width:150px;"/>
+
                                 </div>
+
                             </div>
 
                         </p:tab>
+                        <p:confirmDialog global="true"
+                                        showEffect="fade"
+                                        hideEffect="fade"
+                                        responsive="true"
+                                        width="350">
 
+                            <p:commandButton value="Sí"
+                                            type="button"
+                                            styleClass="ui-confirmdialog-yes ui-button-danger"/>
+
+                            <p:commandButton value="No"
+                                            type="button"
+                                            styleClass="ui-confirmdialog-no ui-button-secondary"/>
+
+                        </p:confirmDialog>
                     </p:tabView>
 
                     <!-- ── BARRA ACCIÓN FIJA ── -->
