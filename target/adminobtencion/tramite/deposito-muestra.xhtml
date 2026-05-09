@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8"/>
+        <title>Depósito de Muestra Viva - SENADI</title>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/main.css']}"/>
+        <style>
+            body{font-family:'Poppins',sans-serif;background:#f4f6f9;}
+            .menu{background:#0c7a04;padding:12px 25px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+            .menu img{height:45px;} .page-title{color:white;font-size:18px;font-weight:600;}
+            .card-flow{background:white;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:25px;margin:20px auto;max-width:900px;}
+            .card-flow h4{color:#0c7a04;border-bottom:2px solid #e8f5e9;padding-bottom:10px;margin-bottom:20px;}
+            .fl{font-weight:600;color:#555;font-size:13px;margin-bottom:4px;}
+            .info-box{background:#e8f5e9;border-radius:8px;padding:12px 15px;margin-bottom:15px;border-left:4px solid #0c7a04;}
+            .info-box span{display:block;font-size:13px;color:#2e7d32;}
+            .done-box{background:#e3f2fd;border-left:4px solid #1976d2;border-radius:8px;padding:12px 15px;margin-top:15px;}
+            .done-box span{display:block;font-size:13px;color:#0d47a1;}
+        </style>
+    </h:head>
+    <h:body>
+        <div class="menu">
+            <img src="#{resource['images/logo.png']}" alt="SENADI" onerror="this.style.display='none'"/>
+            <span class="page-title"><i class="fa fa-leaf"/> Depósito de Muestra Viva</span>
+            <span style="color:white;">#{loginBean.login}</span>
+        </div>
+        <div class="card-flow">
+            <h4><i class="fa fa-flask"/> Paso 6 - Depósito de Muestra Viva y Acta de Depósito</h4>
+            <p:messages autoUpdate="true" showDetail="true" closable="true"/>
+            <h:form id="fDeposito">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="fl">ID del Trámite *</div>
+                        <p:inputText id="formId" style="width:100%;"/>
+                        <p:commandButton value="Cargar" icon="fa fa-search" styleClass="ui-button-info"
+                                         style="margin-top:8px;"
+                                         action="#{muestraFlowBean.cargarTramite(formId.value)}"
+                                         update="infoPanel depositoPanel" process="@form"/>
+                    </div>
+                </div>
+                <p:outputPanel id="infoPanel">
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null and muestraFlowBean.selectedForm.id != null}">
+                        <div class="info-box" style="margin-top:15px;">
+                            <span><b>Expediente:</b> #{muestraFlowBean.selectedForm.applicationNumber}</span>
+                            <span><b>Especie:</b> #{muestraFlowBean.selectedForm.botanicalTaxon} - #{muestraFlowBean.selectedForm.commonName}</span>
+                            <span><b>Técnico:</b> #{muestraFlowBean.selectedForm.assignedUser}</span>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+                <p:outputPanel id="depositoPanel">
+                    <h:panelGroup rendered="#{muestraFlowBean.depositoMuestra != null}">
+                        <div class="done-box">
+                            <span><b>Acta N°:</b> #{muestraFlowBean.depositoMuestra.numActa}</span>
+                            <span><b>Lugar:</b> #{muestraFlowBean.depositoMuestra.lugarDeposito}</span>
+                            <span><b>Responsable:</b> #{muestraFlowBean.depositoMuestra.responsable}</span>
+                            <span><b>Fecha:</b>
+                                <h:outputText value="#{muestraFlowBean.depositoMuestra.fechaDeposito}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                </h:outputText>
+                            </span>
+                        </div>
+                        <div style="margin-top:12px;">
+                            <p:button value="Ir a Certificado de Depósito" icon="fa fa-arrow-right"
+                                      outcome="/tramite/certificado-deposito"/>
+                        </div>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null
+                                             and muestraFlowBean.selectedForm.id != null
+                                             and muestraFlowBean.depositoMuestra == null}">
+                        <div class="row" style="margin-top:18px;">
+                            <div class="col-md-6">
+                                <div class="fl">Lugar de Depósito *</div>
+                                <p:inputText value="#{muestraFlowBean.lugarDeposito}" style="width:100%;" required="true"/>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="fl">Responsable *</div>
+                                <p:inputText value="#{muestraFlowBean.responsable}" style="width:100%;" required="true"/>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-md-6">
+                                <div class="fl">N° de Acta *</div>
+                                <p:inputText value="#{muestraFlowBean.numActa}" style="width:100%;" required="true"/>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="fl">Observaciones</div>
+                                <p:inputText value="#{muestraFlowBean.observaciones}" style="width:100%;"/>
+                            </div>
+                        </div>
+                        <div style="margin-top:15px;">
+                            <p:commandButton value="Registrar Depósito y Generar Acta" icon="fa fa-save"
+                                             styleClass="ui-button-success"
+                                             action="#{muestraFlowBean.registrarDepositoMuestra}"
+                                             update="@form infoPanel depositoPanel" process="@form"/>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </div>
+    </h:body>
+</html>

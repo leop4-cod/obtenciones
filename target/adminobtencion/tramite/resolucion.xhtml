@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8"/>
+        <title>Resolución - SENADI</title>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/main.css']}"/>
+        <style>
+            body{font-family:'Poppins',sans-serif;background:#f4f6f9;}
+            .menu{background:#0c7a04;padding:12px 25px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+            .menu img{height:45px;}.page-title{color:white;font-size:18px;font-weight:600;}
+            .card-flow{background:white;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:25px;margin:20px auto;max-width:900px;}
+            .card-flow h4{color:#0c7a04;border-bottom:2px solid #e8f5e9;padding-bottom:10px;margin-bottom:20px;}
+            .fl{font-weight:600;color:#555;font-size:13px;margin-bottom:4px;}
+            .info-box{background:#e8f5e9;border-radius:8px;padding:12px 15px;margin-bottom:15px;border-left:4px solid #0c7a04;}
+            .info-box span{display:block;font-size:13px;color:#2e7d32;}
+            .concesion-box{background:#e8f5e9;border:2px solid #0c7a04;border-radius:8px;padding:15px;margin-top:15px;}
+            .concesion-box h5{color:#0c7a04;}
+            .negacion-box{background:#ffebee;border:2px solid #f44336;border-radius:8px;padding:15px;margin-top:15px;}
+            .negacion-box h5{color:#c62828;}
+            .res-box span{display:block;font-size:14px;font-weight:600;color:#333;}
+        </style>
+    </h:head>
+    <h:body>
+        <div class="menu">
+            <img src="#{resource['images/logo.png']}" alt="SENADI" onerror="this.style.display='none'"/>
+            <span class="page-title"><i class="fa fa-gavel"/> Resolución de Concesión o Negación</span>
+            <span style="color:white;">#{loginBean.login}</span>
+        </div>
+        <div class="card-flow">
+            <h4><i class="fa fa-legal"/> Paso 12 - Resolución de Concesión o Negación del Derecho de Obtentor</h4>
+            <p:messages autoUpdate="true" showDetail="true" closable="true"/>
+            <h:form id="fRes">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="fl">ID del Trámite *</div>
+                        <p:inputText id="formId" style="width:100%;"/>
+                        <p:commandButton value="Cargar" icon="fa fa-search" styleClass="ui-button-info"
+                                         style="margin-top:8px;"
+                                         action="#{muestraFlowBean.cargarTramite(formId.value)}"
+                                         update="infoPanel resPanel certBtn" process="@form"/>
+                    </div>
+                </div>
+                <p:outputPanel id="infoPanel">
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null and muestraFlowBean.selectedForm.id != null}">
+                        <div class="info-box" style="margin-top:15px;">
+                            <span><b>Expediente:</b> #{muestraFlowBean.selectedForm.applicationNumber}</span>
+                            <span><b>Especie:</b> #{muestraFlowBean.selectedForm.botanicalTaxon} - #{muestraFlowBean.selectedForm.commonName}</span>
+                            <h:panelGroup rendered="#{muestraFlowBean.dictamenTecnico != null}">
+                                <span><b>Recomendación del técnico:</b> #{muestraFlowBean.dictamenTecnico.recomendacion}</span>
+                            </h:panelGroup>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+                <p:outputPanel id="resPanel">
+                    <h:panelGroup rendered="#{muestraFlowBean.resolucion != null}">
+                        <h:panelGroup rendered="#{muestraFlowBean.resolucion.tipo == 'CONCESION'}">
+                            <div class="concesion-box res-box">
+                                <h5><i class="fa fa-check-circle"/> Resolución de CONCESIÓN</h5>
+                                <span>N°: #{muestraFlowBean.resolucion.numResolucion}</span>
+                                <span>Fecha: <h:outputText value="#{muestraFlowBean.resolucion.fechaResolucion}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/></h:outputText></span>
+                                <span>Emitido por: #{muestraFlowBean.resolucion.emitidoPor}</span>
+                            </div>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{muestraFlowBean.resolucion.tipo == 'NEGACION'}">
+                            <div class="negacion-box res-box">
+                                <h5><i class="fa fa-times-circle"/> Resolución de NEGACIÓN</h5>
+                                <span>N°: #{muestraFlowBean.resolucion.numResolucion}</span>
+                                <span>Fundamento: #{muestraFlowBean.resolucion.fundamento}</span>
+                            </div>
+                        </h:panelGroup>
+                    </h:panelGroup>
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null
+                                             and muestraFlowBean.selectedForm.id != null
+                                             and muestraFlowBean.resolucion == null}">
+                        <div class="row" style="margin-top:18px;">
+                            <div class="col-md-6">
+                                <div class="fl">Tipo de Resolución *</div>
+                                <p:selectOneMenu value="#{muestraFlowBean.tipoResolucion}" style="width:100%;" required="true">
+                                    <f:selectItem itemLabel="-- Seleccione --" itemValue="" noSelectionOption="true"/>
+                                    <f:selectItem itemLabel="CONCESIÓN del Derecho de Obtentor" itemValue="CONCESION"/>
+                                    <f:selectItem itemLabel="NEGACIÓN del Derecho de Obtentor" itemValue="NEGACION"/>
+                                </p:selectOneMenu>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="fl">Emitido por *</div>
+                                <p:inputText value="#{muestraFlowBean.emitidoPor}" style="width:100%;" required="true"/>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-md-12">
+                                <div class="fl">Fundamento Jurídico y Técnico *</div>
+                                <p:inputTextarea value="#{muestraFlowBean.fundamento}" rows="5" style="width:100%;"
+                                                 placeholder="Base legal y técnica de la resolución..." required="true"/>
+                            </div>
+                        </div>
+                        <div style="margin-top:15px;">
+                            <p:commandButton value="Emitir Resolución" icon="fa fa-gavel"
+                                             styleClass="ui-button-danger"
+                                             action="#{muestraFlowBean.emitirResolucion}"
+                                             update="@form infoPanel resPanel certBtn" process="@form">
+                                <p:confirm header="Confirmar" message="¿Confirma la emisión de esta resolución? Esta acción no puede deshacerse."/>
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade">
+                                <p:commandButton value="Sí, emitir" type="button" styleClass="ui-confirmdialog-yes ui-button-danger"/>
+                                <p:commandButton value="Cancelar" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"/>
+                            </p:confirmDialog>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+                <p:outputPanel id="certBtn">
+                    <h:panelGroup rendered="#{muestraFlowBean.resolucion != null and muestraFlowBean.resolucion.tipo == 'CONCESION'}">
+                        <div style="margin-top:15px;">
+                            <p:button value="Proceder a Emisión del Certificado de Obtentor"
+                                      icon="fa fa-arrow-right" styleClass="ui-button-success"
+                                      outcome="/tramite/certificado-obtentor"/>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+                <div style="margin-top:20px;">
+                    <p:button value="Volver a Dictamen Técnico" icon="fa fa-arrow-left"
+                              outcome="/tramite/dictamen-tecnico" styleClass="ui-button-secondary"/>
+                </div>
+            </h:form>
+        </div>
+    </h:body>
+</html>

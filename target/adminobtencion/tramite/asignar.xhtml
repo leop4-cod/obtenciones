@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Asignación de Trámite - SENADI</title>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/main.css']}"/>
+        <style>
+            body { font-family: 'Poppins', sans-serif; background: #f4f6f9; }
+            .menu { background: #0c7a04; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+            .menu img { height: 45px; }
+            .page-title { color: white; font-size: 18px; font-weight: 600; }
+            .card-flow { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 25px; margin: 20px auto; max-width: 900px; }
+            .card-flow h4 { color: #0c7a04; border-bottom: 2px solid #e8f5e9; padding-bottom: 10px; margin-bottom: 20px; }
+            .field-label { font-weight: 600; color: #555; font-size: 13px; margin-bottom: 4px; }
+            .tramite-info { background: #e8f5e9; border-radius: 8px; padding: 12px 15px; margin-bottom: 18px; border-left: 4px solid #0c7a04; }
+            .tramite-info span { display: block; font-size: 13px; color: #2e7d32; }
+            .tramite-info strong { color: #1b5e20; }
+        </style>
+    </h:head>
+    <h:body>
+        <div class="menu">
+            <img src="#{resource['images/logo.png']}" alt="SENADI" onerror="this.style.display='none'"/>
+            <span class="page-title"><i class="fa fa-user-circle"/> Asignación de Trámite al Técnico</span>
+            <span style="color:white;">#{loginBean.login}</span>
+        </div>
+
+        <div class="card-flow">
+            <h4><i class="fa fa-tasks"/> Paso 2 - Asignar Trámite al Técnico</h4>
+
+            <p:messages autoUpdate="true" showDetail="true" closable="true"/>
+
+            <h:form id="formAsignar">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="field-label">ID del Trámite *</div>
+                        <p:inputText id="formId" style="width:100%;"
+                                     placeholder="Ingrese el ID del trámite">
+                            <p:ajax event="blur" listener="#{tramiteFlowBean.cargarTramite(formId.value)}"
+                                    update="tramiteInfo tecnicoPanel" rendered="false"/>
+                        </p:inputText>
+                        <p:commandButton value="Cargar Trámite" icon="fa fa-search"
+                                         styleClass="ui-button-info" style="margin-top:8px;"
+                                         action="#{tramiteFlowBean.cargarTramite(formId.value)}"
+                                         update="tramiteInfo tecnicoPanel formAsignar"
+                                         process="@form"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="tramiteInfo">
+                    <h:panelGroup rendered="#{tramiteFlowBean.selectedForm != null and tramiteFlowBean.selectedForm.id != null}">
+                        <div class="tramite-info" style="margin-top:15px;">
+                            <span><strong>Número de solicitud:</strong> #{tramiteFlowBean.selectedForm.applicationNumber}</span>
+                            <span><strong>Especie:</strong> #{tramiteFlowBean.selectedForm.botanicalTaxon} - #{tramiteFlowBean.selectedForm.commonName}</span>
+                            <span><strong>Estado actual:</strong> #{tramiteFlowBean.selectedForm.managementStatus}</span>
+                            <span><strong>Técnico asignado:</strong>
+                                <h:outputText value="#{tramiteFlowBean.selectedForm.assignedUser}" rendered="#{tramiteFlowBean.selectedForm.assignedUser != null}"/>
+                                <h:outputText value="Sin asignar" rendered="#{tramiteFlowBean.selectedForm.assignedUser == null}"/>
+                            </span>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+
+                <p:outputPanel id="tecnicoPanel">
+                    <h:panelGroup rendered="#{tramiteFlowBean.selectedForm != null and tramiteFlowBean.selectedForm.id != null}">
+                        <div class="row" style="margin-top:15px;">
+                            <div class="col-md-6">
+                                <div class="field-label">Técnico Responsable *</div>
+                                <p:inputText value="#{tramiteFlowBean.tecnico}" style="width:100%;"
+                                             placeholder="Nombre de usuario del técnico" required="true"/>
+                            </div>
+                        </div>
+                        <div style="margin-top:20px;">
+                            <p:commandButton value="Asignar Trámite" icon="fa fa-check"
+                                             styleClass="ui-button-success"
+                                             action="#{tramiteFlowBean.asignarTecnico}"
+                                             update="@form tramiteInfo"
+                                             process="@form"/>
+                            <p:button value="Ir a Validar Requisitos" icon="fa fa-arrow-right"
+                                      style="margin-left:10px;"
+                                      outcome="/tramite/validar-forma"/>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </div>
+    </h:body>
+</html>
