@@ -106,7 +106,7 @@ public class TramiteFlowService {
         try {
             requirePhase(form, FlowPhase.INITIAL, null);
             form.setAssignedUser(tecnico);
-            form.setAssignedDate(new Date());
+            form.setAssignedDate(new java.sql.Timestamp(System.currentTimeMillis()));
             form.setFlowPhase(FlowPhase.ASSIGNED);
             form.setStatusFlow(StatusFlow.PENDING);
             new VegetableFormsDAO(form).update();

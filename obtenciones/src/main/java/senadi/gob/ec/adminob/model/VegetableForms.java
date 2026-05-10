@@ -7,7 +7,6 @@ package senadi.gob.ec.adminob.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,7 +20,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
 import javax.persistence.Transient;
 import senadi.gob.ec.adminob.enums.DenominationType;
 import senadi.gob.ec.adminob.enums.FlowPhase;
@@ -149,9 +147,11 @@ public class VegetableForms implements Serializable {
     @Column(name = "status", nullable = false)
     private Status status;
 
-    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(name = "application_date")
-    private Date applicationDate;
+    private Timestamp applicationDate;
+
+    @Column(name = "numeracion_interna", length = 100)
+    private String numeracionInterna;
 
     @Column(name = "owner_id")
     private Integer ownerId;
@@ -175,8 +175,7 @@ public class VegetableForms implements Serializable {
     private String assignedUser;
     
     @Column(name = "assigned_date")
-    @Temporal(javax.persistence.TemporalType.DATE)
-    private Date assignedDate;
+    private Timestamp assignedDate;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "status_flow")
@@ -576,18 +575,20 @@ public class VegetableForms implements Serializable {
         this.status = status;
     }
 
-    /**
-     * @return the applicationDate
-     */
-    public Date getApplicationDate() {
+    public Timestamp getApplicationDate() {
         return applicationDate;
     }
 
-    /**
-     * @param applicationDate the applicationDate to set
-     */
-    public void setApplicationDate(Date applicationDate) {
+    public void setApplicationDate(Timestamp applicationDate) {
         this.applicationDate = applicationDate;
+    }
+
+    public String getNumeracionInterna() {
+        return numeracionInterna;
+    }
+
+    public void setNumeracionInterna(String numeracionInterna) {
+        this.numeracionInterna = numeracionInterna;
     }
 
     /**
@@ -984,14 +985,11 @@ public class VegetableForms implements Serializable {
     /**
      * @return the assignedDate
      */
-    public Date getAssignedDate() {
+    public Timestamp getAssignedDate() {
         return assignedDate;
     }
 
-    /**
-     * @param assignedDate the assignedDate to set
-     */
-    public void setAssignedDate(Date assignedDate) {
+    public void setAssignedDate(Timestamp assignedDate) {
         this.assignedDate = assignedDate;
     }
 

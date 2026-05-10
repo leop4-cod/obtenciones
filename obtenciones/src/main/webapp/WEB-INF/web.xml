@@ -14,6 +14,11 @@
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Production</param-value>
     </context-param>
+    <!-- Desactiva el tema interno de PrimeFaces para que nuestro CSS controle todo el estilo -->
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>none</param-value>
+    </context-param>
     <!-- Indica a PrimeFaces que use el uploader nativo del contenedor (Undertow/WildFly) -->
     <context-param>
         <param-name>primefaces.UPLOADER</param-name>

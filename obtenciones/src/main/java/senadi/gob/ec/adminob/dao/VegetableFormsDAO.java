@@ -1,6 +1,6 @@
 package senadi.gob.ec.adminob.dao;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -64,6 +64,13 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                     query.setParameter("st", Status.FINISHED);
                     break;
 
+                case "Aceptados":
+                    query = em.createQuery(
+                        "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id DESC",
+                        VegetableForms.class);
+                    query.setParameter("st", Status.ACCEPTED);
+                    break;
+
                 case "Vista":
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id DESC",
@@ -75,7 +82,6 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                 case "Todos":
                 case "todos":
                 default:
-                    // 🔥 AQUÍ ESTÁ LA CLAVE → SIEMPRE TRAE TODO
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v ORDER BY v.id DESC",
                         VegetableForms.class);
@@ -137,6 +143,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
             m.setAssignedUser(src.getAssignedUser());
             m.setApplicationDate(src.getApplicationDate());
             m.setApplicationNumber(src.getApplicationNumber());
+            m.setNumeracionInterna(src.getNumeracionInterna());
             // La entidad es managed → Hibernate dirty-check genera UPDATE automáticamente
             em.getTransaction().commit();
         } catch (Exception e) {
@@ -148,7 +155,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
     }
 
     // 🔥 MÉTODO CON FECHAS (ARREGLADO)
-    public List<VegetableForms> buscarTodosByTypeAndDate(String type, Date start, Date end) {
+    public List<VegetableForms> buscarTodosByTypeAndDate(String type, Timestamp start, Timestamp end) {
         EntityManager em = getEntityManager();
         try {
             String t = (type == null) ? "" : type.trim();
@@ -185,6 +192,15 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                     query.setParameter("st", Status.FINISHED);
                     break;
 
+                case "Aceptados":
+                    query = em.createQuery(
+                        "SELECT v FROM VegetableForms v " +
+                        "WHERE v.status = :st AND v.applicationDate BETWEEN :start AND :end " +
+                        "ORDER BY v.id DESC",
+                        VegetableForms.class);
+                    query.setParameter("st", Status.ACCEPTED);
+                    break;
+
                 case "Vista":
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v " +
@@ -206,11 +222,48 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                     break;
             }
 
-            query.setParameter("start", start, javax.persistence.TemporalType.DATE);
-            query.setParameter("end", end, javax.persistence.TemporalType.DATE);
+            query.setParameter("start", start);
+            query.setParameter("end", end);
 
             return query.getResultList();
 
+        } finally {
+            em.close();
+        }
+    }
+
+    public int updateAllSavedToDelivered() throws Exception {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        try {
+            int updated = em.createQuery(
+                "UPDATE VegetableForms v SET v.status = :delivered WHERE v.status = :saved")
+                .setParameter("delivered", Status.DELIVERED)
+                .setParameter("saved", Status.SAVED)
+                .executeUpdate();
+            em.getTransaction().commit();
+            return updated;
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+
+    /** Elimina un VegetableForms por su ID primario junto con sus relaciones en cascada. */
+    public void deleteById(Integer id) throws Exception {
+        EntityManager em = getEntityManager();
+        em.getTransaction().begin();
+        try {
+            VegetableForms entity = em.find(VegetableForms.class, id);
+            if (entity != null) {
+                em.remove(entity);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
         } finally {
             em.close();
         }

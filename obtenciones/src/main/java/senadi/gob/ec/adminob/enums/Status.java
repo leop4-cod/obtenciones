@@ -10,6 +10,7 @@ package senadi.gob.ec.adminob.enums;
  */
 public enum Status {
     DELIVERED,
+    ACCEPTED,
     FINISHED,
     PREVIEW,
     SAVED

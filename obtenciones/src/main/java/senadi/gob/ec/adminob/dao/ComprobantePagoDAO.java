@@ -69,18 +69,19 @@ public class ComprobantePagoDAO extends DAOAbstractM<ComprobantePago> {
     }
     
     public void delete(Integer id) throws Exception {
+        javax.persistence.EntityManager em = getEntityManager();
+        em.getTransaction().begin();
         try {
-            ComprobantePago cp = getEntityManager()
-                .createQuery("SELECT c FROM ComprobantePago c WHERE c.id = :id", ComprobantePago.class)
-                .setParameter("id", id)
-                .getSingleResult();
-            getEntityManager().getTransaction().begin();
-            getEntityManager().remove(cp);
-            getEntityManager().getTransaction().commit();
-        } catch (javax.persistence.NoResultException e) {
-            // Already deleted
+            ComprobantePago cp = em.find(ComprobantePago.class, id);
+            if (cp != null) {
+                em.remove(cp);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
         } finally {
-            getEntityManager().close();
+            em.close();
         }
     }
 }

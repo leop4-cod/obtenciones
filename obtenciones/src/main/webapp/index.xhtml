@@ -180,9 +180,23 @@
                                           allowTypes="/(\.|\/)(xls|xlsx)$/i"
                                           label="Importar Base de Datos"
                                           styleClass="sn-import-excel"/>
-                            <h:link outcome="registro" styleClass="sn-btn-new">
+                            <a href="tramites/lista.xhtml" class="sn-btn-new"
+                           style="background:#0f4d1c; margin-right:6px;"
+                           title="Módulo de Gestión de Trámites">
+                            <i class="pi pi-folder"></i> Trámites
+                        </a>
+                        <h:link outcome="registro" styleClass="sn-btn-new">
                                 <i class="pi pi-plus-circle"></i> Nuevo Registro
                             </h:link>
+                            <p:commandButton value="SAVED → DELIVERED"
+                                             icon="pi pi-sync"
+                                             styleClass="sn-btn-secondary"
+                                             style="font-size:11px; padding:6px 12px;"
+                                             title="Cambiar todos los registros GUARDADO a EN PROCESO"
+                                             onclick="if(!confirm('¿Cambiar TODOS los registros GUARDADO a EN PROCESO (DELIVERED)?')) return false;"
+                                             actionListener="#{vegetableBean.migrarSavedADelivered}"
+                                             process="@this"
+                                             update=":mensajes tablaDeObtenciones"/>
                         </div>
                     </div>
 
@@ -195,10 +209,11 @@
                                      styleClass="ui-panelgrid-blank">
                             <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px;">
                                 <p:selectOneRadio id="line" value="#{vegetableBean.radioOption}" layout="lineDirection">
-                                    <f:selectItem itemLabel="Todos"              itemValue="Todos"/>
-                                    <f:selectItem itemLabel="Procesos Iniciados" itemValue="Iniciados"/>
-                                    <f:selectItem itemLabel="Pagados"            itemValue="Pagados"/>
-                                    <f:selectItem itemLabel="Vista Previa"       itemValue="Vista"/>
+                                    <f:selectItem itemLabel="En Proceso (DELIVERED)" itemValue="Iniciados"/>
+                                    <f:selectItem itemLabel="Aceptados"              itemValue="Aceptados"/>
+                                    <f:selectItem itemLabel="Todos"                  itemValue="Todos"/>
+                                    <f:selectItem itemLabel="Pagados"                itemValue="Pagados"/>
+                                    <f:selectItem itemLabel="Vista Previa"           itemValue="Vista"/>
                                     <p:ajax update=":mensajes tablaDeObtenciones dates checkd"
                                             listener="#{vegetableBean.onRadioSelected}"/>
                                 </p:selectOneRadio>
@@ -263,7 +278,7 @@
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Taxón Botánico" filterBy="#{vegetable.botanicalTaxon}">
+                            <p:column headerText="Taxón Botánico" style="width:140px;" filterBy="#{vegetable.botanicalTaxon}">
                                 <h:outputText value="#{vegetable.botanicalTaxon}" style="font-size:11px; font-style:italic;"/>
                             </p:column>
 
@@ -273,19 +288,24 @@
                                 </h:outputText>
                             </p:column>
 
-                            <p:column headerText="Grupo Varietal" filterBy="#{vegetable.varietalGroup}">
+                            <p:column headerText="Grupo Varietal" style="width:120px;" filterBy="#{vegetable.varietalGroup}">
                                 <h:outputText value="#{vegetable.varietalGroup}" style="font-size:11px;"/>
                             </p:column>
 
-                            <p:column headerText="Estado" style="text-align:center; width:9%;">
+                            <p:column headerText="Estado actual" style="text-align:center; width:100px; white-space:normal; word-break:break-word;">
                                 <span class="sn-badge sn-badge-#{vegetable.status}">
-                                    <h:outputText value="#{vegetable.status eq 'SAVED' ? 'Guardado' :
-                                                          (vegetable.status eq 'PREVIEW' ? 'Vista prev.' :
-                                                          (vegetable.status eq 'DELIVERED' ? 'En Proceso' : 'Pagado'))}"/>
+                                    <h:outputText value="#{vegetable.status eq 'DELIVERED' ? 'EN PROCESO' :
+                                                          (vegetable.status eq 'ACCEPTED' ? 'ACEPTADO' :
+                                                          (vegetable.status eq 'FINISHED' ? 'FINALIZADO' :
+                                                          (vegetable.status eq 'PREVIEW'  ? 'VISTA PREV.' : 'GUARDADO')))}"/>
                                 </span>
                             </p:column>
 
-                            <p:column headerText="Asignado a" filterBy="#{vegetable.assignedUser}" style="text-align:center;">
+                            <p:column headerText="Estado de Expediente" headerStyle="white-space:normal; word-break:break-word; min-width:110px;" style="text-align:center; width:110px;">
+                                <h:outputText value="#{vegetable.managementStatus}" style="font-size:11px; color:#555;"/>
+                            </p:column>
+
+                            <p:column headerText="Asignado a" filterBy="#{vegetable.assignedUser}" style="text-align:center; width:90px;">
                                 <h:outputText value="#{vegetable.assignedUser eq null ? '—' : vegetable.assignedUser}"
                                               style="font-size:11px; #{vegetable.assignedUser eq null ? 'color:#bbb;' : 'font-weight:700; color:var(--sn-green);'}"/>
                             </p:column>
@@ -308,18 +328,32 @@
                             </p:column>
 
                             <!-- ══ ACCIONES ══ -->
-                            <p:column headerText="Acciones" style="text-align:center; width:205px;" exportable="false">
+                            <p:column headerText="Acciones" style="text-align:center; width:240px;" exportable="false">
                                 <div class="acciones-grupo">
 
-                                    <h:link outcome="actualizar" styleClass="accion-btn btn-edit" title="Editar registro">
+                                    <!-- Editar: solo para DELIVERED y ACCEPTED -->
+                                    <h:link outcome="actualizar"
+                                            styleClass="accion-btn btn-edit"
+                                            title="Editar registro"
+                                            rendered="#{vegetable.status eq 'DELIVERED' or vegetable.status eq 'ACCEPTED'}">
                                         <f:param name="id" value="#{vegetable.id}"/>
                                         <i class="pi pi-pencil"></i>
+                                    </h:link>
+
+                                    <!-- Ver sólo (sin edición) para otros estados -->
+                                    <h:link outcome="actualizar"
+                                            styleClass="accion-btn"
+                                            title="Ver registro (solo lectura)"
+                                            rendered="#{vegetable.status ne 'DELIVERED' and vegetable.status ne 'ACCEPTED'}"
+                                            style="opacity:0.5; cursor:default; pointer-events:none;">
+                                        <f:param name="id" value="#{vegetable.id}"/>
+                                        <i class="pi pi-eye"></i>
                                     </h:link>
 
                                     <p:commandButton styleClass="accion-btn btn-pdf"
                                                      title="Ver Formulario PDF"
                                                      icon="pi pi-file-pdf"
-                                                     rendered="#{vegetable.status != 'SAVED'}"
+                                                     rendered="#{vegetable.status ne 'SAVED' and vegetable.status eq 'DELIVERED'}"
                                                      actionListener="#{vegetableBean.viewFormulario}"
                                                      oncomplete="if(args.doit){otherpage(args.url);}"
                                                      process="@this" update=":mensajes"/>
@@ -327,15 +361,16 @@
                                     <p:commandButton styleClass="accion-btn btn-voucher"
                                                      title="Ver Comprobante de Pago"
                                                      icon="pi pi-money-bill"
-                                                     rendered="#{vegetable.status != 'SAVED' and vegetable.status != 'PREVIEW'}"
+                                                     rendered="#{vegetable.status eq 'DELIVERED'}"
                                                      actionListener="#{vegetableBean.viewVoucher}"
                                                      oncomplete="if(args.doit){otherpage(args.url);}"
                                                      process="@this" update=":mensajes"/>
 
+                                    <!-- Asignar: solo para DELIVERED sin técnico asignado -->
                                     <p:commandButton styleClass="accion-btn btn-assign"
                                                      title="Asignarme este trámite"
                                                      icon="pi pi-user-plus"
-                                                     rendered="#{empty vegetable.assignedUser}"
+                                                     rendered="#{vegetable.status eq 'DELIVERED' and empty vegetable.assignedUser}"
                                                      onclick="if(!confirm('¿Confirma asignarse el trámite #{vegetable.applicationNumber}?')) return false;"
                                                      actionListener="#{vegetableBean.assignApplication}"
                                                      process="@this" update=":mensajes tablaDeObtenciones">
@@ -343,10 +378,11 @@
                                                                      target="#{vegetableBean.vegetableForms}"/>
                                     </p:commandButton>
 
+                                    <!-- Reasignar: solo para DELIVERED asignado al usuario actual -->
                                     <p:commandButton styleClass="accion-btn btn-reassign"
                                                      title="Reasignar trámite"
                                                      icon="pi pi-users"
-                                                     rendered="#{vegetableBean.isAssignedToCurrentUser(vegetable)}"
+                                                     rendered="#{vegetable.status eq 'DELIVERED' and vegetableBean.isAssignedToCurrentUser(vegetable)}"
                                                      actionListener="#{vegetableBean.prepareReassign}"
                                                      process="@this"
                                                      update=":mensajes :dlgReassign"
@@ -355,30 +391,13 @@
                                                                      target="#{vegetableBean.vegetableForms}"/>
                                     </p:commandButton>
 
-                                    <span style="position:relative; display:inline-block;">
-                                        <p:commandButton styleClass="accion-btn btn-upload"
-                                                         title="Cargar documentación"
-                                                         icon="pi pi-cloud-upload"
-                                                         process="@this"
-                                                         update=":mensajes allform:seleccionInfo allform:panelUpload">
-                                            <f:setPropertyActionListener value="#{vegetable}"
-                                                                         target="#{vegetableBean.vegetableForms}"/>
-                                        </p:commandButton>
-                                        <h:outputText
-                                            rendered="#{vegetableBean.hasUploadedFiles(vegetable.id)}"
-                                            value="#{vegetableBean.getUploadedFileCount(vegetable.id)}"
-                                            style="position:absolute; top:-6px; right:-6px;
-                                                   background:var(--sn-green); color:white; border-radius:50%;
-                                                   width:16px; height:16px; font-size:9px; font-weight:800;
-                                                   display:flex; align-items:center; justify-content:center;
-                                                   line-height:16px; text-align:center; pointer-events:none;"/>
-                                    </span>
 
+                                    <!-- Ver archivos: visible para todos si hay archivos -->
                                     <p:commandButton styleClass="accion-btn btn-view-uploaded"
                                                      title="Ver archivos subidos"
                                                      icon="pi pi-eye"
                                                      rendered="#{vegetableBean.hasUploadedFiles(vegetable.id)}"
-                                                     actionListener="#{vegetableBean.prepareViewUploaded}"
+                                                     action="#{vegetableBean.prepareViewUploaded(null)}"
                                                      process="@this"
                                                      update=":mensajes :dlgArchivos"
                                                      oncomplete="PF('dlgArchivos').show();">
@@ -396,6 +415,7 @@
                                         <f:setPropertyActionListener value="#{vegetable}"
                                                                      target="#{vegetableBean.vegetableForms}"/>
                                     </p:commandButton>
+
 
                                 </div>
                             </p:column>
@@ -432,7 +452,7 @@
 
         <!-- ══ DIÁLOGO: HISTORIAL ══ -->
         <p:dialog id="dlgHistorial" modal="true" resizable="true"
-                  header="HISTORIAL — #{vegetableBean.vegetableForms.applicationNumber}"
+                  header="Historial — #{vegetableBean.vegetableForms.applicationNumber}"
                   fitViewport="true" widgetVar="dlgHistorial"
                   style="font-size:11px;" showEffect="explode" hideEffect="explode"
                   closeOnEscape="true">
@@ -445,7 +465,7 @@
 
         <!-- ══ DIÁLOGO: ARCHIVOS SUBIDOS ══ -->
         <p:dialog id="dlgArchivos" modal="true" resizable="true"
-                  header="ARCHIVOS SUBIDOS — #{vegetableBean.vegetableForms.applicationNumber}"
+                  header="Archivos subidos — #{vegetableBean.vegetableForms.applicationNumber}"
                   widgetVar="dlgArchivos" style="width:700px; min-width:400px;"
                   showEffect="explode" hideEffect="explode" closeOnEscape="true">
             <h:form id="frmArchivos">
@@ -453,7 +473,7 @@
                              emptyMessage="No hay archivos subidos."
                              style="font-size:12px;">
                     <p:column headerText="Archivo" style="width:55%">
-                        <h:outputText value="#{arch.nombreArchivo}"/>
+                        <h:outputText value="#{arch.nombreMostrar}"/>
                     </p:column>
                     <p:column headerText="Fecha" style="width:25%">
                         <h:outputText value="#{arch.fechaCarga}">
@@ -472,7 +492,7 @@
                     </p:column>
                 </p:dataTable>
                 <div style="text-align:right; margin-top:10px;">
-                    <p:commandButton value="CERRAR" type="button" styleClass="sn-btn-secondary"
+                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
                                      onclick="PF('dlgArchivos').hide();"/>
                 </div>
             </h:form>
@@ -480,26 +500,37 @@
 
         <!-- ══ DIÁLOGO: REASIGNAR ══ -->
         <p:dialog id="dlgReassign" modal="true" resizable="false"
-                  header="REASIGNAR — #{vegetableBean.vegetableForms.applicationNumber}"
-                  widgetVar="dlgReassign" style="width:440px;"
+                  header="Reasignar trámite — #{vegetableBean.vegetableForms.applicationNumber}"
+                  widgetVar="dlgReassign" style="width:480px;"
                   showEffect="explode" hideEffect="explode" closeOnEscape="true">
             <h:form id="frmReassign">
                 <p:panelGrid columns="1" style="width:100%">
                     <p:outputLabel value="Usuario destino:" style="font-weight:700; font-size:13px;"/>
                     <p:inputText value="#{vegetableBean.newAssignedUser}"
-                                 style="width:100%" placeholder="Ej: jperez"/>
-                    <p:commandButton value="GUARDAR REASIGNACIÓN" styleClass="sn-btn-primary"
-                                     actionListener="#{vegetableBean.reassignApplication}"
-                                     process="@form"
-                                     update=":mensajes :allform:tablaDeObtenciones frmReassign"
-                                     oncomplete="PF('dlgReassign').hide()"/>
+                                 style="width:100%" placeholder="Ej: jperez"
+                                 required="true" requiredMessage="Ingrese el usuario destinatario."/>
+                    <p:outputLabel value="Comentario (opcional):" style="font-weight:700; font-size:13px; margin-top:8px;"/>
+                    <p:inputTextarea value="#{vegetableBean.reassignComment}"
+                                     rows="3" autoResize="false" style="width:100%"
+                                     placeholder="Motivo de la reasignación u observaciones adicionales..."/>
+                    <p:panelGrid columns="2" style="margin-top:8px;">
+                        <p:commandButton value="Guardar reasignación" styleClass="sn-btn-primary"
+                                         icon="pi pi-check"
+                                         actionListener="#{vegetableBean.reassignApplication}"
+                                         process="@form"
+                                         update=":mensajes :allform:tablaDeObtenciones frmReassign"
+                                         oncomplete="if(!args.validationFailed) PF('dlgReassign').hide()"/>
+                        <p:commandButton value="Cancelar" type="button" styleClass="sn-btn-secondary"
+                                         icon="pi pi-times"
+                                         onclick="PF('dlgReassign').hide();"/>
+                    </p:panelGrid>
                 </p:panelGrid>
             </h:form>
         </p:dialog>
 
         <!-- ══ DIÁLOGO: CAMBIO ESTADO GESTIÓN ══ -->
         <p:dialog id="dlgStatusFlow" modal="true" resizable="false"
-                  header="CONFIRMAR CAMBIO DE ESTADO"
+                  header="Confirmar cambio de estado"
                   widgetVar="dlgStatusFlow" style="width:500px;"
                   showEffect="explode" hideEffect="explode" closeOnEscape="true">
             <h:form id="frmStatusFlow">
@@ -516,12 +547,12 @@
                                      rows="4" autoResize="false" style="width:100%"
                                      placeholder="Describa el motivo del cambio..."/>
                     <p:panelGrid columns="2">
-                        <p:commandButton value="GUARDAR" styleClass="sn-btn-primary"
+                        <p:commandButton value="Guardar" styleClass="sn-btn-primary"
                                          actionListener="#{vegetableBean.confirmStatusFlowChange}"
                                          process="@form" icon="pi pi-check"
                                          update=":mensajes :allform:tablaDeObtenciones frmStatusFlow"
                                          oncomplete="if(!args.validationFailed) PF('dlgStatusFlow').hide()"/>
-                        <p:commandButton value="CERRAR" type="button" styleClass="sn-btn-secondary"
+                        <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
                                          icon="pi pi-times"
                                          onclick="PF('dlgStatusFlow').hide();"/>
                     </p:panelGrid>

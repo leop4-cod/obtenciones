@@ -426,9 +426,19 @@
                                 <div class="col-md-6">
                                     <div class="sn-fld">
                                         <span class="sn-lbl">Usuario Asignado</span>
-                                        <p:inputText value="#{registroBean.form.assignedUser}"
-                                                     style="width:100%" maxlength="100"
-                                                     placeholder="Login del técnico responsable"/>
+                                        <div style="display:flex; gap:8px;">
+                                            <p:inputText value="#{registroBean.form.assignedUser}"
+                                                         style="width:100%;" maxlength="100"
+                                                         placeholder="Login del técnico responsable"/>
+                                            <h:panelGroup rendered="#{registroBean.editMode}">
+                                                <p:commandButton icon="pi pi-pencil"
+                                                                 title="Asignar persona"
+                                                                 onclick="PF('dlgAsignar').show()"
+                                                                 type="button"
+                                                                 styleClass="sn-btn-primary"
+                                                                 style="min-width:40px; padding:8px;"/>
+                                            </h:panelGroup>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -486,17 +496,6 @@
                         <!-- ══ TAB 4: DOCUMENTOS ══ -->
                         <p:tab title="Documentos y Archivos" id="tabDocs">
 
-                            <h:panelGroup rendered="#{!registroBean.editMode}">
-                                <div class="sn-info-amber">
-                                    <i class="pi pi-info-circle" style="font-size:20px; flex-shrink:0;"></i>
-                                    <div>
-                                        <strong>Primero guarde el registro.</strong><br/>
-                                        Para subir documentos, complete los datos en las pestañas anteriores,
-                                        presione <em>Guardar Registro</em> y luego regrese a editar para cargar los archivos.
-                                    </div>
-                                </div>
-                            </h:panelGroup>
-
                             <h:panelGroup id="panelDocs" rendered="#{registroBean.editMode}">
                                 <div class="sn-sec-title">
                                     <i class="pi pi-cloud-upload"></i> Cargar Documentos al Registro
@@ -507,44 +506,51 @@
                                     </span>
                                 </div>
 
+                                <div style="background:#fffbf0; border:1px solid #f0e6d2; border-radius:8px; padding:12px 16px; margin-bottom:20px;">
+                                    <i class="pi pi-info-circle" style="color:#d97706; margin-right:8px;"></i>
+                                    <span style="font-size:12px; color:#78350f;">
+                                        <strong>Documentos opcionales:</strong> Puedes subir cualquier combinación. Cada documento se sube independientemente.
+                                    </span>
+                                </div>
+
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="sn-upload-card">
                                             <h6><i class="pi pi-file-pdf" style="color:#dc2626;"></i>
-                                                Formulario PDF (máx 10 MB)</h6>
+                                                Formulario PDF <span style="font-size:10px; color:#999;">(opcional - máx 10 MB)</span></h6>
                                             <p:fileUpload listener="#{registroBean.uploadArchivo}"
                                                           mode="advanced" dragDropSupport="true"
                                                           update=":mensajes :frmRegistro:panelDocs"
                                                           sizeLimit="10000000"
                                                           allowTypes="/(\.|\/)(pdf)$/i"
-                                                          label="Seleccionar" uploadLabel="Subir"
-                                                          cancelLabel="Cancelar" auto="false"/>
+                                                          label="Seleccionar PDF" uploadLabel="Subir PDF"
+                                                          cancelLabel="Cancelar" auto="true" showUploadedFiles="false"/>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="sn-upload-card">
                                             <h6><i class="pi pi-image" style="color:#2563eb;"></i>
-                                                Fotografías JPG/PNG (máx 5 MB c/u)</h6>
+                                                Fotografías JPG/PNG <span style="font-size:10px; color:#999;">(opcional - máx 5 MB c/u)</span></h6>
                                             <p:fileUpload listener="#{registroBean.uploadArchivo}"
                                                           mode="advanced" multiple="true" dragDropSupport="true"
                                                           update=":mensajes :frmRegistro:panelDocs"
                                                           sizeLimit="5000000" fileLimit="10"
                                                           allowTypes="/(\.|\/)(jpe?g|png)$/i"
                                                           label="Seleccionar fotos" uploadLabel="Subir fotos"
-                                                          cancelLabel="Cancelar" auto="false"/>
+                                                          cancelLabel="Cancelar" auto="true" showUploadedFiles="false"/>
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="sn-upload-card">
                                             <h6><i class="pi pi-money-bill" style="color:var(--sn-gold);"></i>
-                                                Comprobante de Pago PDF (máx 5 MB)</h6>
+                                                Comprobante de Pago PDF <span style="font-size:10px; color:#999;">(opcional - máx 5 MB)</span></h6>
                                             <p:fileUpload listener="#{registroBean.uploadArchivo}"
                                                           mode="advanced" dragDropSupport="true"
                                                           update=":mensajes :frmRegistro:panelDocs"
                                                           sizeLimit="5000000"
                                                           allowTypes="/(\.|\/)(pdf)$/i"
                                                           label="Seleccionar pago" uploadLabel="Subir pago"
-                                                          cancelLabel="Cancelar" auto="false"/>
+                                                          cancelLabel="Cancelar" auto="true" showUploadedFiles="false"/>
                                         </div>
                                     </div>
                                 </div>
@@ -608,9 +614,9 @@
                                                      rendered="#{!registroBean.editMode}"
                                                      value="Guardar Registro"
                                                      icon="pi pi-save"
-                                                     action="#{registroBean.saveRegistro}"
+                                                     action="#{registroBean.saveRegistroAndStay}"
                                                      process="@form"
-                                                     update=":mensajes"
+                                                     update=":mensajes :frmRegistro"
                                                      styleClass="sn-btn-primary"
                                                      style="min-width:150px;"/>
                                     <p:commandButton id="btnGuardarTab4Edicion"
@@ -629,38 +635,43 @@
 
                     </p:tabView>
 
-                    <!-- ── BARRA ACCIÓN FIJA ── -->
-                    <div class="sn-action-bar">
-                        <p:commandButton id="btnCancelar"
-                                         value="Cancelar"
-                                         icon="pi pi-times"
-                                         action="#{registroBean.cancelar}"
-                                         immediate="true"
-                                         styleClass="sn-btn-secondary"
-                                         style="min-width:120px;"/>
-                        <p:commandButton id="btnGuardarNuevo"
-                                         rendered="#{!registroBean.editMode}"
-                                         value="Guardar Registro"
-                                         icon="pi pi-save"
-                                         action="#{registroBean.saveRegistro}"
-                                         process="@form"
-                                         update=":mensajes"
-                                         styleClass="sn-btn-primary"
-                                         style="min-width:160px;"/>
-                        <p:commandButton id="btnGuardarEdicion"
-                                         rendered="#{registroBean.editMode}"
-                                         value="Guardar Cambios"
-                                         icon="pi pi-check"
-                                         action="#{registroBean.updateRegistro}"
-                                         process="@form"
-                                         update=":mensajes"
-                                         styleClass="sn-btn-primary"
-                                         style="min-width:160px;"/>
-                    </div>
 
                 </div><!-- sn-card -->
 
             </h:form>
+
+            <!-- ════ DIÁLOGO ASIGNAR TRÁMITE ════ -->
+            <p:dialog widgetVar="dlgAsignar" header="Asignar Trámite" modal="true"
+                      resizable="false" style="min-width:400px;" closable="true">
+                <h:form id="frmAsignar">
+                    <div style="padding:12px;">
+                        <div style="margin-bottom:16px;">
+                            <label style="display:block; font-weight:700; color:var(--sn-dark); margin-bottom:6px;">
+                                Nombre de la Persona a Asignar
+                            </label>
+                            <p:inputText id="inputPersona"
+                                        value="#{registroBean.personaAsignar}"
+                                        style="width:100%;"
+                                        placeholder="Escriba el nombre de la persona"
+                                        required="true"
+                                        requiredMessage="El nombre es obligatorio."/>
+                        </div>
+                        <div style="display:flex; gap:10px; justify-content:flex-end;">
+                            <p:commandButton value="Cancelar"
+                                            icon="pi pi-times"
+                                            onclick="PF('dlgAsignar').hide()"
+                                            styleClass="sn-btn-secondary"/>
+                            <p:commandButton value="Asignar"
+                                            icon="pi pi-check"
+                                            action="#{registroBean.asignarTramite}"
+                                            process="@form"
+                                            update=":mensajes"
+                                            oncomplete="if(!args.validationFailed) PF('dlgAsignar').hide();"
+                                            styleClass="sn-btn-primary"/>
+                        </div>
+                    </div>
+                </h:form>
+            </p:dialog>
 
         </div><!-- sn-wrap -->
 
@@ -689,6 +700,53 @@
                 </div>
             </h:form>
         </p:dialog>
+
+        <script>
+        /* Fix selectOneMenu: cerrar al seleccionar ítem o al click fuera */
+        $(document).ready(function() {
+
+            function snHideAllMenus() {
+                if (window.PrimeFaces) {
+                    $.each(PrimeFaces.widgets, function(k, w) {
+                        if (w && typeof w.hide === 'function' && w.panel && w.panel.is(':visible')) {
+                            try { w.hide(); } catch(ex) {}
+                        }
+                    });
+                } else {
+                    $('.ui-selectonemenu-panel:visible').hide();
+                }
+            }
+
+            $(document).on('mousedown.snfix', function(e) {
+                if (!$(e.target).closest('.ui-selectonemenu, .ui-selectonemenu-panel').length) {
+                    snHideAllMenus();
+                }
+            });
+
+            $(document).on('click.snfix', '.ui-selectonemenu-panel .ui-selectonemenu-item', function() {
+                var $item  = $(this);
+                var $panel = $item.closest('.ui-selectonemenu-panel');
+                var panelId = $panel.attr('id');
+                setTimeout(function() {
+                    if (!$panel.is(':visible')) return;
+                    var label = $item.attr('data-label') !== undefined ? $item.attr('data-label') : $item.text().trim();
+                    var value = $item.attr('data-value') !== undefined ? $item.attr('data-value') : '';
+                    if (window.PrimeFaces) {
+                        $.each(PrimeFaces.widgets, function(k, w) {
+                            if (w && w.panel && w.panel.attr('id') === panelId) {
+                                if (w.label) w.label.val(label);
+                                if (w.input) { w.input.val(value); w.input.trigger('change'); }
+                                try { w.hide(); } catch(ex) { $panel.hide(); }
+                                return false;
+                            }
+                        });
+                    } else {
+                        $panel.hide();
+                    }
+                }, 80);
+            });
+        });
+        </script>
 
     </h:body>
 </html>

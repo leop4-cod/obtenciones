@@ -81,7 +81,10 @@
                 </div>
                 <h:panelGroup rendered="#{registroBean.editMode and registroBean.form.status != null}">
                     <span class="sn-badge sn-badge-#{registroBean.form.status}">
-                        #{registroBean.getStatusLabel(registroBean.form.status)}
+                        #{registroBean.form.status eq 'DELIVERED' ? 'EN PROCESO' :
+                          (registroBean.form.status eq 'ACCEPTED'  ? 'ACEPTADO' :
+                          (registroBean.form.status eq 'FINISHED'  ? 'FINALIZADO' :
+                          (registroBean.form.status eq 'PREVIEW'   ? 'VISTA PREV.' : 'GUARDADO')))}
                     </span>
                 </h:panelGroup>
             </div>
@@ -96,6 +99,14 @@
                             Modifique los campos y presione <strong>Guardar Cambios</strong>
                         </span>
                         <div class="btns">
+                            <p:commandButton id="btnEliminarTop"
+                                             value="Eliminar"
+                                             icon="pi pi-trash"
+                                             action="#{registroBean.eliminarRegistro}"
+                                             immediate="true"
+                                             styleClass="ui-button-danger"
+                                             style="min-width:110px;"
+                                             onclick="if(!confirm('¿Eliminar permanentemente este registro?')) return false;"/>
                             <p:commandButton id="btnCancelarTop"
                                              value="Cancelar"
                                              icon="pi pi-times"
@@ -197,6 +208,14 @@
                                                      readonly="#{registroBean.editMode}"/>
                                     </div>
                                 </div>
+                                <div class="col-md-4">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Numeración Interna</span>
+                                        <p:inputText value="#{registroBean.form.numeracionInterna}"
+                                                     style="width:100%;" maxlength="100"
+                                                     placeholder="Numeración interna de la empresa"/>
+                                    </div>
+                                </div>
                             </div>
 
                             <hr style="border:none; border-top:1px solid #e0ece0; margin:18px 0;"/>
@@ -289,12 +308,10 @@
                                                  placeholder="Cruzamiento, mutación, selección clonal, etc."/>
                             </div>
                             <div class="sn-fld">
-                                <span class="sn-lbl">Descripción de Características Distintivas <span class="sn-req">*</span></span>
+                                <span class="sn-lbl">Descripción de Características Distintivas</span>
                                 <p:inputTextarea value="#{registroBean.form.featuresDescription}"
                                                  rows="4" autoResize="true" style="width:100%"
-                                                 placeholder="Morfología, color, tamaño, resistencias, calidad..."
-                                                 required="true"
-                                                 requiredMessage="La descripción de características es obligatoria."/>
+                                                 placeholder="Morfología, color, tamaño, resistencias, calidad..."/>
                             </div>
                             <div class="sn-fld">
                                 <span class="sn-lbl">Mecanismo de Reproducción</span>
@@ -382,6 +399,7 @@
                                                          requiredMessage="El estado es obligatorio.">
                                             <f:selectItem itemLabel="Guardado"     itemValue="SAVED"/>
                                             <f:selectItem itemLabel="En Proceso"   itemValue="DELIVERED"/>
+                                            <f:selectItem itemLabel="Aceptado"     itemValue="ACCEPTED"/>
                                             <f:selectItem itemLabel="Vista Previa" itemValue="PREVIEW"/>
                                             <f:selectItem itemLabel="Finalizado"   itemValue="FINISHED"/>
                                         </p:selectOneMenu>
@@ -434,9 +452,15 @@
                                 <div class="col-md-6">
                                     <div class="sn-fld">
                                         <span class="sn-lbl">Fecha de Presentación</span>
-                                        <p:calendar value="#{registroBean.form.applicationDate}"
-                                                    pattern="dd/MM/yyyy" style="width:100%"
-                                                    showOn="button" showButtonPanel="true"/>
+                                        <h:panelGroup rendered="#{empty param['subiendoDocs']}">
+                                            <p:calendar value="#{registroBean.form.applicationDate}"
+                                                        pattern="dd/MM/yyyy HH:mm:ss"
+                                                        style="width:100%"
+                                                        showOn="button"
+                                                        showButtonPanel="true"
+                                                        showTime="true"
+                                                        timeFormat="HH:mm:ss"/>
+                                        </h:panelGroup>
                                     </div>
                                 </div>
                             </div>
@@ -508,7 +532,7 @@
                                                     <strong>
                                                         #{registroBean.form.applicationNumber}
                                                     </strong>
-                                                    — Seleccione los 3 documentos y presione "Subir Todos".
+                                                    — Seleccione uno o más documentos y presione "Subir Todos los Documentos".
                                                 </span>
                                             </div>
                                         </h:panelGroup>
@@ -542,6 +566,7 @@
                                                         <p:fileUpload value="#{registroBean.archivoFormulario}"
                                                                       mode="simple"
                                                                       skinSimple="true"
+                                                                      label="Elegir"
                                                                       sizeLimit="10000000"
                                                                       allowTypes="/(\.|\/)(pdf)$/i"/>
                                                     </div>
@@ -558,6 +583,7 @@
                                                                       mode="simple"
                                                                       skinSimple="true"
                                                                       multiple="true"
+                                                                      label="Elegir"
                                                                       sizeLimit="5000000"
                                                                       allowTypes="/(\.|\/)(jpe?g|png)$/i"/>
                                                     </div>
@@ -573,6 +599,7 @@
                                                         <p:fileUpload value="#{registroBean.archivoPago}"
                                                                       mode="simple"
                                                                       skinSimple="true"
+                                                                      label="Elegir"
                                                                       sizeLimit="5000000"
                                                                       allowTypes="/(\.|\/)(pdf)$/i"/>
                                                     </div>
@@ -580,12 +607,30 @@
 
                                             </div>
 
+                                            <!-- NOMBRE PERSONALIZADO PARA EL ARCHIVO -->
+                                            <div class="row" style="margin-top:16px;">
+                                                <div class="col-md-8">
+                                                    <div class="sn-fld">
+                                                        <span class="sn-lbl">
+                                                            <i class="pi pi-tag" style="margin-right:4px;"></i>
+                                                            Nombre personalizado del archivo (opcional)
+                                                        </span>
+                                                        <p:inputText value="#{registroBean.nombrePersonalizado}"
+                                                                     style="width:100%"
+                                                                     placeholder="Ej: Comprobante de Pago Enero 2025"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             <!-- BOTÓN SUBIR TODOS -->
                                             <div style="text-align:center; margin-top:20px;">
-                                                <p:commandButton value="Subir Todos los Documentos"
+                                                <input type="hidden" name="subiendoDocs" id="subiendoDocsFlag" value=""/>
+                                                <p:commandButton id="btnSubirDocs"
+                                                                 value="Subir Todos los Documentos"
                                                                  icon="pi pi-cloud-upload"
                                                                  action="#{registroBean.subirTodosLosArchivos}"
                                                                  ajax="false"
+                                                                 onclick="document.getElementById('subiendoDocsFlag').value='1';"
                                                                  styleClass="sn-btn-primary"
                                                                  style="min-width:250px; font-size:14px;"/>
                                             </div>
@@ -626,7 +671,8 @@
                                             style="font-size:12px;">
 
                                     <p:column headerText="Archivo" style="width:45%">
-                                        <h:outputText value="#{arch.nombreArchivo}"/>
+                                        <h:outputText value="#{arch.nombreMostrar}"
+                                                      title="Nombre original: #{arch.nombreArchivo}"/>
                                     </p:column>
 
                                     <p:column headerText="Fecha"
@@ -743,51 +789,24 @@
                             </div>
 
                         </p:tab>
-                        <p:confirmDialog global="true"
-                                        showEffect="fade"
-                                        hideEffect="fade"
-                                        responsive="true"
-                                        width="350">
-
-                            <p:commandButton value="Sí"
-                                            type="button"
-                                            styleClass="ui-confirmdialog-yes ui-button-danger"/>
-
-                            <p:commandButton value="No"
-                                            type="button"
-                                            styleClass="ui-confirmdialog-no ui-button-secondary"/>
-
-                        </p:confirmDialog>
                     </p:tabView>
 
-                    <!-- ── BARRA ACCIÓN FIJA ── -->
-                    <div class="sn-action-bar">
-                        <p:commandButton id="btnCancelar"
-                                         value="Cancelar"
-                                         icon="pi pi-times"
-                                         action="#{registroBean.cancelar}"
-                                         immediate="true"
-                                         styleClass="sn-btn-secondary"
-                                         style="min-width:120px;"/>
-                        <p:commandButton id="btnGuardarNuevo"
-                                         rendered="#{!registroBean.editMode}"
-                                         value="Guardar Registro"
-                                         icon="pi pi-save"
-                                         action="#{registroBean.saveRegistro}"
-                                         process="@form"
-                                         update=":mensajes"
-                                         styleClass="sn-btn-primary"
-                                         style="min-width:160px;"/>
-                        <p:commandButton id="btnGuardarEdicion"
-                                         rendered="#{registroBean.editMode}"
-                                         value="Guardar Cambios"
-                                         icon="pi pi-check"
-                                         action="#{registroBean.updateRegistro}"
-                                         process="@form"
-                                         update=":mensajes"
-                                         styleClass="sn-btn-primary"
-                                         style="min-width:160px;"/>
-                    </div>
+                    <p:confirmDialog global="true"
+                                    showEffect="fade"
+                                    hideEffect="fade"
+                                    responsive="true"
+                                    width="350">
+
+                        <p:commandButton value="Sí"
+                                        type="button"
+                                        styleClass="ui-confirmdialog-yes ui-button-danger"/>
+
+                        <p:commandButton value="No"
+                                        type="button"
+                                        styleClass="ui-confirmdialog-no ui-button-secondary"/>
+
+                    </p:confirmDialog>
+
 
                 </div><!-- sn-card -->
 
@@ -820,6 +839,74 @@
                 </div>
             </h:form>
         </p:dialog>
+
+        <script>//<![CDATA[
+        /* Fix selectOneMenu: cerrar al seleccionar ítem o al click fuera */
+        $(document).ready(function() {
+
+            function snFindWidgetByPanel($panel) {
+                var found = null;
+                if (!window.PrimeFaces) return null;
+                var pid = $panel.attr('id');
+                $.each(PrimeFaces.widgets, function(k, w) {
+                    if (w && w.panel && w.panel.attr && w.panel.attr('id') === pid) {
+                        found = w;
+                        return false;
+                    }
+                });
+                return found;
+            }
+
+            function snHideAllMenus() {
+                $('.ui-selectonemenu-panel:visible').each(function() {
+                    var $panel = $(this);
+                    var w = snFindWidgetByPanel($panel);
+                    if (w && typeof w.hide === 'function') {
+                        try { w.hide(); } catch(ex) { $panel.hide(); }
+                    } else {
+                        $panel.hide();
+                    }
+                });
+            }
+
+            /* Click fuera de cualquier menú → cerrar todos */
+            $(document).on('mousedown.snfix', function(e) {
+                if (!$(e.target).closest('.ui-selectonemenu, .ui-selectonemenu-panel').length) {
+                    snHideAllMenus();
+                }
+            });
+
+            /* Click en ítem: forzar selección y cierre */
+            $(document).on('click.snfix', '.ui-selectonemenu-panel .ui-selectonemenu-item', function(e) {
+                var $item  = $(this);
+                if ($item.hasClass('ui-state-disabled')) return;
+                var $panel = $item.closest('.ui-selectonemenu-panel');
+                var w = snFindWidgetByPanel($panel);
+                if (!w) { $panel.hide(); return; }
+
+                var label = $item.attr('data-label');
+                if (label === undefined) label = $item.text().trim();
+                var value = $item.attr('data-label'); /* fallback */
+
+                /* Buscar el value real en las options del select nativo */
+                if (w.options && w.options.length) {
+                    var idx = $panel.find('.ui-selectonemenu-item').index($item);
+                    if (idx >= 0 && w.options[idx]) {
+                        value = w.options[idx].value;
+                    }
+                }
+
+                if (w.label) w.label.text(label);
+                if (w.input) {
+                    w.input.val(value);
+                    w.input.trigger('change');
+                }
+                $panel.find('.ui-selectonemenu-item').removeClass('ui-state-highlight ui-state-active');
+                $item.addClass('ui-state-highlight');
+                try { w.hide(); } catch(ex) { $panel.hide(); }
+            });
+        });
+        //]]></script>
 
     </h:body>
 </html>

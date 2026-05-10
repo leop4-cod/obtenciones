@@ -42,8 +42,11 @@ public class RegistroBean implements Serializable {
     private UploadedFile archivoFormulario;
     private UploadedFiles archivosFotos;
     private UploadedFile archivoPago;
+    private String nombrePersonalizado;
 
-    
+    private String personaAsignar;
+
+
     private static final long MAX_FORM_PDF_SIZE = 10L * 1024 * 1024;
     private static final long MAX_PAYMENT_PDF_SIZE = 5L * 1024 * 1024;
     private static final long MAX_PHOTO_SIZE = 5L * 1024 * 1024;
@@ -89,6 +92,8 @@ public class RegistroBean implements Serializable {
             form.setCreateDate(new Timestamp(System.currentTimeMillis()));
             if (form.getApplicationDate() == null) {
                 form.setApplicationDate(new Timestamp(System.currentTimeMillis()));
+            } else if (!(form.getApplicationDate() instanceof java.sql.Timestamp)) {
+                form.setApplicationDate(new Timestamp(form.getApplicationDate().getTime()));
             }
 
             VegetableFormsDAO dao = new VegetableFormsDAO(form);
@@ -102,6 +107,34 @@ public class RegistroBean implements Serializable {
             return null;
         }
     }
+
+    public String saveRegistroAndStay() {
+        try {
+            if (form.getStatus() == null) form.setStatus(Status.SAVED);
+            if (form.getFlowPhase() == null) form.setFlowPhase(FlowPhase.INITIAL);
+            if (form.getStatusFlow() == null) form.setStatusFlow(StatusFlow.PENDING);
+            form.setCreateDate(new Timestamp(System.currentTimeMillis()));
+            if (form.getApplicationDate() == null) {
+                form.setApplicationDate(new Timestamp(System.currentTimeMillis()));
+            } else if (!(form.getApplicationDate() instanceof java.sql.Timestamp)) {
+                form.setApplicationDate(new Timestamp(form.getApplicationDate().getTime()));
+            }
+
+            VegetableFormsDAO dao = new VegetableFormsDAO(form);
+            dao.persist();
+
+            editMode = true;
+            archivosSubidos = new ArrayList<>();
+            registrarHistorial(form, "Registro creado");
+            addInfo("Registro guardado. Ahora puede subir los documentos.");
+            return null;
+        } catch (Exception e) {
+            addError("ERROR AL GUARDAR: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
     public String updateRegistro() {
 
@@ -132,6 +165,10 @@ public class RegistroBean implements Serializable {
     }
 
     private boolean guardarArchivo(UploadedFile file) throws Exception {
+        return guardarArchivo(file, null);
+    }
+
+    private boolean guardarArchivo(UploadedFile file, String customName) throws Exception {
         if (file == null || file.getSize() == 0) {
             return false;
         }
@@ -186,6 +223,7 @@ public class RegistroBean implements Serializable {
         ComprobantePago cp = new ComprobantePago();
         cp.setVegetableFormId(tramiteId);
         cp.setNombreArchivo(nombreOriginal);
+        cp.setNombrePersonalizado(customName != null && !customName.trim().isEmpty() ? customName.trim() : null);
         cp.setRutaArchivo(destino.getAbsolutePath());
         cp.setFechaCarga(new Timestamp(System.currentTimeMillis()));
         cp.setCargadoPor(login != null ? login.getLogin() : "SISTEMA");
@@ -200,9 +238,11 @@ public class RegistroBean implements Serializable {
             UploadedFile file = event.getFile();
             if (file == null) return;
 
-            if (guardarArchivo(file)) {
+            if (guardarArchivo(file, nombrePersonalizado)) {
                 archivosSubidos = new ComprobantePagoDAO(null).getByVegetableFormId(form.getId());
-                addInfo("ARCHIVO SUBIDO: " + file.getFileName());
+                addInfo("ARCHIVO SUBIDO: " + (nombrePersonalizado != null && !nombrePersonalizado.trim().isEmpty()
+                        ? nombrePersonalizado.trim() : file.getFileName()));
+                nombrePersonalizado = null;
             }
         } catch (Exception e) {
             addError("ERROR AL SUBIR ARCHIVO: " + e.getMessage());
@@ -218,31 +258,26 @@ public class RegistroBean implements Serializable {
         int guardados = 0;
         try {
             if (archivoFormulario != null && archivoFormulario.getSize() > 0) {
-                if (guardarArchivo(archivoFormulario)) {
-                    guardados++;
-                }
+                if (guardarArchivo(archivoFormulario, nombrePersonalizado)) guardados++;
             }
             if (archivosFotos != null) {
                 for (UploadedFile foto : archivosFotos.getFiles()) {
                     if (foto != null && foto.getSize() > 0) {
-                        if (guardarArchivo(foto)) {
-                            guardados++;
-                        }
+                        if (guardarArchivo(foto, null)) guardados++;
                     }
                 }
             }
             if (archivoPago != null && archivoPago.getSize() > 0) {
-                if (guardarArchivo(archivoPago)) {
-                    guardados++;
-                }
+                if (guardarArchivo(archivoPago, null)) guardados++;
             }
 
             if (guardados > 0) {
                 archivosSubidos = new ComprobantePagoDAO(null).getByVegetableFormId(form.getId());
-                addInfo("Se guardaron " + guardados + " archivo(s). ");
+                addInfo("Se guardaron " + guardados + " archivo(s).");
                 archivoFormulario = null;
                 archivosFotos = null;
                 archivoPago = null;
+                nombrePersonalizado = null;
             } else {
                 addError("No se seleccionó ningún archivo para cargar.");
             }
@@ -252,6 +287,10 @@ public class RegistroBean implements Serializable {
     }
 
     private void registrarHistorial(VegetableForms v, String descripcion) {
+        registrarHistorial(v, descripcion, null);
+    }
+
+    private void registrarHistorial(VegetableForms v, String descripcion, String assignedTo) {
         if (v == null || v.getApplicationNumber() == null) return;
         try {
             History h = new History();
@@ -259,9 +298,34 @@ public class RegistroBean implements Serializable {
             h.setDescription(descripcion + " por " + (login != null ? login.getLogin() : "sistema"));
             h.setFecha(new Timestamp(System.currentTimeMillis()));
             h.setHistoryUser(login != null ? login.getLogin() : "sistema");
+            if (assignedTo != null && !assignedTo.trim().isEmpty()) {
+                h.setAssignedTo(assignedTo.trim());
+            }
             new Controller().saveHistory(h);
         } catch (Exception e) {
             System.err.println("[RegistroBean] No se pudo guardar historial: " + e.getMessage());
+        }
+    }
+
+    public void asignarTramite() {
+        if (personaAsignar == null || personaAsignar.trim().isEmpty()) {
+            addError("Por favor escriba el nombre de la persona a asignar.");
+            return;
+        }
+        if (!editMode || form == null || form.getApplicationNumber() == null) {
+            addError("No hay un trámite válido para asignar.");
+            return;
+        }
+        try {
+            String persona = personaAsignar.trim();
+            form.setAssignedUser(persona);
+            new VegetableFormsDAO(form).actualizarCamposEditables(form);
+            registrarHistorial(form, "Trámite asignado a " + persona, persona);
+            addInfo("Trámite asignado a " + persona + " correctamente.");
+            personaAsignar = null;
+        } catch (Exception e) {
+            addError("ERROR AL ASIGNAR: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -362,4 +426,26 @@ public class RegistroBean implements Serializable {
 
     public UploadedFile getArchivoPago() { return archivoPago; }
     public void setArchivoPago(UploadedFile archivoPago) { this.archivoPago = archivoPago; }
+
+    public String getNombrePersonalizado() { return nombrePersonalizado; }
+    public void setNombrePersonalizado(String nombrePersonalizado) { this.nombrePersonalizado = nombrePersonalizado; }
+
+    public String getPersonaAsignar() { return personaAsignar; }
+    public void setPersonaAsignar(String personaAsignar) { this.personaAsignar = personaAsignar; }
+
+    /** Elimina el registro actual y redirige a la lista principal. */
+    public String eliminarRegistro() {
+        if (!editMode || form == null || form.getId() == null) {
+            addError("No hay un registro cargado para eliminar.");
+            return null;
+        }
+        try {
+            new senadi.gob.ec.adminob.dao.VegetableFormsDAO(null).deleteById(form.getId());
+            return "index?faces-redirect=true";
+        } catch (Exception e) {
+            addError("ERROR AL ELIMINAR: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

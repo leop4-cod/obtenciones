@@ -4,7 +4,7 @@
  */
 package senadi.gob.ec.adminob.util;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpSession;
@@ -43,7 +43,7 @@ public class Controller {
         return vd.buscarTodosByType(type);
     }
 
-    public List<VegetableForms> buscarTodosByTypeAndDate(String type, Date start, Date end) {
+    public List<VegetableForms> buscarTodosByTypeAndDate(String type, Timestamp start, Timestamp end) {
         VegetableFormsDAO vd = new VegetableFormsDAO(null);
         return vd.buscarTodosByTypeAndDate(type, start, end);
     }

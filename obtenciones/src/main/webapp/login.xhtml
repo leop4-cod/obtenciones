@@ -29,13 +29,13 @@
             ">
         <!-- Start Page Loading -->
         <div id="loader-wrapper">
-            <div id="loader"></div>        
+            <div id="loader"></div>
             <div class="loader-section section-left"></div>
             <div class="loader-section section-right"></div>
         </div>
-        <p:growl id="mensajes" showDetail="true" life="2000" />        
+        <p:growl id="mensajes" showDetail="true" life="2000" />
 
-        <h:form id="formlog" style="margin-top: 10%;">            
+        <h:form id="formlog" style="margin-top: 10%;">
             <p:panel id="panelin" style="width:300px; text-align: center; margin:20px auto; box-shadow: 1px 1px 10px black !important; ">
 
                 <div style="padding: 15px 0">
@@ -59,11 +59,11 @@
                     <i id="phoneicon" class="material-icons prefix">lock</i>
                     <label id="lbl_password" class="" for="icon_password"
                            onclick="animaOnClick(this, 'icon_password', 'phoneicon')">Password</label>
-                    <h:inputSecret id="icon_password" class="validate" 
+                    <h:inputSecret id="icon_password" class="validate"
                                    onfocus="animaOnFocus('lbl_password', 'phoneicon')"
                                    onblur="animaOnBlur(this, 'lbl_password', 'phoneicon')"
                                    value="#{loginBean.clave}" required="true"
-                                   label="Password"/>                    
+                                   label="Password"/>
                 </div>
 
                 <p:commandButton id="loginButton" value="INGRESAR"
@@ -74,7 +74,7 @@
                 </p:commandButton>
 
             </p:panel>
-            <div style="color: white; text-align: center !important; margin: 0 auto !important;">Manual de Usuario. Click 
+            <div style="color: white; text-align: center !important; margin: 0 auto !important;">Manual de Usuario. Click
                 <a target="_blank" href="http://www.derechosintelectuales.gob.ec">Aquí</a>
             </div>
         </h:form>

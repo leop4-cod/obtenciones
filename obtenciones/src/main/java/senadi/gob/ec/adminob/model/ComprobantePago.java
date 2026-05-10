@@ -50,6 +50,10 @@ public class ComprobantePago implements Serializable {
     @Column(name = "tamano_bytes")
     private Long tamanoBytes;
 
+    /** Nombre personalizado que ingresa el usuario al adjuntar el archivo. Si null, se usa nombreArchivo. */
+    @Column(name = "nombre_personalizado", length = 255)
+    private String nombrePersonalizado;
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
@@ -70,4 +74,13 @@ public class ComprobantePago implements Serializable {
 
     public Long getTamanoBytes() { return tamanoBytes; }
     public void setTamanoBytes(Long tamanoBytes) { this.tamanoBytes = tamanoBytes; }
+
+    public String getNombrePersonalizado() { return nombrePersonalizado; }
+    public void setNombrePersonalizado(String nombrePersonalizado) { this.nombrePersonalizado = nombrePersonalizado; }
+
+    /** Devuelve el nombre para mostrar: nombre personalizado si existe, si no el nombre original del archivo. */
+    public String getNombreMostrar() {
+        return (nombrePersonalizado != null && !nombrePersonalizado.trim().isEmpty())
+                ? nombrePersonalizado.trim() : nombreArchivo;
+    }
 }

@@ -43,6 +43,9 @@
         <class>senadi.gob.ec.adminob.model.CertificadoObtentor</class>
         <!-- Nueva entidad 1:N comprobantes de pago -->
         <class>senadi.gob.ec.adminob.model.ComprobantePago</class>
+        <!-- Módulo de Trámites SENADI -->
+        <class>senadi.gob.ec.adminob.model.Tramite</class>
+        <class>senadi.gob.ec.adminob.model.DocumentoTramite</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 

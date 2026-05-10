@@ -68,6 +68,7 @@ public class VegetableBean implements Serializable {
 
     private String historial;
     private String newAssignedUser;
+    private String reassignComment;
     private String statusObservation;
     private StatusFlow pendingStatusFlow;
     private StatusFlow previousStatusFlow;
@@ -88,10 +89,10 @@ public class VegetableBean implements Serializable {
 
     private void loadVegetables() {
         Controller c = new Controller();
-        radioOption = "Todos";
+        radioOption = "Iniciados";
         try {
             login = c.getLogin();
-            vegetables = c.buscarTodos();
+            vegetables = c.buscarTodosByType("Iniciados");
         } catch (Exception ex) {
             vegetables = new java.util.ArrayList<>();
             System.err.println("[VegetableBean] Error al cargar obtenciones: " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
@@ -113,7 +114,7 @@ public class VegetableBean implements Serializable {
             PrimeFaces.current().ajax().addCallbackParam("url", previewPath);
             PrimeFaces.current().ajax().addCallbackParam("doit", true);
         } else {
-            Operations.message(Operations.ERROR, "HAY UN PROBLEMA CON EL REGISTRO SELECCIONADO");
+            Operations.message(Operations.ERROR, "Hay un problema con el registro seleccionado.");
         }
     }
 
@@ -125,7 +126,7 @@ public class VegetableBean implements Serializable {
             PrimeFaces.current().ajax().addCallbackParam("url", previewPath);
             PrimeFaces.current().ajax().addCallbackParam("doit", true);
         } else {
-            Operations.message(Operations.ERROR, "HAY UN PROBLEMA CON EL REGISTRO SELECCIONADO");
+            Operations.message(Operations.ERROR, "Hay un problema con el registro seleccionado.");
         }
     }
 
@@ -140,7 +141,7 @@ public class VegetableBean implements Serializable {
             c.precargarLockers(vegetables);
         } catch (Exception ex) {
             vegetables = new java.util.ArrayList<>();
-            Operations.message(Operations.ERROR, "NO SE PUDO CONSULTAR LA BASE LOCAL");
+            Operations.message(Operations.ERROR, "No se pudo consultar la base de datos local.");
         }
         cleanDate();
     }
@@ -149,14 +150,16 @@ public class VegetableBean implements Serializable {
         if (Operations.validateDate(startDate) && Operations.validateDate(endDate)) {
             Controller c = new Controller();
             try {
-                vegetables = c.buscarTodosByTypeAndDate(radioOption, startDate, endDate);
+                vegetables = c.buscarTodosByTypeAndDate(radioOption,
+                        startDate != null ? new java.sql.Timestamp(startDate.getTime()) : null,
+                        endDate   != null ? new java.sql.Timestamp(endDate.getTime())   : null);
                 c.precargarLockers(vegetables);
             } catch (Exception ex) {
                 vegetables = new java.util.ArrayList<>();
-                Operations.message(Operations.ERROR, "NO SE PUDO CONSULTAR LA BASE LOCAL");
+                Operations.message(Operations.ERROR, "No se pudo consultar la base de datos local.");
             }
         } else {
-            Operations.message(Operations.ERROR, "INGRESE UN RANGO DE FECHAS CORRECTO");
+            Operations.message(Operations.ERROR, "Ingrese un rango de fechas correcto.");
         }
     }
 
@@ -171,24 +174,24 @@ public class VegetableBean implements Serializable {
      */
     public void assignApplication(ActionEvent ae) {
         if (vegetableForms == null || vegetableForms.getId() == null) {
-            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
             return;
         }
         Controller c = new Controller();
         VegetableForms current = c.getVegetableFormsById(vegetableForms.getId());
 
         if (current == null || current.getId() == null) {
-            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
             return;
         }
         if (current.getAssignedUser() != null && !current.getAssignedUser().trim().isEmpty()) {
             if (current.getAssignedUser().equalsIgnoreCase(login.getLogin())) {
                 Operations.message(Operations.AVISO,
-                    "EL TRAMITE " + current.getApplicationNumber() + " YA ESTA ASIGNADO AL USUARIO ACTUAL");
+                    "El trámite" + current.getApplicationNumber() + " ya está asignado al usuario actual.");
             } else {
                 Operations.message(Operations.ERROR,
-                    "EL TRAMITE " + current.getApplicationNumber()
-                    + " YA ESTA ASIGNADO AL USUARIO " + current.getAssignedUser());
+                    "El trámite" + current.getApplicationNumber()
+                    + " ya está asignado al usuario" + current.getAssignedUser());
             }
             return;
         }
@@ -198,29 +201,29 @@ public class VegetableBean implements Serializable {
         if (ok) {
             onRadioSelected();
             Operations.message(Operations.INFORMACION,
-                "SE HA ASIGNADO CORRECTAMENTE EL TRAMITE "
+                "Se asignó correctamente el trámite"
                 + current.getApplicationNumber() + " AL USUARIO " + login.getLogin());
         } else {
             Operations.message(Operations.AVISO,
-                "NO SE PUDO ASIGNAR EL TRAMITE " + current.getApplicationNumber());
+                "No se pudo asignar el trámite " + current.getApplicationNumber() + ".");
         }
     }
 
     public void prepareStatusFlowChange() {
         vegetableForms = (VegetableForms) vegetableTable.getRowData();
         if (vegetableForms == null || vegetableForms.getId() == null) {
-            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
             return;
         }
 
         Controller c = new Controller();
         VegetableForms current = c.getVegetableFormsById(vegetableForms.getId());
         if (current == null || current.getId() == null) {
-            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
             return;
         }
         if (!isAssignedToCurrentUser(current)) {
-            Operations.message(Operations.ERROR, "SOLO EL USUARIO ASIGNADO PUEDE CAMBIAR EL ESTADO DE GESTION");
+            Operations.message(Operations.ERROR, "Solo el usuario asignado puede cambiar el estado de gestión.");
             onRadioSelected();
             return;
         }
@@ -230,7 +233,7 @@ public class VegetableBean implements Serializable {
         vegetableForms.setStatusFlow(previousStatusFlow);
 
         if (pendingStatusFlow == null) {
-            Operations.message(Operations.AVISO, "SELECCIONE UN ESTADO DE GESTION VALIDO");
+            Operations.message(Operations.AVISO, "Seleccione un estado de gestión válido.");
             onRadioSelected();
             return;
         }
@@ -245,27 +248,27 @@ public class VegetableBean implements Serializable {
 
     public void confirmStatusFlowChange() {
         if (vegetableForms == null || vegetableForms.getId() == null) {
-            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
             return;
         }
         if (statusObservation == null || statusObservation.trim().isEmpty()) {
-            Operations.message(Operations.ERROR, "DEBE INGRESAR UNA OBSERVACION PARA CAMBIAR EL ESTADO DE GESTION");
+            Operations.message(Operations.ERROR, "Debe ingresar una observación para cambiar el estado de gestión.");
             return;
         }
 
         Controller c = new Controller();
         VegetableForms current = c.getVegetableFormsById(vegetableForms.getId());
         if (current == null || current.getId() == null) {
-            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
             return;
         }
         if (!isAssignedToCurrentUser(current)) {
-            Operations.message(Operations.ERROR, "SOLO EL USUARIO ASIGNADO PUEDE CAMBIAR EL ESTADO DE GESTION");
+            Operations.message(Operations.ERROR, "Solo el usuario asignado puede cambiar el estado de gestión.");
             onRadioSelected();
             return;
         }
         if (pendingStatusFlow == null) {
-            Operations.message(Operations.AVISO, "NO EXISTE UN NUEVO ESTADO DE GESTION PARA GUARDAR");
+            Operations.message(Operations.AVISO, "No existe un nuevo estado de gestión para guardar.");
             return;
         }
 
@@ -281,9 +284,9 @@ public class VegetableBean implements Serializable {
             statusObservation = "";
             onRadioSelected();
             PrimeFaces.current().executeScript("PF('dlgStatusFlow').hide();");
-            Operations.message(Operations.INFORMACION, "SE ACTUALIZO EL ESTADO DE GESTION DEL TRAMITE " + current.getApplicationNumber());
+            Operations.message(Operations.INFORMACION, "Se actualizó el estado de gestión del trámite " + current.getApplicationNumber() + ".");
         } else {
-            Operations.message(Operations.ERROR, "NO SE PUDO ACTUALIZAR EL ESTADO DE GESTION");
+            Operations.message(Operations.ERROR, "No se pudo actualizar el estado de gestión.");
         }
     }
 
@@ -291,50 +294,53 @@ public class VegetableBean implements Serializable {
         if (vegetableForms != null) {
             newAssignedUser = vegetableForms.getAssignedUser();
         }
+        reassignComment = null;
     }
 
     public void reassignApplication() {
         if (vegetableForms == null || vegetableForms.getId() == null) {
-            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
             return;
         }
         if (newAssignedUser == null || newAssignedUser.trim().isEmpty()) {
-            Operations.message(Operations.AVISO, "INGRESE EL USUARIO AL QUE DESEA REASIGNAR EL TRAMITE");
+            Operations.message(Operations.AVISO, "Ingrese el usuario al que desea reasignar el trámite.");
             return;
         }
 
         Controller c = new Controller();
         VegetableForms current = c.getVegetableFormsById(vegetableForms.getId());
         if (current == null || current.getId() == null) {
-            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
             return;
         }
         if (!isAssignedToCurrentUser(current)) {
-            Operations.message(Operations.ERROR, "SOLO EL USUARIO ASIGNADO PUEDE REASIGNAR ESTE TRAMITE");
+            Operations.message(Operations.ERROR, "Solo el usuario asignado puede reasignar este trámite.");
             return;
         }
 
         String targetUser = newAssignedUser.trim();
         if (targetUser.equalsIgnoreCase(current.getAssignedUser())) {
-            Operations.message(Operations.AVISO, "INGRESE UN USUARIO DIFERENTE PARA REASIGNAR");
+            Operations.message(Operations.AVISO, "Ingrese un usuario diferente para reasignar.");
             return;
         }
 
         String previousUser = current.getAssignedUser();
         current.setAssignedUser(targetUser);
-        current.setAssignedDate(new Date());
+        current.setAssignedDate(new java.sql.Timestamp(System.currentTimeMillis()));
         if (current.getStatusFlow() == null) {
             current.setStatusFlow(StatusFlow.PENDING);
         }
 
         if (c.updateVegetableForms(current)) {
-            saveHistoryEntry(current.getApplicationNumber(), "Tramite " + current.getApplicationNumber() + " reasignado de "
-                    + previousUser + " a " + targetUser + " por " + login.getLogin());
+            String desc = "Trámite " + current.getApplicationNumber() + " reasignado de "
+                    + previousUser + " a " + targetUser + " por " + login.getLogin();
+            saveHistoryEntry(current.getApplicationNumber(), desc, reassignComment);
+            reassignComment = null;
             onRadioSelected();
             PrimeFaces.current().executeScript("PF('dlgReassign').hide();");
-            Operations.message(Operations.INFORMACION, "SE REASIGNO CORRECTAMENTE EL TRAMITE " + current.getApplicationNumber() + " AL USUARIO " + targetUser);
+            Operations.message(Operations.INFORMACION, "Se reasignó correctamente el trámite " + current.getApplicationNumber() + " al usuario " + targetUser);
         } else {
-            Operations.message(Operations.ERROR, "NO SE PUDO REASIGNAR EL TRAMITE");
+            Operations.message(Operations.ERROR, "No se pudo reasignar el trámite.");
         }
     }
 
@@ -371,13 +377,12 @@ public class VegetableBean implements Serializable {
 
     // 2. Esto cambia lo que el usuario VE en el combo box
     public String getStatusFlowLabel(StatusFlow statusFlow) {
-        if (statusFlow == null) return "SIN GESTION";
-        
+        if (statusFlow == null) return "SIN GESTIÓN";
         switch (statusFlow) {
-            case ATTENDED: return "FINISHED"; 
-            case PENDING:  return "SAVED";    
-            case DENIED:   return "REJECTED"; 
-            case EXPIRED:  return "EXPIRED";  
+            case ATTENDED: return "ATENDIDO";
+            case PENDING:  return "PENDIENTE";
+            case DENIED:   return "NEGADO";
+            case EXPIRED:  return "CADUCADO";
             default: return statusFlow.name();
         }
     }
@@ -429,13 +434,13 @@ public class VegetableBean implements Serializable {
     public void importarExcel(FileUploadEvent event) {
         UploadedFile file = event.getFile();
         if (file == null) {
-            Operations.message(Operations.ERROR, "NO SE RECIBIO EL ARCHIVO EXCEL");
+            Operations.message(Operations.ERROR, "No se recibió el archivo Excel.");
             return;
         }
 
         String fileName = file.getFileName() == null ? "" : file.getFileName().toLowerCase(Locale.ROOT);
         if (!fileName.endsWith(".xlsx") && !fileName.endsWith(".xls")) {
-            Operations.message(Operations.ERROR, "FORMATO NO PERMITIDO. SUBA UN ARCHIVO .XLSX O .XLS");
+            Operations.message(Operations.ERROR, "Formato no permitido. Suba un archivo .xlsx o .xls.");
             return;
         }
 
@@ -448,13 +453,13 @@ public class VegetableBean implements Serializable {
             DataFormatter formatter = new DataFormatter(new Locale("es", "EC"));
             Sheet sheet = findBaseDatosSheet(workbook);
             if (sheet == null) {
-                Operations.message(Operations.AVISO, "NO SE ENCONTRO LA HOJA 'BASE DE DATOS' EN EL EXCEL");
+                Operations.message(Operations.AVISO, "No se encontró la hoja 'BASE DE DATOS' en el Excel.");
                 return;
             }
 
             Row headerRow = findHeaderRow(sheet, formatter);
             if (headerRow == null) {
-                Operations.message(Operations.AVISO, "NO SE ENCONTRO LA FILA DE ENCABEZADOS. USE UNA COLUMNA LLAMADA TRAMITE.");
+                Operations.message(Operations.AVISO, "No se encontró la fila de encabezados. Use una columna llamada TRAMITE.");
                 return;
             }
 
@@ -486,7 +491,7 @@ public class VegetableBean implements Serializable {
                     VegetableForms form = new VegetableForms();
                     form.setApplicationNumber(limit(applicationNumber.trim(), 80));
                     form.setCreateDate(toTimestamp(firstCell(row, columns, "fecha admision de solicitud", "f creacion", "fecha creacion", "create date")));
-                    form.setApplicationDate(toDate(firstCell(row, columns, "fecha admision de solicitud", "f presentacion", "fecha presentacion", "application date")));
+                    form.setApplicationDate(toTimestamp(firstCell(row, columns, "fecha admision de solicitud", "f presentacion", "fecha presentacion", "application date")));
                     form.setBotanicalTaxon(firstValue(row, columns, formatter, "taxon botanico", "taxon", "botanical taxon"));
                     form.setCommonName(firstValue(row, columns, formatter, "nombre comun", "common name"));
                     // Campos de denominacion se dejan fuera en la carga masiva inicial
@@ -497,8 +502,9 @@ public class VegetableBean implements Serializable {
                     form.setAssignedUser(null);
                     String etapaActual = firstValue(row, columns, formatter, "etapa actual", "estado", "status");
                     String estadoExpediente = firstValue(row, columns, formatter, "estado del expediente");
-                    form.setStatus(parseStatus(etapaActual + " " + estadoExpediente));
-                    form.setStatusFlow(parseStatusFlow(etapaActual + " " + estadoExpediente));
+                    String combinedStatus = (etapaActual != null ? etapaActual : "") + " " + (estadoExpediente != null ? estadoExpediente : "");
+                    form.setStatus(parseStatus(combinedStatus));
+                    form.setStatusFlow(parseStatusFlow(combinedStatus));
                     // No se guarda la observacion consolidada en BD porque algunas
                     // instalaciones tienen additional_information con longitud menor.
                     form.setAdditionalInformation(null);
@@ -509,7 +515,7 @@ public class VegetableBean implements Serializable {
                         form.setCreateDate(new Timestamp(System.currentTimeMillis()));
                     }
                     if (form.getApplicationDate() == null) {
-                        form.setApplicationDate(new Date());
+                        form.setApplicationDate(new Timestamp(System.currentTimeMillis()));
                     }
 
                     new VegetableFormsDAO(form).persist();
@@ -529,14 +535,14 @@ public class VegetableBean implements Serializable {
                         + refreshError.getMessage());
             }
             Operations.message(Operations.INFORMACION,
-                    "IMPORTACION COMPLETADA. NUEVOS: " + imported
-                    + " | DUPLICADOS: " + duplicated
-                    + " | OMITIDOS: " + skipped
-                    + " | FALLIDOS: " + failed);
+                    "Importación completada. Nuevos: " + imported
+                    + " | Duplicados: " + duplicated
+                    + " | Omitidos: " + skipped
+                    + " | Fallidos: " + failed);
         } catch (Exception e) {
             java.util.logging.Logger.getLogger(getClass().getName())
                 .log(java.util.logging.Level.SEVERE, "Error importando Excel", e);
-            Operations.message(Operations.ERROR, "IMPORTADOR BASE DE DATOS V3 - ERROR GENERAL: " + e.getMessage());
+            Operations.message(Operations.ERROR, "Error general en importación: " + e.getMessage());
         }
     }
 
@@ -681,9 +687,18 @@ public class VegetableBean implements Serializable {
                 || text.contains("concesion") || text.contains("renuncia") || text.contains("vencimiento")) {
             return Status.FINISHED;
         }
-        if (text.contains("proceso") || text.contains("iniciado") || text.contains("delivered")) return Status.DELIVERED;
+        if (text.contains("aceptado") || text.contains("accepted") || text.contains("aprobado")) {
+            return Status.ACCEPTED;
+        }
+        if (text.contains("proceso") || text.contains("iniciado") || text.contains("delivered")
+                || text.contains("tramite") || text.contains("en tramite") || text.contains("ingresado")
+                || text.contains("entregado") || text.contains("recibido") || text.contains("presentado")) {
+            return Status.DELIVERED;
+        }
         if (text.contains("vista") || text.contains("preview")) return Status.PREVIEW;
-        return Status.SAVED;
+        if (text.contains("guardado") || text.contains("saved") || text.contains("borrador")) return Status.SAVED;
+        // Los registros importados desde Excel son trámites activos por defecto
+        return Status.DELIVERED;
     }
 
     private StatusFlow parseStatusFlow(String value) {
@@ -743,7 +758,7 @@ public class VegetableBean implements Serializable {
             if (file == null) return;
 
             if (this.vegetableForms == null || this.vegetableForms.getId() == null) {
-                Operations.message(Operations.ERROR, "SELECCIONE UN TRÁMITE PRIMERO");
+                Operations.message(Operations.ERROR, "Seleccione un trámite primero.");
                 return;
             }
 
@@ -758,7 +773,7 @@ public class VegetableBean implements Serializable {
 
             if (!esPhoto && !esPdf) {
                 Operations.message(Operations.ERROR,
-                    "TIPO NO PERMITIDO: " + nombreOriginal
+                    "Tipo no permitido: " + nombreOriginal
                     + ". Use PDF para comprobantes o JPG/PNG para fotografías.");
                 return;
             }
@@ -767,7 +782,7 @@ public class VegetableBean implements Serializable {
             long limite = esPhoto ? MAX_PHOTO_SIZE : MAX_PAYMENT_PDF_SIZE;
             if (tamano > limite) {
                 Operations.message(Operations.ERROR,
-                    "EL ARCHIVO SUPERA EL LÍMITE DE " + (limite / (1024 * 1024)) + "MB: " + nombreOriginal);
+                    "El archivo supera el límite de " + (limite / (1024 * 1024)) + " MB: " + nombreOriginal);
                 return;
             }
 
@@ -780,7 +795,7 @@ public class VegetableBean implements Serializable {
                         double relacion = (double) img.getHeight() / img.getWidth();
                         if (Math.abs(relacion - A4_RATIO) > A4_TOLERANCE) {
                             Operations.message(Operations.ERROR,
-                                "FOTOGRAFÍA SIN PROPORCIÓN A4 (1:1.41): " + nombreOriginal
+                                "Fotografía sin proporción A4 (1:1.41): " + nombreOriginal
                                 + " [alto/ancho=" + String.format("%.2f", relacion) + "]");
                             return;
                         }
@@ -800,7 +815,7 @@ public class VegetableBean implements Serializable {
             File carpeta = new File(rutaDestino);
             if (!carpeta.exists() && !carpeta.mkdirs()) {
                 Operations.message(Operations.ERROR,
-                    "NO SE PUDO CREAR EL DIRECTORIO DE DESTINO: " + rutaDestino);
+                    "No se pudo crear el directorio de destino: " + rutaDestino);
                 return;
             }
 
@@ -816,7 +831,7 @@ public class VegetableBean implements Serializable {
             }
 
             if (!archivoDestino.exists()) {
-                Operations.message(Operations.ERROR, "ERROR AL GUARDAR EN DISCO: " + nombreOriginal);
+                Operations.message(Operations.ERROR, "Error al guardar en disco: " + nombreOriginal);
                 return;
             }
 
@@ -831,25 +846,25 @@ public class VegetableBean implements Serializable {
             new ComprobantePagoDAO(cp).persist();
 
             Operations.message(Operations.INFORMACION,
-                "ARCHIVO CARGADO CORRECTAMENTE: " + nombreOriginal);
+                "Archivo cargado correctamente: " + nombreOriginal);
 
         } catch (Exception e) {
             java.util.logging.Logger.getLogger(getClass().getName())
                 .log(java.util.logging.Level.SEVERE, "Error en upload de archivo", e);
-            Operations.message(Operations.ERROR, "ERROR AL GUARDAR ARCHIVO: " + e.getMessage());
+            Operations.message(Operations.ERROR, "Error al guardar archivo: " + e.getMessage());
         }
     }
 
     public void prepareViewUploaded(ActionEvent ae) {
         if (vegetableForms == null || vegetableForms.getId() == null) {
-            Operations.message(Operations.ERROR, "NO SE ENCONTRO EL TRAMITE SELECCIONADO");
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
             return;
         }
         try {
             archivosSubidos = new ComprobantePagoDAO(null).getByVegetableFormId(vegetableForms.getId());
         } catch (Exception e) {
             archivosSubidos = new java.util.ArrayList<>();
-            Operations.message(Operations.ERROR, "NO SE PUDO CARGAR LOS ARCHIVOS SUBIDOS");
+            Operations.message(Operations.ERROR, "No se pudieron cargar los archivos subidos.");
         }
     }
 
@@ -869,9 +884,37 @@ public class VegetableBean implements Serializable {
         return getUploadedFileCount(tramiteId) > 0;
     }
 
+    public void migrarSavedADelivered() {
+        try {
+            int n = new VegetableFormsDAO(null).updateAllSavedToDelivered();
+            onRadioSelected();
+            Operations.message(Operations.INFORMACION,
+                n + " registro(s) cambiados de GUARDADO a EN PROCESO.");
+        } catch (Exception e) {
+            Operations.message(Operations.ERROR,
+                "Error al migrar estados: " + e.getMessage());
+        }
+    }
+
     public void onRowSelect(org.primefaces.event.SelectEvent<VegetableForms> event) {
         this.vegetableForms = event.getObject();
         System.out.println("SELECCIONADO: " + vegetableForms.getApplicationNumber());
+    }
+
+    /** Elimina el trámite seleccionado (solo si no tiene comprobantes de pago asociados). */
+    public void eliminarRegistro(ActionEvent ae) {
+        if (vegetableForms == null || vegetableForms.getId() == null) {
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
+            return;
+        }
+        try {
+            new VegetableFormsDAO(null).deleteById(vegetableForms.getId());
+            Operations.message(Operations.INFORMACION,
+                "Registro eliminado correctamente: " + vegetableForms.getApplicationNumber());
+            onRadioSelected();
+        } catch (Exception e) {
+            Operations.message(Operations.ERROR, "No se pudo eliminar el registro: " + e.getMessage());
+        }
     }
 
         // --- GETTERS Y SETTERS COMPLETOS ---
@@ -899,6 +942,8 @@ public class VegetableBean implements Serializable {
         public void setHistorial(String historial) { this.historial = historial; }
         public String getNewAssignedUser() { return newAssignedUser; }
         public void setNewAssignedUser(String newAssignedUser) { this.newAssignedUser = newAssignedUser; }
+        public String getReassignComment() { return reassignComment; }
+        public void setReassignComment(String reassignComment) { this.reassignComment = reassignComment; }
         public String getStatusObservation() { return statusObservation; }
         public void setStatusObservation(String statusObservation) { this.statusObservation = statusObservation; }
         public StatusFlow getPendingStatusFlow() { return pendingStatusFlow; }
