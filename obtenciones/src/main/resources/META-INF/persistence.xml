@@ -46,6 +46,8 @@
         <!-- Módulo de Trámites SENADI -->
         <class>senadi.gob.ec.adminob.model.Tramite</class>
         <class>senadi.gob.ec.adminob.model.DocumentoTramite</class>
+        <!-- Módulo de Anualidades -->
+        <class>senadi.gob.ec.adminob.model.Anualidad</class>
 
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
