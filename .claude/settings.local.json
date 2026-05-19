@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\NetBeans-12.6\" | ForEach-Object { $_.FullName })",
-      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\thele\\\\AppData\\\\Roaming\\\\NetBeans\" -ErrorAction SilentlyContinue | Select-Object Name; Write-Host \"---\"; Get-ChildItem \"C:\\\\Users\\\\thele\\\\.m2\" -ErrorAction SilentlyContinue | Select-Object -First 5 Name; Write-Host \"---\"; [System.Environment]::GetEnvironmentVariable\\(\"JAVA_HOME\",\"Machine\"\\); [System.Environment]::GetEnvironmentVariable\\(\"JAVA_HOME\",\"User\"\\))",
-      "PowerShell(where.exe java 2>&1; where.exe mvn 2>&1; $env:PATH -split \";\" | Where-Object { $_ -match \"java|jdk|maven|wildfly\" -and $_ -ne \"\" } | Select-Object -First 10)"
-    ]
-  }
-}
