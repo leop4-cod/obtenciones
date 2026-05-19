@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RUTA: src/main/webapp/tramite/certificado-obtentor.xhtml -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Certificado de Obtentor — SENADI</title>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}"/>
+    </h:head>
+    <h:body>
+
+        <!-- ── HEADER ── -->
+        <div class="sn-tramite-header">
+            <img src="#{resource['images/logo.png']}" alt="SENADI" onerror="this.style.display='none'"/>
+            <span class="sn-tramite-title">
+                <i class="fa fa-id-card"/> Emisión del Certificado de Obtentor
+            </span>
+            <span class="sn-tramite-user">#{loginBean.login}</span>
+        </div>
+        <div class="sn-tramite-gold"></div>
+
+        <!-- ── CONTENIDO ── -->
+        <div class="sn-flow-card">
+            <h4>
+                <span class="sn-step-badge">Paso 13</span>
+                Emisión del Certificado de Obtentor de Variedad Vegetal
+            </h4>
+
+            <p:messages autoUpdate="true" showDetail="true" closable="true"/>
+
+            <h:form id="fCertOb">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="sn-fl">ID del Trámite <span style="color:var(--sn-danger);">*</span></div>
+                        <p:inputText id="formId" style="width:100%;"/>
+                        <p:commandButton value="Cargar" icon="fa fa-search"
+                                         styleClass="sn-btn-secondary" style="margin-top:8px;"
+                                         action="#{muestraFlowBean.cargarTramite(formId.value)}"
+                                         update="infoPanel certObPanel" process="@form"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="infoPanel">
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null and muestraFlowBean.selectedForm.id != null}">
+                        <div class="sn-tramite-info" style="margin-top:15px;">
+                            <span><strong>Expediente:</strong> #{muestraFlowBean.selectedForm.applicationNumber}</span>
+                            <span><strong>Especie:</strong> #{muestraFlowBean.selectedForm.botanicalTaxon} — #{muestraFlowBean.selectedForm.commonName}</span>
+                            <span><strong>Grupo varietal:</strong> #{muestraFlowBean.selectedForm.varietalGroup}</span>
+                            <h:panelGroup rendered="#{muestraFlowBean.resolucion != null}">
+                                <span><strong>Resolución N°:</strong> #{muestraFlowBean.resolucion.numResolucion}
+                                    (#{muestraFlowBean.resolucion.tipo})</span>
+                            </h:panelGroup>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+
+                <p:outputPanel id="certObPanel">
+                    <!-- Certificado ya emitido — visualización final -->
+                    <h:panelGroup rendered="#{muestraFlowBean.certificadoObtentor != null}">
+                        <div class="sn-cert-final" style="margin-top:20px;">
+                            <div style="font-size:12px; color:#555; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:6px;">
+                                Certificado de Obtentor de Variedad Vegetal
+                            </div>
+                            <div class="sn-cert-num">
+                                #{muestraFlowBean.certificadoObtentor.numCertificado}
+                            </div>
+                            <div class="sn-cert-especie">
+                                #{muestraFlowBean.selectedForm.botanicalTaxon} —
+                                #{muestraFlowBean.selectedForm.commonName}
+                            </div>
+                            <div style="font-size:13px; color:#2e7d32; margin-top:6px;">
+                                Emitido:
+                                <h:outputText value="#{muestraFlowBean.certificadoObtentor.fechaEmision}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </div>
+                            <div style="font-size:13px; color:#2e7d32;">
+                                Vence:
+                                <h:outputText value="#{muestraFlowBean.certificadoObtentor.fechaVencimiento}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </div>
+                            <div class="sn-cert-vigencia">
+                                Vigencia: #{muestraFlowBean.certificadoObtentor.vigenciaYears} años
+                            </div>
+                            <div style="font-size:13px; color:#2e7d32; margin-top:10px;">
+                                Emitido por: #{muestraFlowBean.certificadoObtentor.emitidoPor}
+                            </div>
+                        </div>
+                        <div style="margin-top:18px; text-align:center;">
+                            <p:button value="Trámite Completado — Ir al Inicio" icon="fa fa-check-circle"
+                                      styleClass="sn-btn-primary" outcome="/index"/>
+                        </div>
+                    </h:panelGroup>
+
+                    <!-- Formulario de emisión (resolución CONCESION, certificado aún no emitido) -->
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null
+                                             and muestraFlowBean.selectedForm.id != null
+                                             and muestraFlowBean.certificadoObtentor == null
+                                             and muestraFlowBean.resolucion != null
+                                             and muestraFlowBean.resolucion.tipo == 'CONCESION'}">
+                        <div class="row" style="margin-top:18px;">
+                            <div class="col-md-4">
+                                <div class="sn-fl">Vigencia (años) <span style="color:var(--sn-danger);">*</span></div>
+                                <p:spinner value="#{muestraFlowBean.vigenciaYears}" min="1" max="25"
+                                           style="width:100%;" required="true"/>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="sn-fl">Emitido por <span style="color:var(--sn-danger);">*</span></div>
+                                <p:inputText value="#{muestraFlowBean.emitidoPor}" style="width:100%;" required="true"/>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="sn-fl">Observaciones</div>
+                                <p:inputText value="#{muestraFlowBean.observaciones}" style="width:100%;"/>
+                            </div>
+                        </div>
+                        <div style="margin-top:15px;">
+                            <p:commandButton value="Emitir Certificado de Obtentor" icon="fa fa-star"
+                                             styleClass="sn-btn-gold"
+                                             action="#{muestraFlowBean.emitirCertificadoObtentor}"
+                                             update="@form infoPanel certObPanel" process="@form">
+                                <p:confirm header="Confirmar" message="¿Confirma la emisión del Certificado de Obtentor?"/>
+                            </p:commandButton>
+                            <p:confirmDialog global="true" showEffect="fade">
+                                <p:commandButton value="Sí, emitir" type="button" styleClass="ui-confirmdialog-yes sn-btn-gold"/>
+                                <p:commandButton value="Cancelar" type="button" styleClass="ui-confirmdialog-no sn-btn-secondary"/>
+                            </p:confirmDialog>
+                        </div>
+                    </h:panelGroup>
+
+                    <!-- Sin resolución de concesión -->
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null
+                                             and muestraFlowBean.selectedForm.id != null
+                                             and (muestraFlowBean.resolucion == null or muestraFlowBean.resolucion.tipo == 'NEGACION')}">
+                        <div class="sn-info-red" style="margin-top:15px;">
+                            <i class="fa fa-exclamation-circle" style="font-size:20px; flex-shrink:0;"></i>
+                            <div>
+                                No se puede emitir el Certificado de Obtentor.
+                                <h:outputText value=" La resolución es de NEGACIÓN."
+                                              rendered="#{muestraFlowBean.resolucion != null}"/>
+                                <h:outputText value=" Primero emita la resolución de concesión."
+                                              rendered="#{muestraFlowBean.resolucion == null}"/>
+                            </div>
+                        </div>
+                        <p:button value="Ir a Resolución" icon="fa fa-arrow-left"
+                                  styleClass="sn-btn-secondary" style="margin-top:10px;"
+                                  outcome="/tramite/resolucion"/>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </div>
+
+    </h:body>
+</html>

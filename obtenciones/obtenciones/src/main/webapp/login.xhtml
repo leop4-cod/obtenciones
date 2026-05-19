@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>OBTENCIONES VEGETALES</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com"/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" media="print" onload="this.media='all'"/>
+        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/></noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css" media="print" onload="this.media='all'"/>
+        <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css"/></noscript>
+
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/main.css']}" />
+        <!--<link href="resources/assets/css/style.css" rel="stylesheet" />-->
+
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+
+    </h:head>
+    <h:body style="
+            min-height:100vh;
+            margin:0;
+            display:flow;
+            justify-content:center;
+            align-items:center;
+            background-color:#0b0f14;
+            background-image:
+            radial-gradient(circle at 25% 30%, rgba(0,180,255,0.15), transparent 40%),
+            radial-gradient(circle at 75% 70%, rgba(120,0,255,0.12), transparent 45%);
+            ">
+        <!-- Start Page Loading -->
+        <div id="loader-wrapper">
+            <div id="loader"></div>
+            <div class="loader-section section-left"></div>
+            <div class="loader-section section-right"></div>
+        </div>
+        <p:growl id="mensajes" showDetail="true" life="2000" />
+
+        <h:form id="formlog" style="margin-top: 10%;">
+            <p:panel id="panelin" style="width:300px; text-align: center; margin:20px auto; box-shadow: 1px 1px 10px black !important; ">
+
+                <div style="padding: 15px 0">
+                    <h:graphicImage width="100%" value="#{resource['images:iepi.png']}" />
+                </div>
+
+                <p style="text-align: center;  font-weight: bold; font-size: 14px; margin-bottom: 10px;">GESTIÓN DE OBTENCIONES VEGETALES</p>
+                <div class="input-field col s6">
+                    <i class="material-icons prefix" id="account">account_circle</i>
+                    <h:inputText id="icon_usuario" class="validate"
+                                 onfocus="animaOnFocus('lbl_usuario', 'account')"
+                                 onblur="animaOnBlur(this, 'lbl_usuario', 'account')"
+                                 onchange="animaOnChange(this, 'lbl_usuario', 'account')"
+                                 value="#{loginBean.login}" required="true"
+                                 label="Usuario" />
+                    <label id="lbl_usuario" for="icon_usuario"
+                           onclick="animaOnClick(this, 'icon_usuario', 'account')">Usuario</label>
+                </div>
+
+                <div class="input-field col s6">
+                    <i id="phoneicon" class="material-icons prefix">lock</i>
+                    <label id="lbl_password" class="" for="icon_password"
+                           onclick="animaOnClick(this, 'icon_password', 'phoneicon')">Password</label>
+                    <h:inputSecret id="icon_password" class="validate"
+                                   onfocus="animaOnFocus('lbl_password', 'phoneicon')"
+                                   onblur="animaOnBlur(this, 'lbl_password', 'phoneicon')"
+                                   value="#{loginBean.clave}" required="true"
+                                   label="Password"/>
+                </div>
+
+                <p:commandButton id="loginButton" value="INGRESAR"
+                                 actionListener="#{loginBean.logueo}" update=":mensajes"
+                                 oncomplete="manejarLogin(xhr, status, args)"
+                                 style="margin: 25px 0; padding:  10px 5px" class="btn_peque" >
+                    <!--<p:effect rendered="{loginBean.shake}" for="panel" type="shake" event="click" /> -->
+                </p:commandButton>
+
+            </p:panel>
+            <div style="color: white; text-align: center !important; margin: 0 auto !important;">Manual de Usuario. Click
+                <a target="_blank" href="http://www.derechosintelectuales.gob.ec">Aquí</a>
+            </div>
+        </h:form>
+
+
+    </h:body>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+                $('h1').css('color', '#222222');
+                var doc = document.forms['formlog'];
+                var indexUs = getIdIndex('icon_usuario');
+                if (doc[indexUs].value != '') {
+                    logu = document.getElementById('account');
+                    logu.style = 'color: rgb(47, 165, 154) !important;';
+                    us = document.getElementById('lbl_usuario');
+                    us.className = "active";
+                }
+
+                var indexPa = getIdIndex('icon_password');
+                if (doc[indexPa].value != '') {
+                    logu = document.getElementById('phoneicon');
+                    logu.style = 'color: rgb(47, 165, 154) !important;';
+                    us = document.getElementById('lbl_password');
+                    us.className = "active";
+                }
+            }, 1200);
+        });
+
+        function getIdIndex(idName) {
+            var doc = document.forms['formlog'];
+            var i;
+            var idResult = 0;
+            for (i = 0; doc.length > i; i++) {
+                if (doc[i].id.includes(idName)) {
+                    idResult = i;
+                    break;
+                }
+            }
+            return idResult;
+        }
+
+        function animaOnClick(label, input, ima) {
+            label.className = "active";
+            var doc = document.forms['formlog'];
+            var indexEspecificar = getIdIndex(input);
+            doc[indexEspecificar].focus();
+            user = document.getElementById(ima);
+            user.style = 'color: rgb(47, 165, 154) !important;';
+        }
+
+        function animaOnFocus(label, ima) {
+            iconLabel = document.getElementById(label);
+            iconLabel.className = "active";
+            user = document.getElementById(ima);
+            user.style = 'color: rgb(47, 165, 154) !important;';
+        }
+
+        function animaOnBlur(inputtext, label, ima) {
+            iconLabel = document.getElementById(label);
+            user = document.getElementById(ima);
+            if (inputtext.value == "") {
+                iconLabel.className = "";
+                user.style = 'color: rgb(79, 79, 79); !important;';
+            } else {
+                iconLabel.className = "active";
+                user.style = 'color: rgb(47, 165, 154) !important;';
+            }
+        }
+
+        function animaOnChange(inputtext, label, ima) {
+            iconLabel = document.getElementById(label);
+            user = document.getElementById(ima);
+            if (inputtext.value == "") {
+                iconLabel.className = "";
+                user.style = 'color: rgb(79, 79, 79); !important;';
+            } else {
+                iconLabel.className = "active";
+                user.style = 'color: rgb(47, 165, 154) !important;';
+            }
+        }
+
+        function validar(e) {
+            tecla = (document.all) ? e.keyCode : e.which;
+            if (tecla == 8)
+                return true;
+            patron = /[A-Za-z\s]/;
+            te = String.fromCharCode(tecla);
+            return patron.test(te);
+        }
+        //<![CDATA[
+        function manejarLogin(xhr, status, args) {
+            if (!args.validationFailed && args.estaLogeado) {
+                setTimeout(function () {
+                    window.location = args.view;
+                }, 500);
+            } else {
+                jQuery('#formlog').effect("shake", {times: 3}, 500);
+            }
+        }
+        //]]>
+    </script>
+</html>

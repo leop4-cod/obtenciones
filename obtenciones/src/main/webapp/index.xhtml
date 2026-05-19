@@ -1,0 +1,947 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RUTA: src/main/webapp/index.xhtml -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Obtenciones Vegetales — SENADI</title>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}" />
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <!-- display=swap: la página renderiza con fuente del sistema primero y
+             reemplaza cuando Google Fonts carga — elimina el bloqueo de render -->
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+        <noscript><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/></noscript>
+        <!-- Envolver los estilos en f:facet asegura que no sean aplastados por PrimeFaces -->
+        <f:facet name="last">
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}" />
+        <style>
+            /* ── Botones de navegación en el header ── */
+            .sn-nav-btn {
+                display: inline-flex; align-items: center; gap: 7px;
+                padding: 7px 16px; border-radius: 22px;
+                background: rgba(255,255,255,.10);
+                border: 1px solid rgba(255,255,255,.22);
+                color: #fff; font-size: 12px; font-weight: 700;
+                text-decoration: none !important; white-space: nowrap;
+                letter-spacing: .2px;
+                transition: background .18s, border-color .18s, transform .12s;
+            }
+            .sn-nav-btn:hover {
+                background: rgba(255,255,255,.20);
+                border-color: rgba(255,255,255,.40);
+                color: #fff; text-decoration: none !important;
+                transform: translateY(-1px);
+            }
+            .sn-nav-btn .pi { color: rgba(255,255,255,.75); font-size: 13px; }
+            .sn-nav-btn:hover .pi { color: #fff; }
+            .sn-nav-btn-gold {
+                background: rgba(201,162,39,.15);
+                border-color: rgba(201,162,39,.45);
+                color: #f5d485 !important;
+            }
+            .sn-nav-btn-gold .pi { color: #f5d485 !important; }
+            .sn-nav-btn-gold:hover {
+                background: rgba(201,162,39,.30);
+                border-color: rgba(201,162,39,.70);
+                color: #fff !important;
+            }
+            .sn-nav-btn-gold:hover .pi { color: #fff !important; }
+
+            /* ══════════════════════════════════════════════════════
+               CORRECCIONES VISUALES index.xhtml
+            ══════════════════════════════════════════════════════ */
+
+            /* ── 1. PAGINATOR: fix fondo oscuro (ui-widget-header lo pisaba) ── */
+            html body div.ui-paginator,
+            html body div.ui-paginator-top,
+            html body div.ui-paginator-bottom,
+            html body .ui-datatable div.ui-paginator,
+            html body div.ui-paginator.ui-widget-header {
+                background: linear-gradient(135deg, #edf7ed, #e4f2e4) !important;
+                background-color: #edf7ed !important;
+                background-image: none !important;
+                border-top: 1px solid #c3dfc3 !important;
+                border-bottom: 1px solid #c3dfc3 !important;
+                color: #263238 !important;
+                padding: 8px 14px !important;
+            }
+            html body div.ui-paginator .ui-paginator-current {
+                color: #1b5e20 !important;
+                font-weight: 700 !important;
+                font-size: 12px !important;
+            }
+            html body div.ui-paginator .ui-paginator-page {
+                background: #fff !important;
+                border: 1px solid #b8d4b8 !important;
+                color: #1b5e20 !important;
+                border-radius: 6px !important;
+                min-width: 30px !important; height: 30px !important;
+                font-weight: 700 !important; font-size: 12px !important;
+            }
+            html body div.ui-paginator .ui-paginator-page.ui-state-active {
+                background: linear-gradient(135deg, #27926a, #1f6f43) !important;
+                border-color: #1f6f43 !important;
+                color: #fff !important;
+                box-shadow: 0 2px 8px rgba(31,111,67,.35) !important;
+            }
+            html body div.ui-paginator .ui-paginator-first,
+            html body div.ui-paginator .ui-paginator-prev,
+            html body div.ui-paginator .ui-paginator-next,
+            html body div.ui-paginator .ui-paginator-last {
+                background: #fff !important;
+                border: 1px solid #b8d4b8 !important;
+                color: #1f6f43 !important;
+                border-radius: 6px !important;
+                width: 30px !important; height: 30px !important;
+            }
+            html body div.ui-paginator .ui-paginator-first .ui-icon,
+            html body div.ui-paginator .ui-paginator-prev .ui-icon,
+            html body div.ui-paginator .ui-paginator-next .ui-icon,
+            html body div.ui-paginator .ui-paginator-last .ui-icon { color: #1f6f43 !important; }
+            html body div.ui-paginator .ui-paginator-rpp-options {
+                background: #fff !important;
+                border: 1px solid #b8d4b8 !important;
+                color: #263238 !important;
+                border-radius: 6px !important;
+                padding: 4px 8px !important;
+                font-size: 12px !important;
+                font-weight: 600 !important;
+            }
+
+            /* ── 2. CONTENEDOR DE FILTROS: card sutil ── */
+            .sn-card-body > table.ui-panelgrid,
+            .sn-card-body .ui-panelgrid.ui-panelgrid-blank {
+                background: linear-gradient(135deg, #f4fbf5, #edf7ee) !important;
+                border: 1px solid #cce4cc !important;
+                border-radius: 12px !important;
+                padding: 14px 20px !important;
+                margin-bottom: 18px !important;
+                width: 100% !important;
+                box-shadow: 0 2px 8px rgba(15,77,28,.06) !important;
+            }
+            .sn-card-body > table.ui-panelgrid td,
+            .sn-card-body .ui-panelgrid.ui-panelgrid-blank td {
+                border: none !important;
+                background: transparent !important;
+                padding: 4px 10px !important;
+                vertical-align: middle !important;
+            }
+
+            /* ── 3. RADIO PILLS: tabla → flex, labels como chips ── */
+            /* Aplanar la tabla a fila flex */
+            .ui-selectoneradio table,
+            .ui-selectoneradio tbody { display: block !important; border: none !important; background: transparent !important; }
+            .ui-selectoneradio tr    { display: flex !important; flex-wrap: wrap !important; gap: 6px !important; align-items: center !important; }
+            .ui-selectoneradio td    { display: block !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important; line-height: 0 !important; }
+            /* Ocultar el círculo — el label tiene for= así que el click sigue funcionando */
+            .ui-selectoneradio .ui-radiobutton { display: none !important; }
+            /* Label = pill */
+            .ui-selectoneradio label {
+                display: inline-block !important;
+                padding: 8px 18px !important;
+                border-radius: 30px !important;
+                border: 1px solid rgba(31, 111, 67, 0.2) !important;
+                background: #ffffff !important;
+                color: #2e4a36 !important;
+                font-size: 13px !important;
+                font-weight: 700 !important;
+                cursor: pointer !important;
+                transition: all .25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                white-space: nowrap !important;
+                user-select: none !important;
+                line-height: 1.4 !important;
+                box-shadow: 0 2px 5px rgba(0,0,0,.04) !important;
+                margin: 0 !important;
+            }
+            .ui-selectoneradio label:hover {
+                background: #f4fbf5 !important;
+                border-color: rgba(31, 111, 67, 0.4) !important;
+                color: #1f6f43 !important;
+                box-shadow: 0 4px 12px rgba(31,111,67,.15) !important;
+                transform: translateY(-1.5px) !important;
+            }
+            /* Clase pill-active → la pone el JS de abajo */
+            .ui-selectoneradio label.pill-active {
+                background: linear-gradient(135deg, #27926a 0%, #175a3c 100%) !important;
+                border-color: transparent !important;
+                color: #ffffff !important;
+                box-shadow: 0 6px 16px rgba(23, 90, 60, 0.35) !important;
+                transform: translateY(-2px) !important;
+                letter-spacing: 0.2px !important;
+            }
+
+            /* ── 4. CHECKBOX "Buscar por F. Presentación": mismo pill style ── */
+            .ui-selectbooleancheckbox {
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 8px !important;
+                background: #fff !important;
+                border: 1px solid rgba(31, 111, 67, 0.2) !important;
+                border-radius: 30px !important;
+                padding: 7px 16px 7px 12px !important;
+                cursor: pointer !important;
+                transition: all .25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                box-shadow: 0 2px 5px rgba(0,0,0,.04) !important;
+            }
+            .ui-selectbooleancheckbox:hover {
+                border-color: rgba(31, 111, 67, 0.4) !important;
+                background: #f4fbf5 !important;
+                box-shadow: 0 4px 12px rgba(31,111,67,.15) !important;
+                transform: translateY(-1.5px) !important;
+            }
+            .ui-selectbooleancheckbox .ui-chkbox { display: flex !important; align-items: center !important; }
+            .ui-selectbooleancheckbox .ui-chkbox-box {
+                width: 15px !important; height: 15px !important;
+                border-radius: 4px !important;
+                border: 1.5px solid #9dc49d !important;
+                background: #fff !important;
+                flex-shrink: 0 !important;
+                transition: all .15s !important;
+            }
+            .ui-selectbooleancheckbox .ui-chkbox-box.ui-state-active {
+                background: #1f6f43 !important;
+                border-color: #1f6f43 !important;
+                box-shadow: 0 2px 6px rgba(31,111,67,.32) !important;
+            }
+            .ui-selectbooleancheckbox .ui-chkbox-label {
+                font-size: 12px !important;
+                font-weight: 700 !important;
+                color: #1b5e20 !important;
+                cursor: pointer !important;
+                white-space: nowrap !important;
+                line-height: 1 !important;
+            }
+
+            /* ── 5. BOTÓN IMPORTAR EXCEL: pill verde ── */
+            .sn-import-excel .ui-fileupload-choose,
+            .sn-import-excel button.ui-button {
+                background: linear-gradient(135deg, #166534, #0f4d1c) !important;
+                border: none !important;
+                border-radius: 22px !important;
+                color: #fff !important;
+                font-size: 12px !important;
+                font-weight: 700 !important;
+                padding: 8px 20px !important;
+                transition: all .22s ease !important;
+                box-shadow: 0 3px 10px rgba(22,101,52,.35) !important;
+                letter-spacing: .03em !important;
+            }
+            .sn-import-excel .ui-fileupload-choose:hover,
+            .sn-import-excel button.ui-button:hover {
+                background: linear-gradient(135deg, #1e7a40, #166534) !important;
+                box-shadow: 0 5px 16px rgba(22,101,52,.48) !important;
+                transform: translateY(-1px) !important;
+            }
+            .sn-import-excel .ui-fileupload-choose .ui-button-text,
+            .sn-import-excel button.ui-button .ui-button-text { color: #fff !important; font-weight: 700 !important; }
+            .sn-import-excel .ui-fileupload-choose .pi,
+            .sn-import-excel button.ui-button .pi { color: #fff !important; }
+
+            /* ── 6. TABLA CABECERA: sombra inferior para separar ── */
+            html body .ui-datatable thead tr th,
+            html body .ui-datatable thead tr th.ui-state-default {
+                box-shadow: inset 0 -3px 0 rgba(0,0,0,.12) !important;
+            }
+
+            /* ── 7. LABEL "F. PRESENTACIÓN" (datepicker) ── */
+            .sn-card-body p\:panel,
+            #dates .ui-panel-content,
+            #allform\\:dates .ui-panel-content {
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            /* ── 8. BADGE ESTADO ACTUAL: mayor tamaño y contraste ── */
+            .sn-badge {
+                font-size: 11px !important;
+                padding: 4px 12px !important;
+                font-weight: 800 !important;
+                letter-spacing: .06em !important;
+            }
+
+            /* ── 9. RESPONSIVE DATATABLE: scroll horizontal suave ── */
+            html body .ui-datatable .ui-datatable-tablewrapper {
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                width: 100% !important;
+            }
+            html body .ui-datatable table {
+                table-layout: auto !important;
+                min-width: 1250px !important;
+            }
+            html body .ui-datatable th {
+                white-space: nowrap !important;
+                padding: 12px 16px !important;
+            }
+            html body .ui-datatable td {
+                padding: 10px 12px !important;
+                vertical-align: middle !important;
+            }
+
+            /* ── 10. ESTILOS CARD ALERTAS ANUALIDADES ── */
+            .anu-stat-card {
+                background: linear-gradient(135deg, #ffffff, #f8fdf9) !important;
+                border-radius: 12px !important;
+                border: 1px solid rgba(31,111,67,.12) !important;
+                padding: 12px 18px !important;
+                display: flex; align-items: center; gap: 14px;
+                box-shadow: 0 2px 10px rgba(15,77,28,.09), 0 1px 3px rgba(0,0,0,.05) !important;
+                transition: box-shadow .25s ease, transform .25s ease, border-color .25s ease !important;
+            }
+            .anu-stat-card:hover {
+                box-shadow: 0 8px 28px rgba(15,77,28,.18) !important;
+                transform: translateY(-3px) !important;
+                border-color: rgba(31,111,67,.28) !important;
+            }
+            .anu-stat-icon {
+                width: 40px; height: 40px; border-radius: 10px;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 18px; flex-shrink: 0;
+                box-shadow: 0 2px 6px rgba(0,0,0,.10);
+            }
+            .anu-stat-icon.amber { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #78350f; }
+            .anu-stat-num { font-size: 20px; font-weight: 900; color: #041f10; line-height: 1; }
+            .anu-stat-lbl { font-size: 11px; color: #5a7a68; font-weight: 700; margin-top: 2px; letter-spacing: .02em; }
+        </style>
+        </f:facet>
+    </h:head>
+
+    <h:body>
+        <p:growl id="mensajes" showDetail="true" life="4000"/>
+
+        <h:form id="allform" enctype="multipart/form-data">
+
+            <!-- ════════════════════ HEADER ════════════════════ -->
+            <div class="sn-header">
+                <a href="index.xhtml" class="sn-header-brand">
+                    <img src="#{resource['images/sena_2.png']}" alt="SENADI"/>
+                    <div class="sn-header-title">
+                        SENADI
+                        <small>Obtenciones Vegetales</small>
+                    </div>
+                </a>
+
+                <div class="sn-header-user">
+                    <nav style="display:flex; align-items:center; gap:8px;">
+                        <a href="anualidades/lista.xhtml" class="sn-nav-btn sn-nav-btn-gold" title="Módulo de Anualidades">
+                            <i class="pi pi-calendar"></i> Anualidades
+                        </a>
+                    </nav>
+                    <div class="sn-user-pill">
+                        <i class="pi pi-user"></i>
+                        <p:outputLabel value="#{vegetableBean.login.login}" style="color:white; font-size:13px; font-weight:700;"/>
+                    </div>
+                    <p:commandLink actionListener="#{loginBean.logout}"
+                                   oncomplete="logout(xhr, status, args)"
+                                   title="Cerrar sesión" immediate="true"
+                                   styleClass="sn-logout-btn">
+                        <i class="pi pi-sign-out"></i>
+                    </p:commandLink>
+                </div>
+            </div>
+
+            <!-- línea dorada decorativa -->
+            <div class="sn-header-gold-line"></div>
+
+            <!-- ════ ALERTA ANUALIDADES PRÓXIMAS (15 días) ════ -->
+            <h:panelGroup rendered="#{anualidadBean.totalAlertas gt 0}" style="display:block;">
+                <div class="sn-wrap-wide" style="padding-top:14px; padding-bottom:0; display:flex; justify-content:flex-start;">
+                    <div class="anu-stat-card" style="border-left:3px solid #f59e0b; cursor:pointer; width:260px; margin-bottom:10px;"
+                         onclick="PF('dlgProxVencIndex').show();"
+                         title="Ver anualidades con vencimiento próximo">
+                        <div class="anu-stat-icon amber"><i class="pi pi-bell"/></div>
+                        <div>
+                            <div class="anu-stat-num" style="color:#92400e;">#{anualidadBean.totalAlertas}</div>
+                            <div class="anu-stat-lbl" style="display:flex;align-items:center;gap:4px;">
+                                Próx. vencimiento (15 días)
+                                <i class="pi pi-external-link" style="font-size:9px;color:#f59e0b;"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p:dialog id="dlgProxVencIndex" modal="true" resizable="false"
+                          header="Anualidades próximas a vencer"
+                          widgetVar="dlgProxVencIndex" style="width:600px; max-width:90vw;"
+                          showEffect="explode" hideEffect="explode" closeOnEscape="true">
+                    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:6px;">
+                        <p:dataList value="#{anualidadBean.alertas}" var="al" paginator="false" type="none">
+                            <div style="background:rgba(255,255,255,.75); border-radius:6px;
+                                        padding:6px 10px; font-size:12px; color:#78350f;
+                                        border:1px solid #fde68a; display:flex; align-items:center; gap:6px; margin-bottom: 6px;">
+                                <i class="pi pi-clock" style="color:#f59e0b; flex-shrink:0;"/>
+                                <span>
+                                    <strong>#{anualidadBean.getVegetableForm(al.vegetableFormId) != null
+                                        ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
+                                        : al.vegetableFormId}</strong>
+                                    — #{al.etiqueta} — vence:&#160;
+                                    <h:outputText value="#{al.fechaVencimiento}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                    </h:outputText>
+                                </span>
+                                <span style="margin-left:auto; font-size:10px; font-weight:800;
+                                           background:#fef3c7; color:#92400e; border:1px solid #fbbf24;
+                                           border-radius:20px; padding:2px 8px; white-space:nowrap;">
+                                    #{al.estadoBadgeLabel}
+                                </span>
+                            </div>
+                        </p:dataList>
+                    </div>
+                    <div style="text-align:right; margin-top:14px; display:flex; justify-content:space-between; align-items:center;">
+                        <a href="anualidades/lista.xhtml"
+                           style="font-size:12px; color:#1b6b3a; text-decoration:underline; font-weight:700;">
+                            Ir al módulo de Anualidades →
+                        </a>
+                        <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                         onclick="PF('dlgProxVencIndex').hide();"/>
+                    </div>
+                </p:dialog>
+            </h:panelGroup>
+
+            <!-- ════════════════════ CONTENIDO ════════════════════ -->
+            <div class="sn-wrap-wide">
+
+                <!-- Sección tabla -->
+                <div class="sn-card">
+                    <div class="sn-card-header">
+                        <h3><i class="pi pi-list" style="margin-right:8px;"></i>Registros de Solicitudes</h3>
+                        <div style="margin-left:auto; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                            <p:fileUpload listener="#{vegetableBean.importarExcel}"
+                                          mode="advanced" auto="true"
+                                          dragDropSupport="false"
+                                          update=":mensajes tablaDeObtenciones"
+                                          sizeLimit="10000000"
+                                          allowTypes="/(\.|\/)(xls|xlsx)$/i"
+                                          label="Importar Base de Datos"
+                                          styleClass="sn-import-excel"/>
+                        </div>
+                    </div>
+
+                    <div class="sn-card-body">
+
+                        <!-- Filtros y Búsqueda -->
+                        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; background:#f8fafc; padding:12px 16px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:16px; gap:16px;">
+                            
+                            <!-- Filtro de Estado -->
+                            <div style="display:flex; align-items:center;">
+                                <p:selectOneRadio id="line" value="#{vegetableBean.radioOption}" layout="lineDirection">
+                                    <f:selectItem itemLabel="Entregados"             itemValue="Iniciados"/>
+                                    <f:selectItem itemLabel="Aceptados"              itemValue="Aceptados"/>
+                                    <f:selectItem itemLabel="Todos"                  itemValue="Todos"/>
+                                    <f:selectItem itemLabel="Pagados"                itemValue="Pagados"/>
+                                    <f:selectItem itemLabel="Vista Previa"           itemValue="Vista"/>
+                                    <p:ajax update=":mensajes tablaDeObtenciones dates checkd"
+                                            listener="#{vegetableBean.onRadioSelected}"/>
+                                </p:selectOneRadio>
+                            </div>
+
+                            <!-- Búsqueda por Fechas -->
+                            <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+                                <p:selectBooleanCheckbox id="checkd"
+                                                         itemLabel="Por F. Presentación"
+                                                         value="#{vegetableBean.byDate}">
+                                    <p:ajax update=":mensajes dates" listener="#{vegetableBean.onCheckSelected}"/>
+                                </p:selectBooleanCheckbox>
+
+                                <h:panelGroup id="dates">
+                                    <h:panelGroup rendered="#{vegetableBean.byDate}" style="display:flex; align-items:center; gap:12px; background:white; padding:6px 14px; border-radius:30px; border:1px solid #cbd5e1; box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);">
+                                        <i class="pi pi-calendar" style="color:#64748b; font-size:13px;"></i>
+                                        <div style="display:flex; align-items:center; gap:6px;">
+                                            <p:outputLabel value="Desde" style="font-weight:700; font-size:11px; margin:0; color:#475569; text-transform:uppercase;"/>
+                                            <p:calendar value="#{vegetableBean.startDate}" pattern="dd/MM/yyyy" showIcon="false" inputStyle="width:85px; text-align:center; padding:2px 4px; font-size:12px; border:none; border-bottom:1px solid #cbd5e1; background:transparent; box-shadow:none;"/>
+                                        </div>
+                                        <div style="display:flex; align-items:center; gap:6px;">
+                                            <p:outputLabel value="Hasta" style="font-weight:700; font-size:11px; margin:0; color:#475569; text-transform:uppercase;"/>
+                                            <p:calendar value="#{vegetableBean.endDate}" pattern="dd/MM/yyyy" showIcon="false" inputStyle="width:85px; text-align:center; padding:2px 4px; font-size:12px; border:none; border-bottom:1px solid #cbd5e1; background:transparent; box-shadow:none;"/>
+                                        </div>
+                                        <p:commandButton value="Buscar" styleClass="sn-btn-primary"
+                                                         actionListener="#{vegetableBean.searchVegetables}"
+                                                         update=":mensajes tablaDeObtenciones"
+                                                         icon="pi pi-search"
+                                                         style="padding:2px 12px; font-size:11px; border-radius:15px; height:auto;"/>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                            </div>
+                        </div>
+
+                        <!-- TABLA -->
+                        <p:dataTable id="tablaDeObtenciones"
+                                     var="vegetable"
+                                     value="#{vegetableBean.vegetables}"
+                                     widgetVar="tablaDeObtenciones"
+                                     binding="#{vegetableBean.vegetableTable}"
+                                     emptyMessage="No hay datos para mostrar"
+                                     paginator="true"
+                                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rows="20"
+                                     rowsPerPageTemplate="20,50,100,150,200,250,300"
+                                     rowKey="#{vegetable.id}"
+                                     rowIndexVar="index"
+                                     style="width:100%;">
+
+                            <p:column headerText="#" style="text-align:center; width:40px;" exportable="false">
+                                <span style="font-size:11px; color:#888;">#{index + 1}</span>
+                            </p:column>
+
+                            <p:column headerText="Casillero" style="text-align:center; width:100px;" filterBy="#{vegetable.locker}">
+                                <h:outputText value="#{vegetable.locker}" style="font-size:11px;"/>
+                            </p:column>
+
+                            <p:column headerText="Trámite" style="text-align:center; width:90px;" filterBy="#{vegetable.applicationNumber}">
+                                <span style="font-weight:700; color:var(--sn-dark); font-size:11px;">
+                                    <h:outputText value="#{vegetable.applicationNumber}"/>
+                                </span>
+                            </p:column>
+
+                            <p:column headerText="F. Creación" style="text-align:center; width:85px;">
+                                <h:outputText value="#{vegetable.createDate}" style="font-size:11px;">
+                                    <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Guayaquil"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Taxón Botánico" style="width:140px;" filterBy="#{vegetable.botanicalTaxon}">
+                                <h:outputText value="#{vegetable.botanicalTaxon}" style="font-size:11px; font-style:italic;"/>
+                            </p:column>
+
+                            <p:column headerText="F. Presentación" style="text-align:center; width:85px;">
+                                <h:outputText value="#{vegetable.applicationDate}" style="font-size:11px;">
+                                    <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Guayaquil"/>
+                                </h:outputText>
+                            </p:column>
+
+                            <p:column headerText="Grupo Varietal" style="width:120px;" filterBy="#{vegetable.varietalGroup}">
+                                <h:outputText value="#{vegetable.varietalGroup}" style="font-size:11px;"/>
+                            </p:column>
+
+                            <p:column headerText="Estado Actual" style="text-align:center; width:105px; white-space:normal; word-break:break-word;">
+                                <span class="sn-badge sn-badge-#{vegetable.status}">
+                                    <h:outputText value="#{vegetable.status eq 'DELIVERED' ? 'EN PROCESO' :
+                                                          (vegetable.status eq 'ACCEPTED' ? 'ACEPTADO' :
+                                                          (vegetable.status eq 'FINISHED' ? 'FINALIZADO' :
+                                                          (vegetable.status eq 'PREVIEW'  ? 'VISTA PREV.' : 'GUARDADO')))}"/>
+                                </span>
+                            </p:column>
+
+                            <p:column headerText="Expediente" headerStyle="white-space:normal; word-break:break-word; min-width:90px;" style="text-align:center; width:90px;">
+                                <h:outputText value="#{vegetable.managementStatus}" style="font-size:11px; color:#555;"/>
+                            </p:column>
+
+                            <p:column headerText="Gestión" style="text-align:center; width:145px;">
+                                <p:selectOneMenu value="#{vegetable.statusFlow}"
+                                                 rendered="#{vegetableBean.isAssignedToCurrentUser(vegetable)}"
+                                                 style="width:130px; font-size:12px;">
+                                    <f:selectItems value="#{vegetableBean.statusFlows}" var="flow"
+                                                   itemValue="#{flow}"
+                                                   itemLabel="#{vegetableBean.getStatusFlowLabel(flow)}"/>
+                                    <p:ajax listener="#{vegetableBean.prepareStatusFlowChange}"
+                                            process="@this"
+                                            update=":mensajes :dlgStatusFlow tablaDeObtenciones"
+                                            oncomplete="if(args.openStatusDialog){PF('dlgStatusFlow').show();}"/>
+                                </p:selectOneMenu>
+                                <h:outputText value="#{vegetableBean.getStatusFlowLabel(vegetable.statusFlow)}"
+                                              style="font-size:11px; color:#555;"
+                                              rendered="#{!vegetableBean.isAssignedToCurrentUser(vegetable)}"/>
+                            </p:column>
+
+                            <!-- ══ ACCIONES ══ -->
+                            <p:column headerText="Acciones" style="text-align:center; width:220px;" exportable="false">
+                                <div class="acciones-grupo">
+
+                                    <!-- Editar: solo para DELIVERED y ACCEPTED -->
+                                    <h:link outcome="actualizar"
+                                            styleClass="accion-btn btn-edit"
+                                            title="Editar registro"
+                                            rendered="#{vegetable.status eq 'DELIVERED' or vegetable.status eq 'ACCEPTED'}">
+                                        <f:param name="id" value="#{vegetable.id}"/>
+                                        <i class="pi pi-pencil"></i>
+                                    </h:link>
+
+                                    <!-- Ver sólo (sin edición) para otros estados -->
+                                    <h:link outcome="actualizar"
+                                            styleClass="accion-btn"
+                                            title="Ver registro (solo lectura)"
+                                            rendered="#{vegetable.status ne 'DELIVERED' and vegetable.status ne 'ACCEPTED'}"
+                                            style="opacity:0.5; cursor:default; pointer-events:none;">
+                                        <f:param name="id" value="#{vegetable.id}"/>
+                                        <i class="pi pi-eye"></i>
+                                    </h:link>
+
+                                    <p:commandButton styleClass="accion-btn btn-pdf"
+                                                     title="Ver Formulario PDF"
+                                                     icon="pi pi-file-pdf"
+                                                     rendered="#{vegetable.status ne 'SAVED' and vegetable.status eq 'DELIVERED'}"
+                                                     actionListener="#{vegetableBean.viewFormulario}"
+                                                     oncomplete="if(args.doit){otherpage(args.url);}"
+                                                     process="@this" update=":mensajes"/>
+
+                                    <p:commandButton styleClass="accion-btn btn-voucher"
+                                                     title="Ver Comprobante de Pago"
+                                                     icon="pi pi-money-bill"
+                                                     rendered="#{vegetable.status eq 'DELIVERED'}"
+                                                     actionListener="#{vegetableBean.viewVoucher}"
+                                                     oncomplete="if(args.doit){otherpage(args.url);}"
+                                                     process="@this" update=":mensajes"/>
+
+                                    <!-- Aceptar: solo DELIVERED — cambia estado a ACEPTADO -->
+                                    <p:commandButton styleClass="accion-btn btn-assign"
+                                                     title="Aceptar trámite (pasar a ACEPTADO)"
+                                                     icon="pi pi-check-circle"
+                                                     rendered="#{vegetable.status eq 'DELIVERED'}"
+                                                     onclick="if(!confirm('¿Confirma ACEPTAR el trámite #{vegetable.applicationNumber}?\nEl estado cambiará a ACEPTADO y podrá crear anualidades.')) return false;"
+                                                     actionListener="#{vegetableBean.aceptarObtencion}"
+                                                     process="@this" update=":mensajes tablaDeObtenciones">
+                                        <f:setPropertyActionListener value="#{vegetable}"
+                                                                     target="#{vegetableBean.vegetableForms}"/>
+                                    </p:commandButton>
+
+                                    <!-- Reasignar: solo para DELIVERED asignado al usuario actual -->
+                                    <p:commandButton styleClass="accion-btn btn-reassign"
+                                                     title="Reasignar trámite"
+                                                     icon="pi pi-users"
+                                                     rendered="#{vegetable.status eq 'DELIVERED' and vegetableBean.isAssignedToCurrentUser(vegetable)}"
+                                                     actionListener="#{vegetableBean.prepareReassign}"
+                                                     process="@this"
+                                                     update=":mensajes :dlgReassign"
+                                                     oncomplete="PF('dlgReassign').show();">
+                                        <f:setPropertyActionListener value="#{vegetable}"
+                                                                     target="#{vegetableBean.vegetableForms}"/>
+                                    </p:commandButton>
+
+
+                                    <!-- Ver archivos: visible para todos si hay archivos -->
+                                    <p:commandButton styleClass="accion-btn btn-view-uploaded"
+                                                     title="Ver archivos subidos"
+                                                     icon="pi pi-eye"
+                                                     rendered="#{vegetableBean.hasUploadedFiles(vegetable.id)}"
+                                                     action="#{vegetableBean.prepareViewUploaded(null)}"
+                                                     process="@this"
+                                                     update=":mensajes :dlgArchivos"
+                                                     oncomplete="PF('dlgArchivos').show();">
+                                        <f:setPropertyActionListener value="#{vegetable}"
+                                                                     target="#{vegetableBean.vegetableForms}"/>
+                                    </p:commandButton>
+
+                                    <p:commandButton styleClass="accion-btn btn-history"
+                                                     title="Ver historial"
+                                                     icon="pi pi-history"
+                                                     actionListener="#{vegetableBean.prepararHistorial}"
+                                                     process="@this"
+                                                     update=":mensajes :dlgHistorial"
+                                                     oncomplete="PF('dlgHistorial').show();">
+                                        <f:setPropertyActionListener value="#{vegetable}"
+                                                                     target="#{vegetableBean.vegetableForms}"/>
+                                    </p:commandButton>
+
+
+                                </div>
+                            </p:column>
+
+                            <f:facet name="footer">
+                                <div class="ov-table-footer" style="display:flex; justify-content:space-between; align-items:center;">
+                                    <p:outputLabel id="num_registros"
+                                                   value="#{vegetableBean.vegetables.size()} registros"
+                                                   style="float:left; font-size:12px; color:var(--sn-muted); font-weight:600;"/>
+                                    <h:commandLink title="Exportar a Excel"
+                                                   rendered="#{!loginBean.lectura}"
+                                                   immediate="true" style="float:right;">
+                                        <p:graphicImage class="excel" width="20" height="20"
+                                                        library="images" name="excel.png"/>
+                                        <p:dataExporter type="xlsx" target="tablaDeObtenciones" fileName="obtenciones"/>
+                                    </h:commandLink>
+                                </div>
+                            </f:facet>
+                        </p:dataTable>
+
+                    </div><!-- sn-card-body -->
+                </div><!-- sn-card -->
+
+            </div><!-- sn-wrap-wide -->
+
+            <!-- Spinner AJAX -->
+            <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+            <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                      closable="false" resizable="false" showHeader="false">
+                <p:graphicImage name="/images/ajax-loader.gif"/>
+            </p:dialog>
+
+        </h:form>
+
+        <!-- ══ DIÁLOGO: HISTORIAL ══ -->
+        <p:dialog id="dlgHistorial" modal="true" resizable="true"
+                  header="Historial — #{vegetableBean.vegetableForms != null ? vegetableBean.vegetableForms.applicationNumber : ''}"
+                  widgetVar="dlgHistorial" style="width:720px; min-width:420px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmHistory">
+                <h:panelGroup rendered="#{vegetableBean.historialList.isEmpty()}">
+                    <div style="text-align:center; padding:20px; color:#6b7280; font-size:13px;">
+                        <i class="pi pi-info-circle" style="font-size:20px; display:block; margin-bottom:8px;"/>
+                        No hay eventos registrados para este trámite.
+                    </div>
+                </h:panelGroup>
+                <p:dataTable value="#{vegetableBean.historialList}" var="hist"
+                             rendered="#{not vegetableBean.historialList.isEmpty()}"
+                             emptyMessage="Sin historial."
+                             style="font-size:12px; width:100%;">
+                    <p:column headerText="Fecha" style="width:22%; text-align:center; white-space:nowrap;">
+                        <h:outputText value="#{hist.fecha}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Descripción" style="width:58%;">
+                        <h:outputText value="#{hist.description}" style="font-size:11px;"/>
+                    </p:column>
+                    <p:column headerText="Usuario" style="width:20%; text-align:center;">
+                        <span style="font-weight:700; color:var(--sn-green); font-size:11px;">
+                            <h:outputText value="#{hist.historyUser}"/>
+                        </span>
+                    </p:column>
+                </p:dataTable>
+                <div style="text-align:right; margin-top:10px;">
+                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                     onclick="PF('dlgHistorial').hide();"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <!-- ══ DIÁLOGO: ARCHIVOS SUBIDOS ══ -->
+        <p:dialog id="dlgArchivos" modal="true" resizable="true"
+                  header="Archivos subidos — #{vegetableBean.vegetableForms.applicationNumber}"
+                  widgetVar="dlgArchivos" style="width:700px; min-width:400px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmArchivos">
+                <p:dataTable value="#{vegetableBean.archivosSubidos}" var="arch"
+                             emptyMessage="No hay archivos subidos."
+                             style="font-size:12px;">
+                    <p:column headerText="Archivo" style="width:55%">
+                        <h:outputText value="#{arch.nombreMostrar}"/>
+                    </p:column>
+                    <p:column headerText="Fecha" style="width:25%">
+                        <h:outputText value="#{arch.fechaCarga}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Ver" style="width:20%; text-align:center;">
+                        <h:outputLink value="#{request.contextPath}/file-view?id=#{arch.id}"
+                                      target="_blank"
+                                      style="background:var(--sn-green); color:white; padding:4px 12px;
+                                             border-radius:5px; font-size:11px; text-decoration:none;
+                                             display:inline-block;">
+                            <i class="pi pi-external-link" style="margin-right:4px;"/>
+                            Abrir
+                        </h:outputLink>
+                    </p:column>
+                </p:dataTable>
+                <div style="text-align:right; margin-top:10px;">
+                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                     onclick="PF('dlgArchivos').hide();"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <!-- ══ DIÁLOGO: REASIGNAR ══ -->
+        <p:dialog id="dlgReassign" modal="true" resizable="false"
+                  header="Reasignar trámite — #{vegetableBean.vegetableForms.applicationNumber}"
+                  widgetVar="dlgReassign" style="width:480px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmReassign">
+
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#4b6c4b;
+                                  margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;">
+                        <i class="pi pi-user" style="margin-right:4px; color:var(--sn-green);"/>
+                        Usuario destino <span style="color:#ef4444;">*</span>
+                    </label>
+                    <p:inputText value="#{vegetableBean.newAssignedUser}"
+                                 style="width:100%" placeholder="Ej: jperez"
+                                 required="true" requiredMessage="Ingrese el usuario destinatario."/>
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#4b6c4b;
+                                  margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;">
+                        <i class="pi pi-comment" style="margin-right:4px; color:var(--sn-green);"/>
+                        Comentario (opcional)
+                    </label>
+                    <p:inputTextarea value="#{vegetableBean.reassignComment}"
+                                     rows="3" autoResize="false" style="width:100%"
+                                     placeholder="Motivo de la reasignación u observaciones adicionales..."/>
+                </div>
+
+                <div style="display:flex; gap:10px; justify-content:flex-end;">
+                    <p:commandButton value="Guardar reasignación" styleClass="sn-btn-primary"
+                                     icon="pi pi-check"
+                                     actionListener="#{vegetableBean.reassignApplication}"
+                                     process="@form"
+                                     update=":mensajes :allform:tablaDeObtenciones frmReassign"
+                                     oncomplete="if(!args.validationFailed) PF('dlgReassign').hide()"/>
+                    <p:commandButton value="Cancelar" type="button" styleClass="sn-btn-secondary"
+                                     icon="pi pi-times"
+                                     onclick="PF('dlgReassign').hide();"/>
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+        <!-- ══ DIÁLOGO: CAMBIO ESTADO GESTIÓN ══ -->
+        <p:dialog id="dlgStatusFlow" modal="true" resizable="false"
+                  header="Confirmar cambio de estado"
+                  widgetVar="dlgStatusFlow" style="width:500px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmStatusFlow">
+
+                <!-- Card de transición -->
+                <div style="background:linear-gradient(135deg,#f0f9f0,#eaf5ea);
+                            border-radius:10px; padding:16px 18px; margin-bottom:16px;
+                            border:1px solid #c3dfc3; box-shadow:0 2px 8px rgba(31,111,67,.08);">
+                    <div style="font-size:11px; color:#4b6c4b; font-weight:800;
+                                text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;
+                                display:flex; align-items:center; gap:6px;">
+                        <i class="pi pi-file-edit" style="color:var(--sn-green);"/>
+                        <span>Trámite:&#160;
+                            <span style="font-family:monospace; font-size:14px; color:#0f4d1c; letter-spacing:.5px; font-weight:900;">
+                                #{vegetableBean.vegetableForms.applicationNumber}
+                            </span>
+                        </span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:110px; text-align:center;">
+                            <div style="font-size:10px; color:#6b7b75; font-weight:700;
+                                        text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px;">
+                                Estado anterior
+                            </div>
+                            <span style="display:inline-block; background:#f3f4f6; color:#374151;
+                                         padding:5px 14px; border-radius:20px; font-size:11.5px;
+                                         font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+                                         border:1px solid #d1d5db;">
+                                #{vegetableBean.previousStatusFlowLabel}
+                            </span>
+                        </div>
+                        <div style="color:#9ca3af; font-size:22px; flex-shrink:0; padding-top:18px; line-height:1;">
+                            &#8594;
+                        </div>
+                        <div style="flex:1; min-width:110px; text-align:center;">
+                            <div style="font-size:10px; color:#6b7b75; font-weight:700;
+                                        text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px;">
+                                Nuevo estado
+                            </div>
+                            <span style="display:inline-block; background:#d1fae5; color:#065f46;
+                                         padding:5px 14px; border-radius:20px; font-size:11.5px;
+                                         font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+                                         border:1px solid #6ee7b7;">
+                                #{vegetableBean.pendingStatusFlowLabel}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Observación -->
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#4b6c4b;
+                                  margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;">
+                        <i class="pi pi-comment" style="margin-right:4px; color:var(--sn-green);"/>
+                        Observación <span style="color:#ef4444;">*</span>
+                    </label>
+                    <p:inputTextarea value="#{vegetableBean.statusObservation}"
+                                     rows="4" autoResize="false" style="width:100%"
+                                     placeholder="Describa el motivo del cambio..."/>
+                </div>
+
+                <!-- Botones -->
+                <div style="display:flex; gap:10px; justify-content:flex-end; padding-top:2px;">
+                    <p:commandButton value="Guardar" styleClass="sn-btn-primary"
+                                     actionListener="#{vegetableBean.confirmStatusFlowChange}"
+                                     process="@form" icon="pi pi-check"
+                                     update=":mensajes :allform:tablaDeObtenciones frmStatusFlow"
+                                     oncomplete="if(!args.validationFailed) PF('dlgStatusFlow').hide()"/>
+                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                     icon="pi pi-times"
+                                     onclick="PF('dlgStatusFlow').hide();"/>
+                </div>
+
+            </h:form>
+        </p:dialog>
+
+        <!-- Monitor sesión idle: 30 minutos -->
+        <p:idleMonitor timeout="#{1000*60*30}" id="idleSesion">
+            <p:ajax event="idle" listener="#{idleMonitorCtrl.idleListener}"
+                    oncomplete="PF('idleDialog').show()"/>
+        </p:idleMonitor>
+        <p:dialog header="Sesión Caducada" resizable="false"
+                  widgetVar="idleDialog" modal="true" closable="false"
+                  style="font-size:12px; min-width:280px;">
+            <h:form id="sesionCaducaForm">
+                <div style="text-align:center; padding:10px;">
+                    <p style="margin-bottom:14px; color:var(--sn-dark);">Su sesión ha expirado por inactividad.</p>
+                    <p:commandButton styleClass="sn-btn-primary"
+                                     actionListener="#{loginBean.logout}"
+                                     oncomplete="logout(xhr, status, args)"
+                                     value="ACEPTAR" immediate="true"
+                                     icon="pi pi-sign-in"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+    </h:body>
+
+    <script type="text/javascript">
+        //<![CDATA[
+        /* ── Pill active state para radio filters ── */
+        function updateRadioPills() {
+            $('.ui-selectoneradio').each(function() {
+                $(this).find('.ui-radiobutton').each(function() {
+                    var $radioDiv = $(this);
+                    var $box = $radioDiv.find('.ui-radiobutton-box');
+                    var $input = $radioDiv.find('input[type="radio"]');
+                    var id = $input.attr('id');
+                    
+                    // Buscar el label que corresponda exactamente a este input por su ID
+                    var $label = $('label[for="' + id + '"]');
+                    
+                    if ($label.length > 0) {
+                        if ($box.hasClass('ui-state-active') || $input.prop('checked')) {
+                            $label.addClass('pill-active');
+                        } else {
+                            $label.removeClass('pill-active');
+                        }
+                    }
+                });
+            });
+        }
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+                updateRadioPills();
+            }, 200);
+
+            /* click en cualquier label de radio → actualiza pills */
+            $(document).on('click', '.ui-selectoneradio label', function() {
+                setTimeout(updateRadioPills, 100);
+            });
+            
+            /* Re-aplicar clases tras actualización de AJAX de PrimeFaces */
+            if (typeof PrimeFaces !== 'undefined') {
+                $(document).on('pfAjaxComplete', function() {
+                    setTimeout(updateRadioPills, 100);
+                });
+            }
+        });
+
+        function otherpage(url) {
+            setTimeout(function () { window.open(url, '_blank'); }, 0);
+        }
+        function logout(xhr, status, args) {
+            setTimeout(function () { window.location = 'login.xhtml'; }, 500);
+        }
+        //]]>
+    </script>
+</html>

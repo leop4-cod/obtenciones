@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+    <welcome-file-list>
+        <welcome-file>faces/login.xhtml</welcome-file>
+    </welcome-file-list>
+
+    <context-param>
+        <param-name>javax.faces.PROJECT_STAGE</param-name>
+        <param-value>Production</param-value>
+    </context-param>
+    <!-- Desactiva el tema interno de PrimeFaces para que nuestro CSS controle todo el estilo -->
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>none</param-value>
+    </context-param>
+    <!-- Indica a PrimeFaces que use el uploader nativo del contenedor (Undertow/WildFly) -->
+    <context-param>
+        <param-name>primefaces.UPLOADER</param-name>
+        <param-value>native</param-value>
+    </context-param>
+
+    <!-- FacesServlet con multipart-config requerido por Undertow para file upload -->
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <multipart-config>
+            <!-- 10 MB por archivo -->
+            <max-file-size>10485760</max-file-size>
+            <!-- 20 MB por request (permite múltiples fotos) -->
+            <max-request-size>20971520</max-request-size>
+            <file-size-threshold>0</file-size-threshold>
+        </multipart-config>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>/faces/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.xhtml</url-pattern>
+    </servlet-mapping>
+
+    <error-page>
+        <exception-type>javax.faces.application.ViewExpiredException</exception-type>
+        <location>/viewExpired.xhtml</location>
+    </error-page>
+</web-app>

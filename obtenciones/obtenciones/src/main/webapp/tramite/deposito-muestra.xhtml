@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RUTA: src/main/webapp/tramite/deposito-muestra.xhtml -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Depósito de Muestra Viva — SENADI</title>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}"/>
+    </h:head>
+    <h:body>
+
+        <!-- ── HEADER ── -->
+        <div class="sn-tramite-header">
+            <img src="#{resource['images/logo.png']}" alt="SENADI" onerror="this.style.display='none'"/>
+            <span class="sn-tramite-title">
+                <i class="fa fa-leaf"/> Depósito de Muestra Viva
+            </span>
+            <span class="sn-tramite-user">#{loginBean.login}</span>
+        </div>
+        <div class="sn-tramite-gold"></div>
+
+        <!-- ── CONTENIDO ── -->
+        <div class="sn-flow-card">
+            <h4>
+                <span class="sn-step-badge">Paso 6</span>
+                Depósito de Muestra Viva y Generación del Acta de Depósito
+            </h4>
+
+            <p:messages autoUpdate="true" showDetail="true" closable="true"/>
+
+            <h:form id="fDeposito">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="sn-fl">ID del Trámite <span style="color:var(--sn-danger);">*</span></div>
+                        <p:inputText id="formId" style="width:100%;"/>
+                        <p:commandButton value="Cargar" icon="fa fa-search"
+                                         styleClass="sn-btn-secondary" style="margin-top:8px;"
+                                         action="#{muestraFlowBean.cargarTramite(formId.value)}"
+                                         update="infoPanel depositoPanel" process="@form"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="infoPanel">
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null and muestraFlowBean.selectedForm.id != null}">
+                        <div class="sn-tramite-info" style="margin-top:15px;">
+                            <span><strong>Expediente:</strong> #{muestraFlowBean.selectedForm.applicationNumber}</span>
+                            <span><strong>Especie:</strong> #{muestraFlowBean.selectedForm.botanicalTaxon} — #{muestraFlowBean.selectedForm.commonName}</span>
+                            <span><strong>Técnico:</strong> #{muestraFlowBean.selectedForm.assignedUser}</span>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+
+                <p:outputPanel id="depositoPanel">
+                    <!-- Depósito ya registrado -->
+                    <h:panelGroup rendered="#{muestraFlowBean.depositoMuestra != null}">
+                        <div class="sn-info-blue" style="margin-top:15px;">
+                            <i class="fa fa-flask" style="font-size:20px; flex-shrink:0;"></i>
+                            <div>
+                                <strong>Acta N°:</strong> #{muestraFlowBean.depositoMuestra.numActa}<br/>
+                                <strong>Lugar:</strong> #{muestraFlowBean.depositoMuestra.lugarDeposito}<br/>
+                                <strong>Responsable:</strong> #{muestraFlowBean.depositoMuestra.responsable}<br/>
+                                <strong>Fecha:</strong>
+                                <h:outputText value="#{muestraFlowBean.depositoMuestra.fechaDeposito}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+                                </h:outputText>
+                            </div>
+                        </div>
+                        <div style="margin-top:12px;">
+                            <p:button value="Ir a Certificado de Depósito" icon="fa fa-arrow-right"
+                                      styleClass="sn-btn-primary"
+                                      outcome="/tramite/certificado-deposito"/>
+                        </div>
+                    </h:panelGroup>
+
+                    <!-- Formulario de depósito -->
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null
+                                             and muestraFlowBean.selectedForm.id != null
+                                             and muestraFlowBean.depositoMuestra == null}">
+                        <div class="row" style="margin-top:18px;">
+                            <div class="col-md-6">
+                                <div class="sn-fl">Lugar de Depósito <span style="color:var(--sn-danger);">*</span></div>
+                                <p:inputText value="#{muestraFlowBean.lugarDeposito}" style="width:100%;"
+                                             required="true" requiredMessage="El lugar de depósito es obligatorio."/>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="sn-fl">Responsable <span style="color:var(--sn-danger);">*</span></div>
+                                <p:inputText value="#{muestraFlowBean.responsable}" style="width:100%;"
+                                             required="true" requiredMessage="El responsable es obligatorio."/>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-md-6">
+                                <div class="sn-fl">N° de Acta <span style="color:var(--sn-danger);">*</span></div>
+                                <p:inputText value="#{muestraFlowBean.numActa}" style="width:100%;"
+                                             required="true" requiredMessage="El número de acta es obligatorio."/>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="sn-fl">Observaciones</div>
+                                <p:inputText value="#{muestraFlowBean.observaciones}" style="width:100%;"/>
+                            </div>
+                        </div>
+                        <div style="margin-top:15px;">
+                            <p:commandButton value="Registrar Depósito y Generar Acta" icon="fa fa-save"
+                                             styleClass="sn-btn-primary"
+                                             action="#{muestraFlowBean.registrarDepositoMuestra}"
+                                             update="@form infoPanel depositoPanel" process="@form"/>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </div>
+
+    </h:body>
+</html>

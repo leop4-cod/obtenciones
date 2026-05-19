@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+                                 http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+
+    <!--
+        RESOURCE_LOCAL: transacciones administradas manualmente por la aplicación
+        (begin/commit/rollback en DAOAbstractM). Compatible con WildFly 19
+        usando un datasource no-JTA (jta="false" en standalone.xml).
+    -->
+    <persistence-unit name="vegetablePU" transaction-type="RESOURCE_LOCAL">
+
+        <!-- Hibernate 5.4 — bundleado en WildFly 19, no requiere dependencia extra -->
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Entidades originales -->
+        <class>senadi.gob.ec.adminob.model.Declaration</class>
+        <class>senadi.gob.ec.adminob.model.ExploitedSelled</class>
+        <class>senadi.gob.ec.adminob.model.FormPaymentRate</class>
+        <class>senadi.gob.ec.adminob.model.Methodology</class>
+        <class>senadi.gob.ec.adminob.model.Person</class>
+        <class>senadi.gob.ec.adminob.model.PersonVegetable</class>
+        <class>senadi.gob.ec.adminob.model.SimilaryVariety</class>
+        <class>senadi.gob.ec.adminob.model.VarietyCharacters</class>
+        <class>senadi.gob.ec.adminob.model.VegetableAnnexes</class>
+        <class>senadi.gob.ec.adminob.model.VegetableAnnexesData</class>
+        <class>senadi.gob.ec.adminob.model.VegetableForms</class>
+        <class>senadi.gob.ec.adminob.model.VegetableMethodology</class>
+        <class>senadi.gob.ec.adminob.model.VegetablePriority</class>
+        <class>senadi.gob.ec.adminob.model.VegetableProtection</class>
+        <!-- Entidades de flujo de proceso -->
+        <class>senadi.gob.ec.adminob.model.History</class>
+        <class>senadi.gob.ec.adminob.model.Expediente</class>
+        <class>senadi.gob.ec.adminob.model.DepositoMuestra</class>
+        <class>senadi.gob.ec.adminob.model.CertificadoDeposito</class>
+        <class>senadi.gob.ec.adminob.model.PublicacionGaceta</class>
+        <class>senadi.gob.ec.adminob.model.Oposicion</class>
+        <class>senadi.gob.ec.adminob.model.ExamenDHE</class>
+        <class>senadi.gob.ec.adminob.model.DictamenTecnico</class>
+        <class>senadi.gob.ec.adminob.model.Resolucion</class>
+        <class>senadi.gob.ec.adminob.model.CertificadoObtentor</class>
+        <!-- Nueva entidad 1:N comprobantes de pago -->
+        <class>senadi.gob.ec.adminob.model.ComprobantePago</class>
+        <!-- Módulo de Trámites SENADI -->
+        <class>senadi.gob.ec.adminob.model.Tramite</class>
+        <class>senadi.gob.ec.adminob.model.DocumentoTramite</class>
+        <!-- Módulo de Anualidades -->
+        <class>senadi.gob.ec.adminob.model.Anualidad</class>
+
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+        <properties>
+            <property name="hibernate.dialect"               value="org.hibernate.dialect.MySQL57Dialect"/>
+            <property name="hibernate.hbm2ddl.auto"          value="none"/>
+            <property name="hibernate.show_sql"              value="false"/>
+            <property name="hibernate.format_sql"            value="false"/>
+            <!-- Libera la conexión al terminar cada transacción en vez de mantenerla abierta -->
+            <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION"/>
+            <!-- Pool interno de Hibernate (Agroal): mínimo 2, máximo 10 conexiones -->
+            <property name="hibernate.agroal.maxSize"        value="10"/>
+            <property name="hibernate.agroal.minSize"        value="2"/>
+            <property name="hibernate.agroal.initialSize"    value="2"/>
+        </properties>
+
+    </persistence-unit>
+</persistence>

@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RUTA: src/main/webapp/registro.xhtml -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{registroBean.editId}"/>
+        <f:viewAction action="#{registroBean.cargarRegistro}" onPostback="false"/>
+    </f:metadata>
+
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>#{registroBean.editMode ? 'Editar Registro' : 'Nuevo Registro'} — SENADI</title>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}"/>
+    </h:head>
+
+    <h:body>
+
+        <p:growl id="mensajes" showDetail="true" life="6000" sticky="false"/>
+
+        <!-- ── HEADER ── -->
+        <div class="sn-header">
+            <a href="index.xhtml" class="sn-header-brand">
+                <img src="#{resource['images/sena_2.png']}" alt="SENADI"/>
+                <div class="sn-header-title">
+                    SENADI
+                    <small>Obtenciones Vegetales</small>
+                </div>
+            </a>
+            <div class="sn-header-user">
+                <div class="sn-user-pill">
+                    <i class="pi pi-user"></i>
+                    <span style="color:#fff; font-size:13px; font-weight:700;">
+                        #{registroBean.login != null ? registroBean.login.login : 'Usuario'}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="sn-header-gold-line"></div>
+
+        <!-- ── BREADCRUMB ── -->
+        <div class="sn-breadcrumb">
+            <i class="pi pi-home" style="font-size:11px;"></i>
+            <a href="index.xhtml">Registros</a>
+            <span class="sn-breadcrumb-sep">/</span>
+            <span>#{registroBean.editMode ? 'Editar Registro' : 'Nuevo Registro'}</span>
+            <h:panelGroup rendered="#{registroBean.editMode and not empty registroBean.form.applicationNumber}">
+                <span class="sn-breadcrumb-sep">/</span>
+                <strong style="color:var(--sn-green);">#{registroBean.form.applicationNumber}</strong>
+            </h:panelGroup>
+        </div>
+
+        <div class="sn-wrap">
+
+            <!-- ── CABECERA ── -->
+            <div class="sn-page-header">
+                <div>
+                    <h2>
+                        <i class="pi #{registroBean.editMode ? 'pi-pencil' : 'pi-plus-circle'}"
+                           style="margin-right:8px;"></i>
+                        #{registroBean.editMode
+                            ? 'Editar Registro de Obtención Vegetal'
+                            : 'Nuevo Registro de Obtención Vegetal'}
+                    </h2>
+                    <div class="sn-sub">
+                        #{registroBean.editMode
+                            ? 'Modifique los campos y presione Guardar Cambios.'
+                            : 'Complete los datos del nuevo trámite y presione Guardar.'}
+                    </div>
+                </div>
+                <h:panelGroup rendered="#{registroBean.editMode and registroBean.form.status != null}">
+                    <span class="badge badge-#{registroBean.form.status}">
+                        #{registroBean.getStatusLabel(registroBean.form.status)}
+                    </span>
+                </h:panelGroup>
+            </div>
+
+            <!-- ════════════════════════════════════════════════════
+                 FORM PRINCIPAL — SIN enctype="multipart/form-data"
+                 p:fileUpload mode="advanced" usa su propio XHR.
+                 ════════════════════════════════════════════════════ -->
+            <h:form id="frmRegistro">
+
+                <!-- ── BANNER EDICIÓN (encima de tabs) ── -->
+                <h:panelGroup rendered="#{registroBean.editMode}">
+                    <div class="sn-edit-banner">
+                        <span class="hint">
+                            <i class="pi pi-pencil"></i>
+                            Modifique los campos y presione <strong>Guardar Cambios</strong>
+                        </span>
+                        <div class="btns">
+                            <p:commandButton id="btnCancelarTop"
+                                             value="Cancelar"
+                                             icon="pi pi-times"
+                                             action="#{registroBean.cancelar}"
+                                             immediate="true"
+                                             styleClass="sn-btn-secondary"
+                                             style="min-width:110px;"/>
+                            <p:commandButton id="btnGuardarTop"
+                                             value="Guardar Cambios"
+                                             icon="pi pi-check"
+                                             action="#{registroBean.updateRegistro}"
+                                             process="@form"
+                                             update=":mensajes"
+                                             styleClass="sn-btn-primary"
+                                             style="min-width:150px;"/>
+                        </div>
+                    </div>
+                </h:panelGroup>
+
+                <div class="sn-card">
+                    <p:tabView id="tabsRegistro" dynamic="true" cache="true">
+
+                        <!-- ══ TAB 1: DATOS DE LA VARIEDAD ══ -->
+                        <p:tab title="Datos de la Variedad" id="tabDatos">
+                            <div class="sn-sec-title">
+                                <i class="pi pi-leaf"></i> Información General de la Variedad
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Nombre Común <span class="sn-req">*</span></span>
+                                        <p:inputText id="commonName"
+                                                     value="#{registroBean.form.commonName}"
+                                                     style="width:100%" maxlength="200"
+                                                     placeholder="Ej: Rosa, Tulipán, Chirimoya..."
+                                                     required="true"
+                                                     requiredMessage="El nombre común es obligatorio."/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Taxón Botánico <span class="sn-req">*</span></span>
+                                        <p:inputText id="botanicalTaxon"
+                                                     value="#{registroBean.form.botanicalTaxon}"
+                                                     style="width:100%" maxlength="300"
+                                                     placeholder="Ej: Rosa hybrida, Annona cherimola..."
+                                                     required="true"
+                                                     requiredMessage="El taxón botánico es obligatorio."/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Denominación Propuesta</span>
+                                        <p:inputText value="#{registroBean.form.genericDenomination}"
+                                                     style="width:100%" maxlength="200"
+                                                     placeholder="Nombre que identifica la variedad"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Designación Provisional</span>
+                                        <p:inputText value="#{registroBean.form.provitionalDesignation}"
+                                                     style="width:100%" maxlength="100"
+                                                     placeholder="Código o nombre de trabajo provisional"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Tipo de Denominación</span>
+                                        <p:selectOneMenu value="#{registroBean.form.denominationType}" style="width:100%">
+                                            <f:selectItem itemLabel="— Seleccione —" itemValue="#{null}" noSelectionOption="true"/>
+                                            <f:selectItem itemLabel="Nombre de Fantasía" itemValue="FANTASY_NAME"/>
+                                            <f:selectItem itemLabel="Código"              itemValue="CODE"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Grupo Varietal</span>
+                                        <p:inputText value="#{registroBean.form.varietalGroup}"
+                                                     style="width:100%" maxlength="200"
+                                                     placeholder="Ej: Rosas de corte, Tomates cherry..."/>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Número de Trámite</span>
+                                        <p:inputText value="#{registroBean.form.applicationNumber}"
+                                                     style="width:100%;" maxlength="50"
+                                                     placeholder="(se asigna al crear el expediente)"
+                                                     readonly="#{registroBean.editMode}"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr style="border:none; border-top:1px solid #e0ece0; margin:18px 0;"/>
+                            <div class="sn-sec-title">
+                                <i class="pi pi-map-marker"></i> Origen y Transferencia de la Variedad
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Origen Geográfico del Material</span>
+                                        <p:inputText value="#{registroBean.form.geographicalMaterialOrigin}"
+                                                     style="width:100%" maxlength="200"
+                                                     placeholder="País o región de origen del material genético"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Origen Geográfico de la Variedad</span>
+                                        <p:inputText value="#{registroBean.form.geographicalVarietyOrigin}"
+                                                     style="width:100%" maxlength="200"
+                                                     placeholder="País o región donde se desarrolló la variedad"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Tipo de Transferencia</span>
+                                        <p:selectOneMenu value="#{registroBean.form.varietyTransferType}" style="width:100%">
+                                            <f:selectItem itemLabel="— Seleccione —"     itemValue="#{null}" noSelectionOption="true"/>
+                                            <f:selectItem itemLabel="Sucesión"            itemValue="SUCCESSION"/>
+                                            <f:selectItem itemLabel="Contrato"            itemValue="CONTRACT"/>
+                                            <f:selectItem itemLabel="Contrato Laboral"    itemValue="EMPLOYMENT_CONTRACT"/>
+                                            <f:selectItem itemLabel="Cesión de Derechos" itemValue="TRANSFER_RIGHTS"/>
+                                            <f:selectItem itemLabel="Otro"                itemValue="OTHER"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Descripción de Transferencia</span>
+                                        <p:inputText value="#{registroBean.form.varietyTransferDescription}"
+                                                     style="width:100%" maxlength="500"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="check-row" style="display:flex; flex-wrap:wrap; gap:18px; margin-bottom:14px;">
+                                <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                    <p:selectBooleanCheckbox value="#{registroBean.form.varietyTransfer}"/>
+                                    Variedad fue transferida
+                                </label>
+                                <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                    <p:selectBooleanCheckbox value="#{registroBean.form.hasOtherApplications}"/>
+                                    Tiene otras solicitudes
+                                </label>
+                                <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                    <p:selectBooleanCheckbox value="#{registroBean.form.priorityClaim}"/>
+                                    Reclamo de prioridad
+                                </label>
+                                <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                    <p:selectBooleanCheckbox value="#{registroBean.form.inTerritory}"/>
+                                    En territorio
+                                </label>
+                                <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                    <p:selectBooleanCheckbox value="#{registroBean.form.outTerritory}"/>
+                                    Fuera de territorio
+                                </label>
+                            </div>
+
+                            <div class="sn-tab-nav">
+                                <div></div>
+                                <div>
+                                    <button type="button" class="sn-tab-btn"
+                                            onclick="PF('tabsRegistro').select(1); return false;">
+                                        Información Técnica <i class="pi pi-chevron-right"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </p:tab>
+
+                        <!-- ══ TAB 2: INFORMACIÓN TÉCNICA ══ -->
+                        <p:tab title="Información Técnica" id="tabTecnica">
+                            <div class="sn-sec-title">
+                                <i class="pi pi-file-edit"></i> Descripción y Características de la Variedad
+                            </div>
+                            <div class="sn-fld">
+                                <span class="sn-lbl">Genealogía / Método de Obtención</span>
+                                <p:inputTextarea value="#{registroBean.form.genealogy}"
+                                                 rows="3" autoResize="true" style="width:100%"
+                                                 placeholder="Cruzamiento, mutación, selección clonal, etc."/>
+                            </div>
+                            <div class="sn-fld">
+                                <span class="sn-lbl">Descripción de Características Distintivas <span class="sn-req">*</span></span>
+                                <p:inputTextarea value="#{registroBean.form.featuresDescription}"
+                                                 rows="4" autoResize="true" style="width:100%"
+                                                 placeholder="Morfología, color, tamaño, resistencias, calidad..."
+                                                 required="true"
+                                                 requiredMessage="La descripción de características es obligatoria."/>
+                            </div>
+                            <div class="sn-fld">
+                                <span class="sn-lbl">Mecanismo de Reproducción</span>
+                                <p:inputTextarea value="#{registroBean.form.reproductionMechanism}"
+                                                 rows="2" autoResize="true" style="width:100%"
+                                                 placeholder="Semilla, vegetativa, bulbos, esquejes..."/>
+                            </div>
+                            <div class="sn-fld">
+                                <span class="sn-lbl">Historial de la Variedad</span>
+                                <p:inputTextarea value="#{registroBean.form.processHistory}"
+                                                 rows="3" autoResize="true" style="width:100%"
+                                                 placeholder="Breve historial del proceso de desarrollo"/>
+                            </div>
+                            <div class="sn-fld">
+                                <span class="sn-lbl">Información Adicional</span>
+                                <p:inputTextarea value="#{registroBean.form.additionalInformation}"
+                                                 rows="3" autoResize="true" style="width:100%"
+                                                 placeholder="Cualquier dato adicional relevante para la solicitud"/>
+                            </div>
+
+                            <hr style="border:none; border-top:1px solid #e0ece0; margin:18px 0;"/>
+                            <div class="sn-sec-title">
+                                <i class="pi pi-search"></i> Estado del Examen de la Variedad
+                            </div>
+                            <div class="check-row" style="display:flex; flex-wrap:wrap; gap:18px; margin-bottom:14px;">
+                                <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                    <p:selectBooleanCheckbox value="#{registroBean.form.examPerformed}"/>
+                                    Examen ya realizado
+                                </label>
+                                <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                    <p:selectBooleanCheckbox value="#{registroBean.form.examInProcess}"/>
+                                    Examen en proceso
+                                </label>
+                                <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                    <p:selectBooleanCheckbox value="#{registroBean.form.noExamYet}"/>
+                                    Sin examen aún
+                                </label>
+                                <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                    <p:selectBooleanCheckbox value="#{registroBean.form.livingSample}"/>
+                                    Muestra viva disponible
+                                </label>
+                                <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                    <p:selectBooleanCheckbox value="#{registroBean.form.electronicCommunicationConsent}"/>
+                                    Acepta notificaciones electrónicas
+                                </label>
+                            </div>
+                            <div class="row" style="margin-top:4px;">
+                                <div class="col-md-6">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Lugar de la Muestra Viva</span>
+                                        <p:inputText value="#{registroBean.form.samplePlace}"
+                                                     style="width:100%" maxlength="300"
+                                                     placeholder="Institución o dirección donde está la muestra"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sn-tab-nav">
+                                <div>
+                                    <button type="button" class="sn-tab-btn"
+                                            onclick="PF('tabsRegistro').select(0); return false;">
+                                        <i class="pi pi-chevron-left"/> Datos de la Variedad
+                                    </button>
+                                </div>
+                                <div>
+                                    <button type="button" class="sn-tab-btn"
+                                            onclick="PF('tabsRegistro').select(2); return false;">
+                                        Estado del Trámite <i class="pi pi-chevron-right"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </p:tab>
+
+                        <!-- ══ TAB 3: ESTADO DEL TRÁMITE ══ -->
+                        <p:tab title="Estado del Trámite" id="tabEstado">
+                            <div class="sn-sec-title">
+                                <i class="pi pi-cog"></i> Gestión y Estado del Proceso
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Estado del Registro <span class="sn-req">*</span></span>
+                                        <p:selectOneMenu value="#{registroBean.form.status}"
+                                                         style="width:100%" required="true"
+                                                         requiredMessage="El estado es obligatorio.">
+                                            <f:selectItem itemLabel="Guardado"     itemValue="SAVED"/>
+                                            <f:selectItem itemLabel="En Proceso"   itemValue="DELIVERED"/>
+                                            <f:selectItem itemLabel="Vista Previa" itemValue="PREVIEW"/>
+                                            <f:selectItem itemLabel="Finalizado"   itemValue="FINISHED"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Estado de Gestión</span>
+                                        <p:selectOneMenu value="#{registroBean.form.statusFlow}" style="width:100%">
+                                            <f:selectItem itemLabel="— Sin gestión —" itemValue="#{null}" noSelectionOption="true"/>
+                                            <f:selectItem itemLabel="Pendiente"  itemValue="PENDING"/>
+                                            <f:selectItem itemLabel="Atendido"   itemValue="ATTENDED"/>
+                                            <f:selectItem itemLabel="Negado"     itemValue="DENIED"/>
+                                            <f:selectItem itemLabel="Caducado"   itemValue="EXPIRED"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Fase del Flujo</span>
+                                        <p:selectOneMenu value="#{registroBean.form.flowPhase}" style="width:100%">
+                                            <f:selectItem itemLabel="— Sin fase —"           itemValue="#{null}" noSelectionOption="true"/>
+                                            <f:selectItem itemLabel="Inicial"                itemValue="INITIAL"/>
+                                            <f:selectItem itemLabel="Asignado"               itemValue="ASSIGNED"/>
+                                            <f:selectItem itemLabel="Revisión de Forma"      itemValue="FORM_REVIEW"/>
+                                            <f:selectItem itemLabel="Admitido"               itemValue="ADMITTED"/>
+                                            <f:selectItem itemLabel="Revisión de Fondo"      itemValue="SUBSTANCE_REVIEW"/>
+                                            <f:selectItem itemLabel="Depósito de Muestra"    itemValue="LIVE_SAMPLE_DEPOSIT"/>
+                                            <f:selectItem itemLabel="Cert. Depósito"         itemValue="DEPOSIT_CERTIFICATE"/>
+                                            <f:selectItem itemLabel="Período Oposición"      itemValue="OPPOSITION_PERIOD"/>
+                                            <f:selectItem itemLabel="Res. Oposición"         itemValue="OPPOSITION_RESOLUTION"/>
+                                            <f:selectItem itemLabel="Examen DHE"             itemValue="DHE_EXAM"/>
+                                            <f:selectItem itemLabel="Dictamen Técnico"       itemValue="TECHNICAL_OPINION"/>
+                                            <f:selectItem itemLabel="Resolución"             itemValue="RESOLUTION"/>
+                                            <f:selectItem itemLabel="Certificado Emitido"    itemValue="CERTIFICATE_ISSUED"/>
+                                            <f:selectItem itemLabel="Archivado"              itemValue="ARCHIVED"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Usuario Asignado</span>
+                                        <div style="display:flex; gap:8px;">
+                                            <p:inputText value="#{registroBean.form.assignedUser}"
+                                                         style="width:100%;" maxlength="100"
+                                                         placeholder="Login del técnico responsable"/>
+                                            <h:panelGroup rendered="#{registroBean.editMode}">
+                                                <p:commandButton icon="pi pi-pencil"
+                                                                 title="Asignar persona"
+                                                                 onclick="PF('dlgAsignar').show()"
+                                                                 type="button"
+                                                                 styleClass="sn-btn-primary"
+                                                                 style="min-width:40px; padding:8px;"/>
+                                            </h:panelGroup>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Fecha de Presentación</span>
+                                        <p:calendar value="#{registroBean.form.applicationDate}"
+                                                    pattern="dd/MM/yyyy" style="width:100%"
+                                                    showOn="button" showButtonPanel="true"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h:panelGroup rendered="#{registroBean.editMode}">
+                                <hr style="border:none; border-top:1px solid #e0ece0; margin:18px 0;"/>
+                                <div class="sn-sec-title">
+                                    <i class="pi pi-info-circle"></i> Datos del Registro
+                                </div>
+                                <div class="row" style="font-size:13px;">
+                                    <div class="col-md-3">
+                                        <strong style="color:var(--sn-muted);">ID Interno:</strong><br/>
+                                        <span style="font-family:monospace; font-size:15px;">#{registroBean.form.id}</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong style="color:var(--sn-muted);">N° de Trámite:</strong><br/>
+                                        <span style="font-family:monospace;">
+                                            #{not empty registroBean.form.applicationNumber
+                                                ? registroBean.form.applicationNumber : '(pendiente)'}
+                                        </span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong style="color:var(--sn-muted);">Fecha de Creación:</strong><br/>
+                                        <h:outputText value="#{registroBean.form.createDate}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
+                                        </h:outputText>
+                                    </div>
+                                </div>
+                            </h:panelGroup>
+
+                            <div class="sn-tab-nav">
+                                <div>
+                                    <button type="button" class="sn-tab-btn"
+                                            onclick="PF('tabsRegistro').select(1); return false;">
+                                        <i class="pi pi-chevron-left"/> Información Técnica
+                                    </button>
+                                </div>
+                                <div>
+                                    <button type="button" class="sn-tab-btn"
+                                            onclick="PF('tabsRegistro').select(3); return false;">
+                                        Documentos <i class="pi pi-chevron-right"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </p:tab>
+
+                        <!-- ══ TAB 4: DOCUMENTOS ══ -->
+                        <p:tab title="Documentos y Archivos" id="tabDocs">
+
+                            <h:panelGroup id="panelDocs" rendered="#{registroBean.editMode}">
+                                <div class="sn-sec-title">
+                                    <i class="pi pi-cloud-upload"></i> Cargar Documentos al Registro
+                                    <span style="font-size:11px; color:var(--sn-muted); font-weight:400; margin-left:8px;">
+                                        (Trámite: #{registroBean.form.applicationNumber != null
+                                            ? registroBean.form.applicationNumber
+                                            : concat('ID ', registroBean.form.id)})
+                                    </span>
+                                </div>
+
+                                <div style="background:#fffbf0; border:1px solid #f0e6d2; border-radius:8px; padding:12px 16px; margin-bottom:20px;">
+                                    <i class="pi pi-info-circle" style="color:#d97706; margin-right:8px;"></i>
+                                    <span style="font-size:12px; color:#78350f;">
+                                        <strong>Documentos opcionales:</strong> Puedes subir cualquier combinación. Cada documento se sube independientemente.
+                                    </span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="sn-upload-card">
+                                            <h6><i class="pi pi-file-pdf" style="color:#dc2626;"></i>
+                                                Formulario PDF <span style="font-size:10px; color:#999;">(opcional - máx 10 MB)</span></h6>
+                                            <p:fileUpload listener="#{registroBean.uploadArchivo}"
+                                                          mode="advanced" dragDropSupport="true"
+                                                          update=":mensajes :frmRegistro:panelDocs"
+                                                          sizeLimit="10000000"
+                                                          allowTypes="/(\.|\/)(pdf)$/i"
+                                                          label="Seleccionar PDF" uploadLabel="Subir PDF"
+                                                          cancelLabel="Cancelar" auto="true" showUploadedFiles="false"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="sn-upload-card">
+                                            <h6><i class="pi pi-image" style="color:#2563eb;"></i>
+                                                Fotografías JPG/PNG <span style="font-size:10px; color:#999;">(opcional - máx 5 MB c/u)</span></h6>
+                                            <p:fileUpload listener="#{registroBean.uploadArchivo}"
+                                                          mode="advanced" multiple="true" dragDropSupport="true"
+                                                          update=":mensajes :frmRegistro:panelDocs"
+                                                          sizeLimit="5000000" fileLimit="10"
+                                                          allowTypes="/(\.|\/)(jpe?g|png)$/i"
+                                                          label="Seleccionar fotos" uploadLabel="Subir fotos"
+                                                          cancelLabel="Cancelar" auto="true" showUploadedFiles="false"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="sn-upload-card">
+                                            <h6><i class="pi pi-money-bill" style="color:var(--sn-gold);"></i>
+                                                Comprobante de Pago PDF <span style="font-size:10px; color:#999;">(opcional - máx 5 MB)</span></h6>
+                                            <p:fileUpload listener="#{registroBean.uploadArchivo}"
+                                                          mode="advanced" dragDropSupport="true"
+                                                          update=":mensajes :frmRegistro:panelDocs"
+                                                          sizeLimit="5000000"
+                                                          allowTypes="/(\.|\/)(pdf)$/i"
+                                                          label="Seleccionar pago" uploadLabel="Subir pago"
+                                                          cancelLabel="Cancelar" auto="true" showUploadedFiles="false"/>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Tabla de archivos subidos -->
+                                <div style="margin-top:20px;">
+                                    <div class="sn-sec-title">
+                                        <i class="pi pi-folder-open"></i>
+                                        Archivos Cargados
+                                        <span style="background:var(--sn-green); color:white; border-radius:12px;
+                                                     padding:2px 9px; font-size:10px; margin-left:8px; font-weight:800;">
+                                            #{registroBean.archivosSubidos.size()}
+                                        </span>
+                                    </div>
+                                    <p:dataTable value="#{registroBean.archivosSubidos}" var="arch"
+                                                 emptyMessage="Aún no hay archivos cargados para este registro."
+                                                 style="font-size:12px;">
+                                        <p:column headerText="Archivo" style="width:45%">
+                                            <h:outputText value="#{arch.nombreArchivo}"/>
+                                        </p:column>
+                                        <p:column headerText="Fecha" style="width:22%; text-align:center;">
+                                            <h:outputText value="#{arch.fechaCarga}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
+                                            </h:outputText>
+                                        </p:column>
+                                        <p:column headerText="Subido por" style="width:15%; text-align:center;">
+                                            <h:outputText value="#{arch.cargadoPor}"/>
+                                        </p:column>
+                                        <p:column headerText="Tamaño" style="width:10%; text-align:center;">
+                                            <h:outputText value="#{arch.tamanoBytes / 1024} KB"/>
+                                        </p:column>
+                                        <p:column headerText="Ver" style="width:8%; text-align:center;">
+                                            <h:outputLink value="#{request.contextPath}/file-view?id=#{arch.id}"
+                                                          target="_blank"
+                                                          style="background:var(--sn-green); color:white; padding:3px 10px;
+                                                                 border-radius:5px; font-size:11px; text-decoration:none;">
+                                                <i class="pi pi-external-link"/>
+                                            </h:outputLink>
+                                        </p:column>
+                                    </p:dataTable>
+                                </div>
+                            </h:panelGroup>
+
+                            <!-- Navegación Tab 4 -->
+                            <div class="sn-tab-nav">
+                                <div>
+                                    <button type="button" class="sn-tab-btn"
+                                            onclick="PF('tabsRegistro').select(2); return false;">
+                                        <i class="pi pi-chevron-left"/> Estado del Trámite
+                                    </button>
+                                </div>
+                                <div style="display:flex; gap:10px;">
+                                    <p:commandButton id="btnCancelarTab4"
+                                                     value="Cancelar"
+                                                     icon="pi pi-times"
+                                                     action="#{registroBean.cancelar}"
+                                                     immediate="true"
+                                                     styleClass="sn-btn-secondary"
+                                                     style="min-width:110px;"/>
+                                    <p:commandButton id="btnGuardarTab4Nuevo"
+                                                     rendered="#{!registroBean.editMode}"
+                                                     value="Guardar Registro"
+                                                     icon="pi pi-save"
+                                                     action="#{registroBean.saveRegistroAndStay}"
+                                                     process="@form"
+                                                     update=":mensajes :frmRegistro"
+                                                     styleClass="sn-btn-primary"
+                                                     style="min-width:150px;"/>
+                                    <p:commandButton id="btnGuardarTab4Edicion"
+                                                     rendered="#{registroBean.editMode}"
+                                                     value="Guardar Cambios"
+                                                     icon="pi pi-check"
+                                                     action="#{registroBean.updateRegistro}"
+                                                     process="@form"
+                                                     update=":mensajes"
+                                                     styleClass="sn-btn-primary"
+                                                     style="min-width:150px;"/>
+                                </div>
+                            </div>
+
+                        </p:tab>
+
+                    </p:tabView>
+
+
+                </div><!-- sn-card -->
+
+            </h:form>
+
+            <!-- ════ DIÁLOGO ASIGNAR TRÁMITE ════ -->
+            <p:dialog widgetVar="dlgAsignar" header="Asignar Trámite" modal="true"
+                      resizable="false" style="min-width:400px;" closable="true">
+                <h:form id="frmAsignar">
+                    <div style="padding:12px;">
+                        <div style="margin-bottom:16px;">
+                            <label style="display:block; font-weight:700; color:var(--sn-dark); margin-bottom:6px;">
+                                Nombre de la Persona a Asignar
+                            </label>
+                            <p:inputText id="inputPersona"
+                                        value="#{registroBean.personaAsignar}"
+                                        style="width:100%;"
+                                        placeholder="Escriba el nombre de la persona"
+                                        required="true"
+                                        requiredMessage="El nombre es obligatorio."/>
+                        </div>
+                        <div style="display:flex; gap:10px; justify-content:flex-end;">
+                            <p:commandButton value="Cancelar"
+                                            icon="pi pi-times"
+                                            onclick="PF('dlgAsignar').hide()"
+                                            styleClass="sn-btn-secondary"/>
+                            <p:commandButton value="Asignar"
+                                            icon="pi pi-check"
+                                            action="#{registroBean.asignarTramite}"
+                                            process="@form"
+                                            update=":mensajes"
+                                            oncomplete="if(!args.validationFailed) PF('dlgAsignar').hide();"
+                                            styleClass="sn-btn-primary"/>
+                        </div>
+                    </div>
+                </h:form>
+            </p:dialog>
+
+        </div><!-- sn-wrap -->
+
+        <!-- Spinner AJAX -->
+        <p:ajaxStatus onstart="PF('spinnerDlg').show()" onsuccess="PF('spinnerDlg').hide()"/>
+        <p:dialog widgetVar="spinnerDlg" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage library="images" name="ajax-loader.gif"/>
+        </p:dialog>
+
+        <!-- Idle monitor -->
+        <p:idleMonitor timeout="1800000" id="idleReg">
+            <p:ajax event="idle" oncomplete="PF('idleDlgReg').show()"/>
+        </p:idleMonitor>
+        <p:dialog id="idleDlgReg" widgetVar="idleDlgReg"
+                  header="Sesión Caducada" resizable="false"
+                  modal="true" closable="false" style="min-width:280px;">
+            <h:form id="frmIdle">
+                <div style="text-align:center; padding:10px;">
+                    <p style="margin-bottom:14px; color:var(--sn-dark);">Su sesión ha expirado por inactividad.</p>
+                    <p:commandButton value="Ir al Login" icon="pi pi-sign-in"
+                                     immediate="true"
+                                     actionListener="#{loginBean.logout}"
+                                     oncomplete="window.location='login.xhtml';"
+                                     styleClass="sn-btn-primary"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+
+
+    </h:body>
+</html>
