@@ -18,7 +18,7 @@ import javax.persistence.Table;
  * @author michael
  */
 @Entity
-@Table(name = "history")
+@Table(name = "`history`")
 public class History implements Serializable {
 
     @Id
@@ -37,9 +37,6 @@ public class History implements Serializable {
 
     @Column(name = "history_user")
     private String historyUser;
-
-    @Column(name = "assigned_to")
-    private String assignedTo;
 
     /**
      * @return the id
@@ -109,20 +106,6 @@ public class History implements Serializable {
      */
     public void setHistoryUser(String historyUser) {
         this.historyUser = historyUser;
-    }
-
-    /**
-     * @return the assignedTo
-     */
-    public String getAssignedTo() {
-        return assignedTo;
-    }
-
-    /**
-     * @param assignedTo the assignedTo to set
-     */
-    public void setAssignedTo(String assignedTo) {
-        this.assignedTo = assignedTo;
     }
 
     @Override

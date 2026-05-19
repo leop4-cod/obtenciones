@@ -398,9 +398,6 @@ textarea.ui-inputfield {
     border-color: var(--border) !important;
     background: var(--surface) !important;
     background-color: var(--surface) !important;
-    opacity: 1 !important;
-    z-index: var(--z-dropdown) !important;
-    isolation: isolate;
 }
 .ui-selectonemenu-item:hover,
 .ui-selectonemenu-item.ui-state-hover {
@@ -447,10 +444,7 @@ textarea.ui-inputfield {
     box-shadow: var(--shadow-lg) !important;
     border: 1px solid var(--border) !important;
     padding: 10px !important;
-    z-index: var(--z-datepicker) !important;
     min-width: 260px !important;
-    opacity: 1 !important;
-    isolation: isolate;
 }
 .ui-datepicker .ui-datepicker-header {
     background: linear-gradient(135deg, var(--primary-dark), var(--primary)) !important;
@@ -521,8 +515,6 @@ textarea.ui-inputfield {
     border-color: var(--border) !important;
     background: var(--surface) !important;
     background-color: var(--surface) !important;
-    opacity: 1 !important;
-    z-index: var(--z-dropdown) !important;
 }
 .ui-autocomplete-item:hover { background: var(--accent) !important; color: var(--primary-dark) !important; }
 .ui-autocomplete-item.ui-state-highlight { background: var(--primary) !important; color: #fff !important; }
@@ -848,8 +840,6 @@ textarea.ui-inputfield {
 /* Overlay backdrop */
 .ui-widget-overlay {
     background: rgba(15,30,20,.55) !important;
-    opacity: 1 !important;
-    z-index: var(--z-overlay) !important;
     backdrop-filter: blur(1px);
     -webkit-backdrop-filter: blur(1px);
 }
@@ -1445,8 +1435,6 @@ input.ui-button {
     border: 1px solid var(--border) !important;
     border-radius: var(--radius-lg) !important;
     box-shadow: var(--shadow-lg) !important;
-    z-index: var(--z-dropdown) !important;
-    opacity: 1 !important;
 }
 
 /* ── Multiselect panel ── */
@@ -1456,8 +1444,6 @@ input.ui-button {
     border: 1px solid var(--border) !important;
     border-radius: var(--radius) !important;
     box-shadow: var(--shadow-md) !important;
-    z-index: var(--z-dropdown) !important;
-    opacity: 1 !important;
 }
 .ui-multiselect-item {
     background: var(--surface) !important;
@@ -1589,19 +1575,15 @@ html body .ui-selectonemenu-panel {
     background: #ffffff !important;
     background-color: #ffffff !important;
     background-image: none !important;
-    opacity: 1 !important;
-    filter: none !important;
-    z-index: 600 !important;
     border: 1px solid #b8d4b8 !important;
     border-radius: 7px !important;
     box-shadow: 0 8px 24px rgba(0,0,0,0.18) !important;
-    position: absolute !important;
+    z-index: 100000;
 }
 html body .ui-selectonemenu-panel .ui-selectonemenu-items-wrapper {
     background: #ffffff !important;
     background-color: #ffffff !important;
     background-image: none !important;
-    opacity: 1 !important;
 }
 html body .ui-selectonemenu-panel .ui-selectonemenu-list {
     background: #ffffff !important;
@@ -1622,7 +1604,6 @@ html body .ui-selectonemenu-panel li.ui-selectonemenu-item {
     padding: 9px 14px !important;
     cursor: pointer !important;
     border: none !important;
-    opacity: 1 !important;
 }
 html body .ui-selectonemenu-panel .ui-selectonemenu-item:hover,
 html body .ui-selectonemenu-panel li.ui-selectonemenu-item:hover,
@@ -1642,8 +1623,6 @@ html body .ui-datepicker {
     background: #ffffff !important;
     background-color: #ffffff !important;
     background-image: none !important;
-    opacity: 1 !important;
-    z-index: 950 !important;
     border: 1px solid #b8d4b8 !important;
     border-radius: 10px !important;
     box-shadow: 0 10px 32px rgba(0,0,0,0.20) !important;
@@ -1664,8 +1643,6 @@ html body .ui-datepicker .ui-datepicker-header {
 html body .ui-autocomplete-panel {
     background: #ffffff !important;
     background-color: #ffffff !important;
-    opacity: 1 !important;
-    z-index: 600 !important;
     border: 1px solid #b8d4b8 !important;
     border-radius: 7px !important;
     box-shadow: 0 8px 24px rgba(0,0,0,0.18) !important;
@@ -1675,7 +1652,6 @@ html body .ui-autocomplete-panel .ui-autocomplete-list-item {
     background-color: #ffffff !important;
     color: #263238 !important;
     padding: 8px 14px !important;
-    opacity: 1 !important;
 }
 html body .ui-autocomplete-panel .ui-autocomplete-list-item:hover,
 html body .ui-autocomplete-panel .ui-autocomplete-list-item.ui-state-hover {
@@ -1686,11 +1662,8 @@ html body .ui-autocomplete-panel .ui-autocomplete-list-item.ui-state-hover {
 /* ── OVERLAY MODAL: z-index correcto ── */
 html body .ui-widget-overlay {
     background-color: rgba(15, 30, 20, 0.55) !important;
-    opacity: 1 !important;
-    z-index: 700 !important;
 }
 html body .ui-dialog {
-    z-index: 900 !important;
     background: #ffffff !important;
 }
 

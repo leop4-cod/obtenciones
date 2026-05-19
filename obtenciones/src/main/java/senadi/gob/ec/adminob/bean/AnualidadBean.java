@@ -29,7 +29,8 @@ public class AnualidadBean implements Serializable {
     private Anualidad        anualidadEnEdicion;
     private EstadoAnualidad  estadoOriginal;
     private Integer          tramiteSeleccionadoId;
-    private boolean          completado = false;
+    private boolean          completado          = false;
+    private int              cantidadAnualidades = 20;
 
     private String filtroTramite = "";
     private String filtroEstado  = "";
@@ -52,9 +53,11 @@ public class AnualidadBean implements Serializable {
             System.err.println("[AnualidadBean] Error al cargar: " + e.getMessage());
         }
         try {
-            tramites = new VegetableFormsDAO(null).buscarTodos();
+            // Solo los trámites ACEPTADOS pueden tener anualidades
+            tramites = new VegetableFormsDAO(null).buscarTodosByType("Aceptados");
         } catch (Exception e) {
             tramites = new ArrayList<>();
+            System.err.println("[AnualidadBean] Error al cargar trámites: " + e.getMessage());
         }
     }
 
@@ -67,7 +70,7 @@ public class AnualidadBean implements Serializable {
                 VegetableForms vf = getVegetableForm(a.getVegetableFormId());
                 if (vf == null) continue;
                 String appNum = vf.getApplicationNumber() == null ? "" : vf.getApplicationNumber().toLowerCase();
-                String numInt = vf.getNumeracionInterna() == null ? "" : vf.getNumeracionInterna().toLowerCase();
+                String numInt = vf.getNumeracionInterna()  == null ? "" : vf.getNumeracionInterna().toLowerCase();
                 String busq   = filtroTramite.toLowerCase();
                 if (!appNum.contains(busq) && !numInt.contains(busq)) continue;
             }
@@ -81,7 +84,12 @@ public class AnualidadBean implements Serializable {
         for (VegetableForms vf : tramites) {
             if (id.equals(vf.getId())) return vf;
         }
-        return null;
+        // Fallback: buscar en BD si no está en la lista (p. ej. estado cambiado)
+        try {
+            return new VegetableFormsDAO(null).getVegetableFormsById(id);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public boolean tieneAnualidades(Integer vegetableFormId) {
@@ -99,10 +107,12 @@ public class AnualidadBean implements Serializable {
         }
         try {
             String usuario = obtenerUsuario();
-            new AnualidadDAO(null).crearAnualidadesVacias(tramiteSeleccionadoId, usuario);
+            new AnualidadDAO(null).crearAnualidadesVacias(tramiteSeleccionadoId, usuario, cantidadAnualidades);
             cargar();
+            Operations.message(Operations.INFORMACION,
+                "Se generaron " + cantidadAnualidades + " anualidades para el trámite.");
             tramiteSeleccionadoId = null;
-            Operations.message(Operations.INFORMACION, "Se generaron 20 anualidades para el trámite.");
+            cantidadAnualidades   = 20;
         } catch (Exception e) {
             Operations.message(Operations.ERROR, "Error al crear anualidades: " + e.getMessage());
         }
@@ -135,7 +145,6 @@ public class AnualidadBean implements Serializable {
         if (completado) {
             anualidadEnEdicion.setEstado(EstadoAnualidad.PAGADO);
             if (esPagoNuevo) {
-                // Auto-asignar fecha de pago = hoy
                 anualidadEnEdicion.setFechaPago(new java.sql.Date(System.currentTimeMillis()));
             }
         } else {
@@ -146,8 +155,7 @@ public class AnualidadBean implements Serializable {
         try {
             dao.actualizarAnualidad(anualidadEnEdicion);
 
-            if (esPagoNuevo && anualidadEnEdicion.getAnio() < 20) {
-                // Auto-calcular próximo vencimiento = fechaPago + 1 año
+            if (esPagoNuevo && anualidadEnEdicion.getAnio() < maxAnioParaTramite(anualidadEnEdicion.getVegetableFormId())) {
                 java.util.Calendar cal = java.util.Calendar.getInstance();
                 cal.setTime(anualidadEnEdicion.getFechaPago());
                 cal.add(java.util.Calendar.YEAR, 1);
@@ -172,6 +180,18 @@ public class AnualidadBean implements Serializable {
         }
     }
 
+    /** Retorna el año más alto registrado para el trámite (total de anualidades creadas). */
+    private int maxAnioParaTramite(Integer vegFormId) {
+        if (vegFormId == null || todasLasAnualidades == null) return 20;
+        int max = 0;
+        for (Anualidad a : todasLasAnualidades) {
+            if (vegFormId.equals(a.getVegetableFormId()) && a.getAnio() != null && a.getAnio() > max) {
+                max = a.getAnio();
+            }
+        }
+        return max > 0 ? max : 20;
+    }
+
     public void limpiarFiltros() {
         filtroTramite         = "";
         filtroEstado          = "";
@@ -179,7 +199,45 @@ public class AnualidadBean implements Serializable {
         estadoOriginal        = null;
         tramiteSeleccionadoId = null;
         completado            = false;
+        cantidadAnualidades   = 20;
         cargar();
+    }
+
+    public List<VegetableForms> getTramitesFiltradosConAnualidades() {
+        List<Anualidad> filtradas = getAnualidadesFiltradas();
+        java.util.LinkedHashSet<Integer> ids = new java.util.LinkedHashSet<>();
+        for (Anualidad a : filtradas) ids.add(a.getVegetableFormId());
+        List<VegetableForms> result = new ArrayList<>();
+        for (Integer id : ids) {
+            VegetableForms vf = getVegetableForm(id);
+            if (vf != null) result.add(vf);
+        }
+        return result;
+    }
+
+    public List<Anualidad> getAnualidadesFiltradasPorTramite(Integer vegetableFormId) {
+        List<Anualidad> result = new ArrayList<>();
+        if (vegetableFormId == null) return result;
+        for (Anualidad a : getAnualidadesFiltradas()) {
+            if (vegetableFormId.equals(a.getVegetableFormId())) result.add(a);
+        }
+        return result;
+    }
+
+    public long contarPagadasPorTramite(Integer vegetableFormId) {
+        long n = 0;
+        for (Anualidad a : getAnualidadesFiltradasPorTramite(vegetableFormId)) {
+            if (EstadoAnualidad.PAGADO == a.getEstado()) n++;
+        }
+        return n;
+    }
+
+    public long contarVencidasPorTramite(Integer vegetableFormId) {
+        long n = 0;
+        for (Anualidad a : getAnualidadesFiltradasPorTramite(vegetableFormId)) {
+            if (EstadoAnualidad.VENCIDO == a.getEstado()) n++;
+        }
+        return n;
     }
 
     private String obtenerUsuario() {
@@ -205,7 +263,6 @@ public class AnualidadBean implements Serializable {
         return count;
     }
 
-    /** Número del año siguiente al que está en edición (para mostrar en el diálogo). */
     public int getAnioSiguiente() {
         if (anualidadEnEdicion == null || anualidadEnEdicion.getAnio() == null) return 0;
         return anualidadEnEdicion.getAnio() + 1;
@@ -229,4 +286,7 @@ public class AnualidadBean implements Serializable {
 
     public boolean isCompletado()            { return completado; }
     public void    setCompletado(boolean v)  { this.completado = v; }
+
+    public int  getCantidadAnualidades()      { return cantidadAnualidades; }
+    public void setCantidadAnualidades(int v) { this.cantidadAnualidades = (v < 1 ? 1 : (v > 20 ? 20 : v)); }
 }

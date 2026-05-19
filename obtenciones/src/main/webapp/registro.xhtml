@@ -701,52 +701,7 @@
             </h:form>
         </p:dialog>
 
-        <script>
-        /* Fix selectOneMenu: cerrar al seleccionar ítem o al click fuera */
-        $(document).ready(function() {
 
-            function snHideAllMenus() {
-                if (window.PrimeFaces) {
-                    $.each(PrimeFaces.widgets, function(k, w) {
-                        if (w && typeof w.hide === 'function' && w.panel && w.panel.is(':visible')) {
-                            try { w.hide(); } catch(ex) {}
-                        }
-                    });
-                } else {
-                    $('.ui-selectonemenu-panel:visible').hide();
-                }
-            }
-
-            $(document).on('mousedown.snfix', function(e) {
-                if (!$(e.target).closest('.ui-selectonemenu, .ui-selectonemenu-panel').length) {
-                    snHideAllMenus();
-                }
-            });
-
-            $(document).on('click.snfix', '.ui-selectonemenu-panel .ui-selectonemenu-item', function() {
-                var $item  = $(this);
-                var $panel = $item.closest('.ui-selectonemenu-panel');
-                var panelId = $panel.attr('id');
-                setTimeout(function() {
-                    if (!$panel.is(':visible')) return;
-                    var label = $item.attr('data-label') !== undefined ? $item.attr('data-label') : $item.text().trim();
-                    var value = $item.attr('data-value') !== undefined ? $item.attr('data-value') : '';
-                    if (window.PrimeFaces) {
-                        $.each(PrimeFaces.widgets, function(k, w) {
-                            if (w && w.panel && w.panel.attr('id') === panelId) {
-                                if (w.label) w.label.val(label);
-                                if (w.input) { w.input.val(value); w.input.trigger('change'); }
-                                try { w.hide(); } catch(ex) { $panel.hide(); }
-                                return false;
-                            }
-                        });
-                    } else {
-                        $panel.hide();
-                    }
-                }, 80);
-            });
-        });
-        </script>
 
     </h:body>
 </html>

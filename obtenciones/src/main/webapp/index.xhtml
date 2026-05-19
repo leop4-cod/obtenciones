@@ -13,6 +13,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
         <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+        <!-- Envolver los estilos en f:facet asegura que no sean aplastados por PrimeFaces -->
+        <f:facet name="last">
         <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}" />
         <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}" />
         <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}" />
@@ -37,7 +39,6 @@
             }
             .sn-nav-btn .pi { color: rgba(255,255,255,.75); font-size: 13px; }
             .sn-nav-btn:hover .pi { color: #fff; }
-
             .sn-nav-btn-gold {
                 background: rgba(201,162,39,.15);
                 border-color: rgba(201,162,39,.45);
@@ -50,7 +51,265 @@
                 color: #fff !important;
             }
             .sn-nav-btn-gold:hover .pi { color: #fff !important; }
+
+            /* ══════════════════════════════════════════════════════
+               CORRECCIONES VISUALES index.xhtml
+            ══════════════════════════════════════════════════════ */
+
+            /* ── 1. PAGINATOR: fix fondo oscuro (ui-widget-header lo pisaba) ── */
+            html body div.ui-paginator,
+            html body div.ui-paginator-top,
+            html body div.ui-paginator-bottom,
+            html body .ui-datatable div.ui-paginator,
+            html body div.ui-paginator.ui-widget-header {
+                background: linear-gradient(135deg, #edf7ed, #e4f2e4) !important;
+                background-color: #edf7ed !important;
+                background-image: none !important;
+                border-top: 1px solid #c3dfc3 !important;
+                border-bottom: 1px solid #c3dfc3 !important;
+                color: #263238 !important;
+                padding: 8px 14px !important;
+            }
+            html body div.ui-paginator .ui-paginator-current {
+                color: #1b5e20 !important;
+                font-weight: 700 !important;
+                font-size: 12px !important;
+            }
+            html body div.ui-paginator .ui-paginator-page {
+                background: #fff !important;
+                border: 1px solid #b8d4b8 !important;
+                color: #1b5e20 !important;
+                border-radius: 6px !important;
+                min-width: 30px !important; height: 30px !important;
+                font-weight: 700 !important; font-size: 12px !important;
+            }
+            html body div.ui-paginator .ui-paginator-page.ui-state-active {
+                background: linear-gradient(135deg, #27926a, #1f6f43) !important;
+                border-color: #1f6f43 !important;
+                color: #fff !important;
+                box-shadow: 0 2px 8px rgba(31,111,67,.35) !important;
+            }
+            html body div.ui-paginator .ui-paginator-first,
+            html body div.ui-paginator .ui-paginator-prev,
+            html body div.ui-paginator .ui-paginator-next,
+            html body div.ui-paginator .ui-paginator-last {
+                background: #fff !important;
+                border: 1px solid #b8d4b8 !important;
+                color: #1f6f43 !important;
+                border-radius: 6px !important;
+                width: 30px !important; height: 30px !important;
+            }
+            html body div.ui-paginator .ui-paginator-first .ui-icon,
+            html body div.ui-paginator .ui-paginator-prev .ui-icon,
+            html body div.ui-paginator .ui-paginator-next .ui-icon,
+            html body div.ui-paginator .ui-paginator-last .ui-icon { color: #1f6f43 !important; }
+            html body div.ui-paginator .ui-paginator-rpp-options {
+                background: #fff !important;
+                border: 1px solid #b8d4b8 !important;
+                color: #263238 !important;
+                border-radius: 6px !important;
+                padding: 4px 8px !important;
+                font-size: 12px !important;
+                font-weight: 600 !important;
+            }
+
+            /* ── 2. CONTENEDOR DE FILTROS: card sutil ── */
+            .sn-card-body > table.ui-panelgrid,
+            .sn-card-body .ui-panelgrid.ui-panelgrid-blank {
+                background: linear-gradient(135deg, #f4fbf5, #edf7ee) !important;
+                border: 1px solid #cce4cc !important;
+                border-radius: 12px !important;
+                padding: 14px 20px !important;
+                margin-bottom: 18px !important;
+                width: 100% !important;
+                box-shadow: 0 2px 8px rgba(15,77,28,.06) !important;
+            }
+            .sn-card-body > table.ui-panelgrid td,
+            .sn-card-body .ui-panelgrid.ui-panelgrid-blank td {
+                border: none !important;
+                background: transparent !important;
+                padding: 4px 10px !important;
+                vertical-align: middle !important;
+            }
+
+            /* ── 3. RADIO PILLS: tabla → flex, labels como chips ── */
+            /* Aplanar la tabla a fila flex */
+            .ui-selectoneradio table,
+            .ui-selectoneradio tbody { display: block !important; border: none !important; background: transparent !important; }
+            .ui-selectoneradio tr    { display: flex !important; flex-wrap: wrap !important; gap: 6px !important; align-items: center !important; }
+            .ui-selectoneradio td    { display: block !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important; line-height: 0 !important; }
+            /* Ocultar el círculo — el label tiene for= así que el click sigue funcionando */
+            .ui-selectoneradio .ui-radiobutton { display: none !important; }
+            /* Label = pill */
+            .ui-selectoneradio label {
+                display: inline-block !important;
+                padding: 8px 18px !important;
+                border-radius: 30px !important;
+                border: 1px solid rgba(31, 111, 67, 0.2) !important;
+                background: #ffffff !important;
+                color: #2e4a36 !important;
+                font-size: 13px !important;
+                font-weight: 700 !important;
+                cursor: pointer !important;
+                transition: all .25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                white-space: nowrap !important;
+                user-select: none !important;
+                line-height: 1.4 !important;
+                box-shadow: 0 2px 5px rgba(0,0,0,.04) !important;
+                margin: 0 !important;
+            }
+            .ui-selectoneradio label:hover {
+                background: #f4fbf5 !important;
+                border-color: rgba(31, 111, 67, 0.4) !important;
+                color: #1f6f43 !important;
+                box-shadow: 0 4px 12px rgba(31,111,67,.15) !important;
+                transform: translateY(-1.5px) !important;
+            }
+            /* Clase pill-active → la pone el JS de abajo */
+            .ui-selectoneradio label.pill-active {
+                background: linear-gradient(135deg, #27926a 0%, #175a3c 100%) !important;
+                border-color: transparent !important;
+                color: #ffffff !important;
+                box-shadow: 0 6px 16px rgba(23, 90, 60, 0.35) !important;
+                transform: translateY(-2px) !important;
+                letter-spacing: 0.2px !important;
+            }
+
+            /* ── 4. CHECKBOX "Buscar por F. Presentación": mismo pill style ── */
+            .ui-selectbooleancheckbox {
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 8px !important;
+                background: #fff !important;
+                border: 1px solid rgba(31, 111, 67, 0.2) !important;
+                border-radius: 30px !important;
+                padding: 7px 16px 7px 12px !important;
+                cursor: pointer !important;
+                transition: all .25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                box-shadow: 0 2px 5px rgba(0,0,0,.04) !important;
+            }
+            .ui-selectbooleancheckbox:hover {
+                border-color: rgba(31, 111, 67, 0.4) !important;
+                background: #f4fbf5 !important;
+                box-shadow: 0 4px 12px rgba(31,111,67,.15) !important;
+                transform: translateY(-1.5px) !important;
+            }
+            .ui-selectbooleancheckbox .ui-chkbox { display: flex !important; align-items: center !important; }
+            .ui-selectbooleancheckbox .ui-chkbox-box {
+                width: 15px !important; height: 15px !important;
+                border-radius: 4px !important;
+                border: 1.5px solid #9dc49d !important;
+                background: #fff !important;
+                flex-shrink: 0 !important;
+                transition: all .15s !important;
+            }
+            .ui-selectbooleancheckbox .ui-chkbox-box.ui-state-active {
+                background: #1f6f43 !important;
+                border-color: #1f6f43 !important;
+                box-shadow: 0 2px 6px rgba(31,111,67,.32) !important;
+            }
+            .ui-selectbooleancheckbox .ui-chkbox-label {
+                font-size: 12px !important;
+                font-weight: 700 !important;
+                color: #1b5e20 !important;
+                cursor: pointer !important;
+                white-space: nowrap !important;
+                line-height: 1 !important;
+            }
+
+            /* ── 5. BOTÓN IMPORTAR EXCEL: pill verde ── */
+            .sn-import-excel .ui-fileupload-choose,
+            .sn-import-excel button.ui-button {
+                background: linear-gradient(135deg, #166534, #0f4d1c) !important;
+                border: none !important;
+                border-radius: 22px !important;
+                color: #fff !important;
+                font-size: 12px !important;
+                font-weight: 700 !important;
+                padding: 8px 20px !important;
+                transition: all .22s ease !important;
+                box-shadow: 0 3px 10px rgba(22,101,52,.35) !important;
+                letter-spacing: .03em !important;
+            }
+            .sn-import-excel .ui-fileupload-choose:hover,
+            .sn-import-excel button.ui-button:hover {
+                background: linear-gradient(135deg, #1e7a40, #166534) !important;
+                box-shadow: 0 5px 16px rgba(22,101,52,.48) !important;
+                transform: translateY(-1px) !important;
+            }
+            .sn-import-excel .ui-fileupload-choose .ui-button-text,
+            .sn-import-excel button.ui-button .ui-button-text { color: #fff !important; font-weight: 700 !important; }
+            .sn-import-excel .ui-fileupload-choose .pi,
+            .sn-import-excel button.ui-button .pi { color: #fff !important; }
+
+            /* ── 6. TABLA CABECERA: sombra inferior para separar ── */
+            html body .ui-datatable thead tr th,
+            html body .ui-datatable thead tr th.ui-state-default {
+                box-shadow: inset 0 -3px 0 rgba(0,0,0,.12) !important;
+            }
+
+            /* ── 7. LABEL "F. PRESENTACIÓN" (datepicker) ── */
+            .sn-card-body p\:panel,
+            #dates .ui-panel-content,
+            #allform\\:dates .ui-panel-content {
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            /* ── 8. BADGE ESTADO ACTUAL: mayor tamaño y contraste ── */
+            .sn-badge {
+                font-size: 11px !important;
+                padding: 4px 12px !important;
+                font-weight: 800 !important;
+                letter-spacing: .06em !important;
+            }
+
+            /* ── 9. RESPONSIVE DATATABLE: scroll horizontal suave ── */
+            html body .ui-datatable .ui-datatable-tablewrapper {
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                width: 100% !important;
+            }
+            html body .ui-datatable table {
+                table-layout: auto !important;
+                min-width: 1250px !important;
+            }
+            html body .ui-datatable th {
+                white-space: nowrap !important;
+                padding: 12px 16px !important;
+            }
+            html body .ui-datatable td {
+                padding: 10px 12px !important;
+                vertical-align: middle !important;
+            }
+
+            /* ── 10. ESTILOS CARD ALERTAS ANUALIDADES ── */
+            .anu-stat-card {
+                background: linear-gradient(135deg, #ffffff, #f8fdf9) !important;
+                border-radius: 12px !important;
+                border: 1px solid rgba(31,111,67,.12) !important;
+                padding: 12px 18px !important;
+                display: flex; align-items: center; gap: 14px;
+                box-shadow: 0 2px 10px rgba(15,77,28,.09), 0 1px 3px rgba(0,0,0,.05) !important;
+                transition: box-shadow .25s ease, transform .25s ease, border-color .25s ease !important;
+            }
+            .anu-stat-card:hover {
+                box-shadow: 0 8px 28px rgba(15,77,28,.18) !important;
+                transform: translateY(-3px) !important;
+                border-color: rgba(31,111,67,.28) !important;
+            }
+            .anu-stat-icon {
+                width: 40px; height: 40px; border-radius: 10px;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 18px; flex-shrink: 0;
+                box-shadow: 0 2px 6px rgba(0,0,0,.10);
+            }
+            .anu-stat-icon.amber { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #78350f; }
+            .anu-stat-num { font-size: 20px; font-weight: 900; color: #041f10; line-height: 1; }
+            .anu-stat-lbl { font-size: 11px; color: #5a7a68; font-weight: 700; margin-top: 2px; letter-spacing: .02em; }
         </style>
+        </f:facet>
     </h:head>
 
     <h:body>
@@ -70,9 +329,6 @@
 
                 <div class="sn-header-user">
                     <nav style="display:flex; align-items:center; gap:8px;">
-                        <a href="tramites/lista.xhtml" class="sn-nav-btn" title="Gestión de Trámites">
-                            <i class="pi pi-folder"></i> Trámites
-                        </a>
                         <a href="anualidades/lista.xhtml" class="sn-nav-btn sn-nav-btn-gold" title="Módulo de Anualidades">
                             <i class="pi pi-calendar"></i> Anualidades
                         </a>
@@ -95,162 +351,61 @@
 
             <!-- ════ ALERTA ANUALIDADES PRÓXIMAS (15 días) ════ -->
             <h:panelGroup rendered="#{anualidadBean.totalAlertas gt 0}" style="display:block;">
-                <div class="sn-wrap-wide" style="padding-top:14px; padding-bottom:0;">
-                    <div style="background:linear-gradient(135deg,#fff8e1,#fffbf0);
-                                border:2px solid #f59e0b; border-radius:12px;
-                                padding:14px 20px; box-shadow:0 2px 8px rgba(245,158,11,.15);">
-                        <div style="font-size:13px; font-weight:800; color:#b45309;
-                                    margin-bottom:10px; display:flex; align-items:center; gap:8px;">
-                            <i class="pi pi-exclamation-triangle" style="font-size:16px;"/>
-                            #{anualidadBean.totalAlertas} anualidad(es) vencen en los próximos 15 días
-                            <a href="anualidades/lista.xhtml"
-                               style="margin-left:auto; font-size:11px; color:#b45309;
-                                      text-decoration:underline; font-weight:700; white-space:nowrap;">
-                                Ver módulo Anualidades →
-                            </a>
-                        </div>
-                        <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:6px;">
-                            <p:dataList value="#{anualidadBean.alertas}" var="al" paginator="false">
-                                <div style="background:rgba(255,255,255,.75); border-radius:6px;
-                                            padding:6px 10px; font-size:12px; color:#78350f;
-                                            border:1px solid #fde68a; display:flex; align-items:center; gap:6px;">
-                                    <i class="pi pi-clock" style="color:#f59e0b; flex-shrink:0;"/>
-                                    <span>
-                                        <strong>#{anualidadBean.getVegetableForm(al.vegetableFormId) != null
-                                            ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
-                                            : al.vegetableFormId}</strong>
-                                        — #{al.etiqueta} — vence:&#160;
-                                        <h:outputText value="#{al.fechaVencimiento}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                        </h:outputText>
-                                    </span>
-                                    <span style="margin-left:auto; font-size:10px; font-weight:800;
-                                               background:#fef3c7; color:#92400e; border:1px solid #fbbf24;
-                                               border-radius:20px; padding:2px 8px; white-space:nowrap;">
-                                        #{al.estadoBadgeLabel}
-                                    </span>
-                                </div>
-                            </p:dataList>
+                <div class="sn-wrap-wide" style="padding-top:14px; padding-bottom:0; display:flex; justify-content:flex-start;">
+                    <div class="anu-stat-card" style="border-left:3px solid #f59e0b; cursor:pointer; width:260px; margin-bottom:10px;"
+                         onclick="PF('dlgProxVencIndex').show();"
+                         title="Ver anualidades con vencimiento próximo">
+                        <div class="anu-stat-icon amber"><i class="pi pi-bell"/></div>
+                        <div>
+                            <div class="anu-stat-num" style="color:#92400e;">#{anualidadBean.totalAlertas}</div>
+                            <div class="anu-stat-lbl" style="display:flex;align-items:center;gap:4px;">
+                                Próx. vencimiento (15 días)
+                                <i class="pi pi-external-link" style="font-size:9px;color:#f59e0b;"/>
+                            </div>
                         </div>
                     </div>
                 </div>
+                
+                <p:dialog id="dlgProxVencIndex" modal="true" resizable="false"
+                          header="Anualidades próximas a vencer"
+                          widgetVar="dlgProxVencIndex" style="width:600px; max-width:90vw;"
+                          showEffect="explode" hideEffect="explode" closeOnEscape="true">
+                    <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:6px;">
+                        <p:dataList value="#{anualidadBean.alertas}" var="al" paginator="false" type="none">
+                            <div style="background:rgba(255,255,255,.75); border-radius:6px;
+                                        padding:6px 10px; font-size:12px; color:#78350f;
+                                        border:1px solid #fde68a; display:flex; align-items:center; gap:6px; margin-bottom: 6px;">
+                                <i class="pi pi-clock" style="color:#f59e0b; flex-shrink:0;"/>
+                                <span>
+                                    <strong>#{anualidadBean.getVegetableForm(al.vegetableFormId) != null
+                                        ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
+                                        : al.vegetableFormId}</strong>
+                                    — #{al.etiqueta} — vence:&#160;
+                                    <h:outputText value="#{al.fechaVencimiento}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                    </h:outputText>
+                                </span>
+                                <span style="margin-left:auto; font-size:10px; font-weight:800;
+                                           background:#fef3c7; color:#92400e; border:1px solid #fbbf24;
+                                           border-radius:20px; padding:2px 8px; white-space:nowrap;">
+                                    #{al.estadoBadgeLabel}
+                                </span>
+                            </div>
+                        </p:dataList>
+                    </div>
+                    <div style="text-align:right; margin-top:14px; display:flex; justify-content:space-between; align-items:center;">
+                        <a href="anualidades/lista.xhtml"
+                           style="font-size:12px; color:#1b6b3a; text-decoration:underline; font-weight:700;">
+                            Ir al módulo de Anualidades →
+                        </a>
+                        <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                         onclick="PF('dlgProxVencIndex').hide();"/>
+                    </div>
+                </p:dialog>
             </h:panelGroup>
 
             <!-- ════════════════════ CONTENIDO ════════════════════ -->
             <div class="sn-wrap-wide">
-
-                <!-- ════════════════════ SECCIÓN UPLOAD ════════════════════ -->
-                <div class="sn-card sn-upload-section">
-                    <div class="sn-card-header">
-                        <h3><i class="pi pi-cloud-upload" style="margin-right:8px;"></i>Carga de Documentos</h3>
-                    </div>
-                    <div class="sn-card-body">
-
-                        <h:panelGroup id="seleccionInfo">
-                            <h:panelGroup rendered="#{not empty vegetableBean.vegetableForms}">
-                                <div class="sn-info-green sn-active-case">
-                                    <i class="pi pi-check-circle"></i>
-                                    <span>
-                                        TRÁMITE ACTIVO:&#160;<strong>#{vegetableBean.vegetableForms.applicationNumber}</strong>
-                                        &#160;— Cargue los documentos requeridos a continuación.
-                                    </span>
-                                </div>
-                            </h:panelGroup>
-                        </h:panelGroup>
-
-                        <h:panelGroup id="panelUpload">
-
-                            <h:panelGroup rendered="#{empty vegetableBean.vegetableForms}">
-                                <div class="sn-info-amber sn-upload-hint">
-                                    <i class="pi pi-info-circle"></i>
-                                    <div>
-                                        <strong>Paso 1:</strong> Haga clic en el botón
-                                        <span class="sn-inline-upload-icon">
-                                            <i class="pi pi-cloud-upload"></i>
-                                        </span>
-                                        de la fila que desea gestionar para habilitar la carga de documentos.
-                                    </div>
-                                </div>
-                            </h:panelGroup>
-
-                            <h:panelGroup rendered="#{not empty vegetableBean.vegetableForms}">
-                                <div class="row sn-upload-grid">
-                                    <div class="col-md-4">
-                                        <div class="sn-upload-card">
-                                            <h5><i class="pi pi-file-pdf" style="color:#dc2626;"></i>Formulario (PDF · máx 10 MB)</h5>
-                                            <p:fileUpload listener="#{vegetableBean.upload}"
-                                                          mode="advanced" dragDropSupport="true"
-                                                          update=":mensajes tablaDeObtenciones" sizeLimit="10000000"
-                                                          allowTypes="/(\.|\/)(pdf)$/i"
-                                                          label="Buscar" uploadLabel="Cargar"
-                                                          cancelLabel="Cancelar" auto="false"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="sn-upload-card">
-                                            <h5><i class="pi pi-image" style="color:#2563eb;"></i>Fotografías (JPG/PNG · mín 3 · máx 5 MB)</h5>
-                                            <p:fileUpload listener="#{vegetableBean.upload}"
-                                                          mode="advanced" multiple="true" dragDropSupport="true"
-                                                          update=":mensajes tablaDeObtenciones" sizeLimit="5000000" fileLimit="10"
-                                                          allowTypes="/(\.|\/)(jpe?g|png)$/i"
-                                                          label="Buscar Fotos" uploadLabel="Cargar Fotos"
-                                                          auto="false"/>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="sn-upload-card">
-                                            <h5><i class="pi pi-money-bill" style="color:var(--sn-gold);"></i>Comprobante de Pago (PDF · máx 5 MB)</h5>
-                                            <p:fileUpload listener="#{vegetableBean.upload}"
-                                                          mode="advanced" dragDropSupport="true"
-                                                          update=":mensajes tablaDeObtenciones" sizeLimit="5000000"
-                                                          allowTypes="/(\.|\/)(pdf)$/i"
-                                                          label="Buscar Pago" uploadLabel="Cargar Pago"
-                                                          auto="false"/>
-                                        </div>
-                                    </div>
-                                </div>
-                            </h:panelGroup>
-
-                        </h:panelGroup>
-                    </div>
-                </div>
-
-                <!-- Requisitos de ingreso -->
-                <div class="sn-req-box">
-                    <div style="color:var(--sn-dark); font-family:'Playfair Display',serif; font-size:15px; font-weight:700; margin-bottom:12px;">
-                        <i class="pi pi-check-circle" style="margin-right:6px; color:var(--sn-green);"></i>
-                        Requisitos Obligatorios para Ingreso por Ventanilla
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="sn-req-item">
-                                <i class="pi pi-file-pdf" style="color:#dc2626;"></i>
-                                <div>
-                                    <strong>Formulario de Protección (PDF)</strong>
-                                    <span>Documento oficial firmado. Máx 10 MB.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="sn-req-item">
-                                <i class="pi pi-image" style="color:#2563eb;"></i>
-                                <div>
-                                    <strong>Fotografías a Color (JPG/PNG)</strong>
-                                    <span>Proporción A4, máx 5 MB c/u.</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="sn-req-item">
-                                <i class="pi pi-money-bill" style="color:var(--sn-gold);"></i>
-                                <div>
-                                    <strong>Comprobante de Pago (PDF)</strong>
-                                    <span>Tasa respectiva cancelada. Máx 5 MB.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Sección tabla -->
                 <div class="sn-card">
@@ -265,34 +420,16 @@
                                           allowTypes="/(\.|\/)(xls|xlsx)$/i"
                                           label="Importar Base de Datos"
                                           styleClass="sn-import-excel"/>
-                            <a href="tramites/lista.xhtml" class="sn-btn-new"
-                           style="background:#0f4d1c; margin-right:6px;"
-                           title="Módulo de Gestión de Trámites">
-                            <i class="pi pi-folder"></i> Trámites
-                        </a>
-                        <h:link outcome="registro" styleClass="sn-btn-new">
-                                <i class="pi pi-plus-circle"></i> Nuevo Registro
-                            </h:link>
-                            <p:commandButton value="SAVED → DELIVERED"
-                                             icon="pi pi-sync"
-                                             styleClass="sn-btn-secondary"
-                                             style="font-size:11px; padding:6px 12px;"
-                                             title="Cambiar todos los registros GUARDADO a EN PROCESO"
-                                             onclick="if(!confirm('¿Cambiar TODOS los registros GUARDADO a EN PROCESO (DELIVERED)?')) return false;"
-                                             actionListener="#{vegetableBean.migrarSavedADelivered}"
-                                             process="@this"
-                                             update=":mensajes tablaDeObtenciones"/>
                         </div>
                     </div>
 
                     <div class="sn-card-body">
 
-                        <!-- Filtros -->
-                        <p:panelGrid columns="3"
-                                     columnClasses="thirty-five-percent, twenty-percent, forty-five-percent"
-                                     style="width:100%; margin-bottom:16px;"
-                                     styleClass="ui-panelgrid-blank">
-                            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px;">
+                        <!-- Filtros y Búsqueda -->
+                        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; background:#f8fafc; padding:12px 16px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:16px; gap:16px;">
+                            
+                            <!-- Filtro de Estado -->
+                            <div style="display:flex; align-items:center;">
                                 <p:selectOneRadio id="line" value="#{vegetableBean.radioOption}" layout="lineDirection">
                                     <f:selectItem itemLabel="En Proceso (DELIVERED)" itemValue="Iniciados"/>
                                     <f:selectItem itemLabel="Aceptados"              itemValue="Aceptados"/>
@@ -304,29 +441,34 @@
                                 </p:selectOneRadio>
                             </div>
 
-                            <div style="display:flex; align-items:center;">
+                            <!-- Búsqueda por Fechas -->
+                            <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
                                 <p:selectBooleanCheckbox id="checkd"
-                                                         itemLabel="Buscar por F. Presentación"
+                                                         itemLabel="Por F. Presentación"
                                                          value="#{vegetableBean.byDate}">
                                     <p:ajax update=":mensajes dates" listener="#{vegetableBean.onCheckSelected}"/>
                                 </p:selectBooleanCheckbox>
-                            </div>
 
-                            <p:panel id="dates"
-                                     style="#{vegetableBean.byDate ? 'display:block' : 'display:none'}"
-                                     styleClass="ui-panelgrid-blank">
-                                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                                    <p:outputLabel value="Desde:" style="font-weight:700; font-size:12px;"/>
-                                    <p:calendar value="#{vegetableBean.startDate}" style="width:160px"/>
-                                    <p:outputLabel value="Hasta:"  style="font-weight:700; font-size:12px;"/>
-                                    <p:calendar value="#{vegetableBean.endDate}"   style="width:160px"/>
-                                    <p:commandButton value="BUSCAR" styleClass="sn-btn-primary"
-                                                     actionListener="#{vegetableBean.searchVegetables}"
-                                                     update=":mensajes tablaDeObtenciones"
-                                                     icon="pi pi-search"/>
-                                </div>
-                            </p:panel>
-                        </p:panelGrid>
+                                <h:panelGroup id="dates">
+                                    <h:panelGroup rendered="#{vegetableBean.byDate}" style="display:flex; align-items:center; gap:12px; background:white; padding:6px 14px; border-radius:30px; border:1px solid #cbd5e1; box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);">
+                                        <i class="pi pi-calendar" style="color:#64748b; font-size:13px;"></i>
+                                        <div style="display:flex; align-items:center; gap:6px;">
+                                            <p:outputLabel value="Desde" style="font-weight:700; font-size:11px; margin:0; color:#475569; text-transform:uppercase;"/>
+                                            <p:calendar value="#{vegetableBean.startDate}" pattern="dd/MM/yyyy" showIcon="false" inputStyle="width:85px; text-align:center; padding:2px 4px; font-size:12px; border:none; border-bottom:1px solid #cbd5e1; background:transparent; box-shadow:none;"/>
+                                        </div>
+                                        <div style="display:flex; align-items:center; gap:6px;">
+                                            <p:outputLabel value="Hasta" style="font-weight:700; font-size:11px; margin:0; color:#475569; text-transform:uppercase;"/>
+                                            <p:calendar value="#{vegetableBean.endDate}" pattern="dd/MM/yyyy" showIcon="false" inputStyle="width:85px; text-align:center; padding:2px 4px; font-size:12px; border:none; border-bottom:1px solid #cbd5e1; background:transparent; box-shadow:none;"/>
+                                        </div>
+                                        <p:commandButton value="Buscar" styleClass="sn-btn-primary"
+                                                         actionListener="#{vegetableBean.searchVegetables}"
+                                                         update=":mensajes tablaDeObtenciones"
+                                                         icon="pi pi-search"
+                                                         style="padding:2px 12px; font-size:11px; border-radius:15px; height:auto;"/>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                            </div>
+                        </div>
 
                         <!-- TABLA -->
                         <p:dataTable id="tablaDeObtenciones"
@@ -343,21 +485,21 @@
                                      rowIndexVar="index"
                                      style="width:100%;">
 
-                            <p:column headerText="#" style="text-align:center; width:3%;" exportable="false">
+                            <p:column headerText="#" style="text-align:center; width:40px;" exportable="false">
                                 <span style="font-size:11px; color:#888;">#{index + 1}</span>
                             </p:column>
 
-                            <p:column headerText="Casillero" style="text-align:center; width:16%;" filterBy="#{vegetable.locker}">
+                            <p:column headerText="Casillero" style="text-align:center; width:100px;" filterBy="#{vegetable.locker}">
                                 <h:outputText value="#{vegetable.locker}" style="font-size:11px;"/>
                             </p:column>
 
-                            <p:column headerText="Trámite" style="text-align:center; width:10%;" filterBy="#{vegetable.applicationNumber}">
+                            <p:column headerText="Trámite" style="text-align:center; width:90px;" filterBy="#{vegetable.applicationNumber}">
                                 <span style="font-weight:700; color:var(--sn-dark); font-size:11px;">
                                     <h:outputText value="#{vegetable.applicationNumber}"/>
                                 </span>
                             </p:column>
 
-                            <p:column headerText="F. Creación" style="text-align:center; width:9%;">
+                            <p:column headerText="F. Creación" style="text-align:center; width:85px;">
                                 <h:outputText value="#{vegetable.createDate}" style="font-size:11px;">
                                     <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Guayaquil"/>
                                 </h:outputText>
@@ -367,7 +509,7 @@
                                 <h:outputText value="#{vegetable.botanicalTaxon}" style="font-size:11px; font-style:italic;"/>
                             </p:column>
 
-                            <p:column headerText="F. Presentación" style="text-align:center; width:9%;">
+                            <p:column headerText="F. Presentación" style="text-align:center; width:85px;">
                                 <h:outputText value="#{vegetable.applicationDate}" style="font-size:11px;">
                                     <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Guayaquil"/>
                                 </h:outputText>
@@ -377,7 +519,7 @@
                                 <h:outputText value="#{vegetable.varietalGroup}" style="font-size:11px;"/>
                             </p:column>
 
-                            <p:column headerText="Estado actual" style="text-align:center; width:100px; white-space:normal; word-break:break-word;">
+                            <p:column headerText="Estado Actual" style="text-align:center; width:105px; white-space:normal; word-break:break-word;">
                                 <span class="sn-badge sn-badge-#{vegetable.status}">
                                     <h:outputText value="#{vegetable.status eq 'DELIVERED' ? 'EN PROCESO' :
                                                           (vegetable.status eq 'ACCEPTED' ? 'ACEPTADO' :
@@ -386,19 +528,14 @@
                                 </span>
                             </p:column>
 
-                            <p:column headerText="Estado de Expediente" headerStyle="white-space:normal; word-break:break-word; min-width:110px;" style="text-align:center; width:110px;">
+                            <p:column headerText="Expediente" headerStyle="white-space:normal; word-break:break-word; min-width:90px;" style="text-align:center; width:90px;">
                                 <h:outputText value="#{vegetable.managementStatus}" style="font-size:11px; color:#555;"/>
                             </p:column>
 
-                            <p:column headerText="Asignado a" filterBy="#{vegetable.assignedUser}" style="text-align:center; width:90px;">
-                                <h:outputText value="#{vegetable.assignedUser eq null ? '—' : vegetable.assignedUser}"
-                                              style="font-size:11px; #{vegetable.assignedUser eq null ? 'color:#bbb;' : 'font-weight:700; color:var(--sn-green);'}"/>
-                            </p:column>
-
-                            <p:column headerText="Gestión" style="text-align:center; width:155px;">
+                            <p:column headerText="Gestión" style="text-align:center; width:145px;">
                                 <p:selectOneMenu value="#{vegetable.statusFlow}"
                                                  rendered="#{vegetableBean.isAssignedToCurrentUser(vegetable)}"
-                                                 style="width:140px; font-size:12px;">
+                                                 style="width:130px; font-size:12px;">
                                     <f:selectItems value="#{vegetableBean.statusFlows}" var="flow"
                                                    itemValue="#{flow}"
                                                    itemLabel="#{vegetableBean.getStatusFlowLabel(flow)}"/>
@@ -413,7 +550,7 @@
                             </p:column>
 
                             <!-- ══ ACCIONES ══ -->
-                            <p:column headerText="Acciones" style="text-align:center; width:240px;" exportable="false">
+                            <p:column headerText="Acciones" style="text-align:center; width:220px;" exportable="false">
                                 <div class="acciones-grupo">
 
                                     <!-- Editar: solo para DELIVERED y ACCEPTED -->
@@ -451,13 +588,13 @@
                                                      oncomplete="if(args.doit){otherpage(args.url);}"
                                                      process="@this" update=":mensajes"/>
 
-                                    <!-- Asignar: solo para DELIVERED sin técnico asignado -->
+                                    <!-- Aceptar: solo DELIVERED — cambia estado a ACEPTADO -->
                                     <p:commandButton styleClass="accion-btn btn-assign"
-                                                     title="Asignarme este trámite"
-                                                     icon="pi pi-user-plus"
-                                                     rendered="#{vegetable.status eq 'DELIVERED' and empty vegetable.assignedUser}"
-                                                     onclick="if(!confirm('¿Confirma asignarse el trámite #{vegetable.applicationNumber}?')) return false;"
-                                                     actionListener="#{vegetableBean.assignApplication}"
+                                                     title="Aceptar trámite (pasar a ACEPTADO)"
+                                                     icon="pi pi-check-circle"
+                                                     rendered="#{vegetable.status eq 'DELIVERED'}"
+                                                     onclick="if(!confirm('¿Confirma ACEPTAR el trámite #{vegetable.applicationNumber}?\nEl estado cambiará a ACEPTADO y podrá crear anualidades.')) return false;"
+                                                     actionListener="#{vegetableBean.aceptarObtencion}"
                                                      process="@this" update=":mensajes tablaDeObtenciones">
                                         <f:setPropertyActionListener value="#{vegetable}"
                                                                      target="#{vegetableBean.vegetableForms}"/>
@@ -537,14 +674,38 @@
 
         <!-- ══ DIÁLOGO: HISTORIAL ══ -->
         <p:dialog id="dlgHistorial" modal="true" resizable="true"
-                  header="Historial — #{vegetableBean.vegetableForms.applicationNumber}"
-                  fitViewport="true" widgetVar="dlgHistorial"
-                  style="font-size:11px;" showEffect="explode" hideEffect="explode"
-                  closeOnEscape="true">
+                  header="Historial — #{vegetableBean.vegetableForms != null ? vegetableBean.vegetableForms.applicationNumber : ''}"
+                  widgetVar="dlgHistorial" style="width:720px; min-width:420px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
             <h:form id="frmHistory">
-                <p:inputTextarea value="#{vegetableBean.historial}"
-                                 rows="12" cols="160" readonly="true"
-                                 style="width:100%; font-family:monospace; background:white;"/>
+                <h:panelGroup rendered="#{vegetableBean.historialList.isEmpty()}">
+                    <div style="text-align:center; padding:20px; color:#6b7280; font-size:13px;">
+                        <i class="pi pi-info-circle" style="font-size:20px; display:block; margin-bottom:8px;"/>
+                        No hay eventos registrados para este trámite.
+                    </div>
+                </h:panelGroup>
+                <p:dataTable value="#{vegetableBean.historialList}" var="hist"
+                             rendered="#{not vegetableBean.historialList.isEmpty()}"
+                             emptyMessage="Sin historial."
+                             style="font-size:12px; width:100%;">
+                    <p:column headerText="Fecha" style="width:22%; text-align:center; white-space:nowrap;">
+                        <h:outputText value="#{hist.fecha}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Descripción" style="width:58%;">
+                        <h:outputText value="#{hist.description}" style="font-size:11px;"/>
+                    </p:column>
+                    <p:column headerText="Usuario" style="width:20%; text-align:center;">
+                        <span style="font-weight:700; color:var(--sn-green); font-size:11px;">
+                            <h:outputText value="#{hist.historyUser}"/>
+                        </span>
+                    </p:column>
+                </p:dataTable>
+                <div style="text-align:right; margin-top:10px;">
+                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                     onclick="PF('dlgHistorial').hide();"/>
+                </div>
             </h:form>
         </p:dialog>
 
@@ -589,27 +750,41 @@
                   widgetVar="dlgReassign" style="width:480px;"
                   showEffect="explode" hideEffect="explode" closeOnEscape="true">
             <h:form id="frmReassign">
-                <p:panelGrid columns="1" style="width:100%">
-                    <p:outputLabel value="Usuario destino:" style="font-weight:700; font-size:13px;"/>
+
+                <div style="margin-bottom:14px;">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#4b6c4b;
+                                  margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;">
+                        <i class="pi pi-user" style="margin-right:4px; color:var(--sn-green);"/>
+                        Usuario destino <span style="color:#ef4444;">*</span>
+                    </label>
                     <p:inputText value="#{vegetableBean.newAssignedUser}"
                                  style="width:100%" placeholder="Ej: jperez"
                                  required="true" requiredMessage="Ingrese el usuario destinatario."/>
-                    <p:outputLabel value="Comentario (opcional):" style="font-weight:700; font-size:13px; margin-top:8px;"/>
+                </div>
+
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#4b6c4b;
+                                  margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;">
+                        <i class="pi pi-comment" style="margin-right:4px; color:var(--sn-green);"/>
+                        Comentario (opcional)
+                    </label>
                     <p:inputTextarea value="#{vegetableBean.reassignComment}"
                                      rows="3" autoResize="false" style="width:100%"
                                      placeholder="Motivo de la reasignación u observaciones adicionales..."/>
-                    <p:panelGrid columns="2" style="margin-top:8px;">
-                        <p:commandButton value="Guardar reasignación" styleClass="sn-btn-primary"
-                                         icon="pi pi-check"
-                                         actionListener="#{vegetableBean.reassignApplication}"
-                                         process="@form"
-                                         update=":mensajes :allform:tablaDeObtenciones frmReassign"
-                                         oncomplete="if(!args.validationFailed) PF('dlgReassign').hide()"/>
-                        <p:commandButton value="Cancelar" type="button" styleClass="sn-btn-secondary"
-                                         icon="pi pi-times"
-                                         onclick="PF('dlgReassign').hide();"/>
-                    </p:panelGrid>
-                </p:panelGrid>
+                </div>
+
+                <div style="display:flex; gap:10px; justify-content:flex-end;">
+                    <p:commandButton value="Guardar reasignación" styleClass="sn-btn-primary"
+                                     icon="pi pi-check"
+                                     actionListener="#{vegetableBean.reassignApplication}"
+                                     process="@form"
+                                     update=":mensajes :allform:tablaDeObtenciones frmReassign"
+                                     oncomplete="if(!args.validationFailed) PF('dlgReassign').hide()"/>
+                    <p:commandButton value="Cancelar" type="button" styleClass="sn-btn-secondary"
+                                     icon="pi pi-times"
+                                     onclick="PF('dlgReassign').hide();"/>
+                </div>
+
             </h:form>
         </p:dialog>
 
@@ -619,29 +794,76 @@
                   widgetVar="dlgStatusFlow" style="width:500px;"
                   showEffect="explode" hideEffect="explode" closeOnEscape="true">
             <h:form id="frmStatusFlow">
-                <p:panelGrid columns="1" style="width:100%">
-                    <p:outputLabel value="Trámite: #{vegetableBean.vegetableForms.applicationNumber}"
-                                   style="font-weight:800; font-size:13px; color:var(--sn-dark);"/>
-                    <p:outputLabel value="Estado actual: #{vegetableBean.previousStatusFlowLabel}"
-                                   style="font-size:13px;"/>
-                    <p:outputLabel value="Nuevo estado: #{vegetableBean.pendingStatusFlowLabel}"
-                                   style="font-weight:800; color:var(--sn-green); font-size:13px;"/>
-                    <p:separator/>
-                    <p:outputLabel value="Observación (obligatoria):" style="font-weight:700; font-size:12px;"/>
+
+                <!-- Card de transición -->
+                <div style="background:linear-gradient(135deg,#f0f9f0,#eaf5ea);
+                            border-radius:10px; padding:16px 18px; margin-bottom:16px;
+                            border:1px solid #c3dfc3; box-shadow:0 2px 8px rgba(31,111,67,.08);">
+                    <div style="font-size:11px; color:#4b6c4b; font-weight:800;
+                                text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;
+                                display:flex; align-items:center; gap:6px;">
+                        <i class="pi pi-file-edit" style="color:var(--sn-green);"/>
+                        <span>Trámite:&#160;
+                            <span style="font-family:monospace; font-size:14px; color:#0f4d1c; letter-spacing:.5px; font-weight:900;">
+                                #{vegetableBean.vegetableForms.applicationNumber}
+                            </span>
+                        </span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:110px; text-align:center;">
+                            <div style="font-size:10px; color:#6b7b75; font-weight:700;
+                                        text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px;">
+                                Estado anterior
+                            </div>
+                            <span style="display:inline-block; background:#f3f4f6; color:#374151;
+                                         padding:5px 14px; border-radius:20px; font-size:11.5px;
+                                         font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+                                         border:1px solid #d1d5db;">
+                                #{vegetableBean.previousStatusFlowLabel}
+                            </span>
+                        </div>
+                        <div style="color:#9ca3af; font-size:22px; flex-shrink:0; padding-top:18px; line-height:1;">
+                            &#8594;
+                        </div>
+                        <div style="flex:1; min-width:110px; text-align:center;">
+                            <div style="font-size:10px; color:#6b7b75; font-weight:700;
+                                        text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px;">
+                                Nuevo estado
+                            </div>
+                            <span style="display:inline-block; background:#d1fae5; color:#065f46;
+                                         padding:5px 14px; border-radius:20px; font-size:11.5px;
+                                         font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+                                         border:1px solid #6ee7b7;">
+                                #{vegetableBean.pendingStatusFlowLabel}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Observación -->
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#4b6c4b;
+                                  margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;">
+                        <i class="pi pi-comment" style="margin-right:4px; color:var(--sn-green);"/>
+                        Observación <span style="color:#ef4444;">*</span>
+                    </label>
                     <p:inputTextarea value="#{vegetableBean.statusObservation}"
                                      rows="4" autoResize="false" style="width:100%"
                                      placeholder="Describa el motivo del cambio..."/>
-                    <p:panelGrid columns="2">
-                        <p:commandButton value="Guardar" styleClass="sn-btn-primary"
-                                         actionListener="#{vegetableBean.confirmStatusFlowChange}"
-                                         process="@form" icon="pi pi-check"
-                                         update=":mensajes :allform:tablaDeObtenciones frmStatusFlow"
-                                         oncomplete="if(!args.validationFailed) PF('dlgStatusFlow').hide()"/>
-                        <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
-                                         icon="pi pi-times"
-                                         onclick="PF('dlgStatusFlow').hide();"/>
-                    </p:panelGrid>
-                </p:panelGrid>
+                </div>
+
+                <!-- Botones -->
+                <div style="display:flex; gap:10px; justify-content:flex-end; padding-top:2px;">
+                    <p:commandButton value="Guardar" styleClass="sn-btn-primary"
+                                     actionListener="#{vegetableBean.confirmStatusFlowChange}"
+                                     process="@form" icon="pi pi-check"
+                                     update=":mensajes :allform:tablaDeObtenciones frmStatusFlow"
+                                     oncomplete="if(!args.validationFailed) PF('dlgStatusFlow').hide()"/>
+                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                     icon="pi pi-times"
+                                     onclick="PF('dlgStatusFlow').hide();"/>
+                </div>
+
             </h:form>
         </p:dialog>
 
@@ -668,12 +890,49 @@
     </h:body>
 
     <script type="text/javascript">
+        //<![CDATA[
+        /* ── Pill active state para radio filters ── */
+        function updateRadioPills() {
+            $('.ui-selectoneradio').each(function() {
+                $(this).find('.ui-radiobutton').each(function() {
+                    var $radioDiv = $(this);
+                    var $box = $radioDiv.find('.ui-radiobutton-box');
+                    var $input = $radioDiv.find('input[type="radio"]');
+                    var id = $input.attr('id');
+                    
+                    // Buscar el label que corresponda exactamente a este input por su ID
+                    var $label = $('label[for="' + id + '"]');
+                    
+                    if ($label.length > 0) {
+                        if ($box.hasClass('ui-state-active') || $input.prop('checked')) {
+                            $label.addClass('pill-active');
+                        } else {
+                            $label.removeClass('pill-active');
+                        }
+                    }
+                });
+            });
+        }
+
         $(document).ready(function () {
             setTimeout(function () {
                 $('body').addClass('loaded');
-            }, 150);
+                updateRadioPills();
+            }, 200);
+
+            /* click en cualquier label de radio → actualiza pills */
+            $(document).on('click', '.ui-selectoneradio label', function() {
+                setTimeout(updateRadioPills, 100);
+            });
+            
+            /* Re-aplicar clases tras actualización de AJAX de PrimeFaces */
+            if (typeof PrimeFaces !== 'undefined') {
+                $(document).on('pfAjaxComplete', function() {
+                    setTimeout(updateRadioPills, 100);
+                });
+            }
         });
-        //<![CDATA[
+
         function otherpage(url) {
             setTimeout(function () { window.open(url, '_blank'); }, 0);
         }

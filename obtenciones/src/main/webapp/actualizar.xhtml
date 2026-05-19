@@ -108,8 +108,8 @@
                                              style="min-width:110px;"
                                              onclick="if(!confirm('¿Eliminar permanentemente este registro?')) return false;"/>
                             <p:commandButton id="btnCancelarTop"
-                                             value="Cancelar"
-                                             icon="pi pi-times"
+                                             value="Regresar"
+                                             icon="pi pi-arrow-left"
                                              action="#{registroBean.cancelar}"
                                              immediate="true"
                                              styleClass="sn-btn-secondary"
@@ -757,8 +757,8 @@
                                 <div style="display:flex; gap:10px;">
 
                                     <p:commandButton id="btnCancelarTab4"
-                                                    value="Cancelar"
-                                                    icon="pi pi-times"
+                                                    value="Regresar"
+                                                    icon="pi pi-arrow-left"
                                                     action="#{registroBean.cancelar}"
                                                     immediate="true"
                                                     styleClass="sn-btn-secondary"
@@ -840,73 +840,7 @@
             </h:form>
         </p:dialog>
 
-        <script>//<![CDATA[
-        /* Fix selectOneMenu: cerrar al seleccionar ítem o al click fuera */
-        $(document).ready(function() {
 
-            function snFindWidgetByPanel($panel) {
-                var found = null;
-                if (!window.PrimeFaces) return null;
-                var pid = $panel.attr('id');
-                $.each(PrimeFaces.widgets, function(k, w) {
-                    if (w && w.panel && w.panel.attr && w.panel.attr('id') === pid) {
-                        found = w;
-                        return false;
-                    }
-                });
-                return found;
-            }
-
-            function snHideAllMenus() {
-                $('.ui-selectonemenu-panel:visible').each(function() {
-                    var $panel = $(this);
-                    var w = snFindWidgetByPanel($panel);
-                    if (w && typeof w.hide === 'function') {
-                        try { w.hide(); } catch(ex) { $panel.hide(); }
-                    } else {
-                        $panel.hide();
-                    }
-                });
-            }
-
-            /* Click fuera de cualquier menú → cerrar todos */
-            $(document).on('mousedown.snfix', function(e) {
-                if (!$(e.target).closest('.ui-selectonemenu, .ui-selectonemenu-panel').length) {
-                    snHideAllMenus();
-                }
-            });
-
-            /* Click en ítem: forzar selección y cierre */
-            $(document).on('click.snfix', '.ui-selectonemenu-panel .ui-selectonemenu-item', function(e) {
-                var $item  = $(this);
-                if ($item.hasClass('ui-state-disabled')) return;
-                var $panel = $item.closest('.ui-selectonemenu-panel');
-                var w = snFindWidgetByPanel($panel);
-                if (!w) { $panel.hide(); return; }
-
-                var label = $item.attr('data-label');
-                if (label === undefined) label = $item.text().trim();
-                var value = $item.attr('data-label'); /* fallback */
-
-                /* Buscar el value real en las options del select nativo */
-                if (w.options && w.options.length) {
-                    var idx = $panel.find('.ui-selectonemenu-item').index($item);
-                    if (idx >= 0 && w.options[idx]) {
-                        value = w.options[idx].value;
-                    }
-                }
-
-                if (w.label) w.label.text(label);
-                if (w.input) {
-                    w.input.val(value);
-                    w.input.trigger('change');
-                }
-                $panel.find('.ui-selectonemenu-item').removeClass('ui-state-highlight ui-state-active');
-                $item.addClass('ui-state-highlight');
-                try { w.hide(); } catch(ex) { $panel.hide(); }
-            });
-        });
-        //]]></script>
 
     </h:body>
 </html>

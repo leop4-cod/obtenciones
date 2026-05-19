@@ -1,6 +1,7 @@
 package senadi.gob.ec.adminob.bean;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -9,10 +10,14 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import senadi.gob.ec.adminob.dao.DocumentoTramiteDAO;
+import senadi.gob.ec.adminob.dao.HistoryDAO;
 import senadi.gob.ec.adminob.dao.TramiteDAO;
 import senadi.gob.ec.adminob.model.DocumentoTramite;
+import senadi.gob.ec.adminob.model.History;
 import senadi.gob.ec.adminob.model.Tramite;
 import senadi.gob.ec.adminob.util.AppConfig;
+import senadi.gob.ec.adminob.util.Controller;
+import senadi.gob.ec.adminob.util.Operations;
 import java.io.File;
 
 /**
@@ -32,6 +37,10 @@ public class TramiteListBean implements Serializable {
     private Tramite tramiteSeleccionado;
 
     private List<DocumentoTramite> documentosSeleccionados = new ArrayList<>();
+
+    /** Historial del trámite seleccionado. */
+    private List<History> historialEntradas = new ArrayList<>();
+    private Tramite tramiteParaHistorial;
 
     @PostConstruct
     public void init() {
@@ -133,6 +142,68 @@ public class TramiteListBean implements Serializable {
         }
     }
 
+    // ── Aceptar trámite ───────────────────────────────────────────────────────
+
+    public void aceptarTramite(Tramite t) {
+        if (t == null) return;
+        if (!"DELIVERED".equalsIgnoreCase(t.getEstadoActual())) {
+            addError("Solo se pueden aceptar trámites en estado DELIVERED.");
+            return;
+        }
+        try {
+            String usuario = obtenerUsuario();
+            t.setEstadoActual("ACEPTADO");
+            t.setUsuarioModificacion(usuario);
+            t.setFechaModificacion(new Timestamp(System.currentTimeMillis()));
+            new TramiteDAO(null).actualizarCampos(t);
+            guardarHistoria(t.getNumeroTramite(),
+                "Trámite ACEPTADO por " + usuario, null);
+            cargarLista();
+            addInfo("Trámite " + t.getNumeroTramite() + " aceptado correctamente por " + usuario + ".");
+        } catch (Exception e) {
+            addError("Error al aceptar el trámite: " + e.getMessage());
+        }
+    }
+
+    // ── Historial ─────────────────────────────────────────────────────────────
+
+    public void prepararHistorial(Tramite t) {
+        tramiteParaHistorial = t;
+        try {
+            historialEntradas = new HistoryDAO(null).getHistoriesByAppNumber(t.getNumeroTramite());
+        } catch (Exception e) {
+            historialEntradas = new ArrayList<>();
+            addError("Error al cargar historial: " + e.getMessage());
+        }
+    }
+
+    private void guardarHistoria(String numeroTramite, String descripcion, String observacion) {
+        try {
+            String usuario = obtenerUsuario();
+            History h = new History();
+            h.setApplicationNumber(numeroTramite);
+            h.setFecha(new Timestamp(System.currentTimeMillis()));
+            h.setHistoryUser(usuario);
+            String desc = descripcion;
+            if (observacion != null && !observacion.trim().isEmpty()) {
+                desc += ". Obs: " + observacion.trim();
+            }
+            h.setDescription(desc);
+            new HistoryDAO(h).persist();
+        } catch (Exception e) {
+            System.err.println("[TramiteListBean] No se pudo guardar historial: " + e.getMessage());
+        }
+    }
+
+    private String obtenerUsuario() {
+        try {
+            LoginBean login = new Controller().getLogin();
+            return (login != null && login.getLogin() != null) ? login.getLogin() : "sistema";
+        } catch (Exception e) {
+            return "sistema";
+        }
+    }
+
     // ── Utilidades ────────────────────────────────────────────────────────────
 
     public String etiquetaEstado(String estado) {
@@ -185,4 +256,7 @@ public class TramiteListBean implements Serializable {
     public void setTramiteSeleccionado(Tramite tramiteSeleccionado) { this.tramiteSeleccionado = tramiteSeleccionado; }
 
     public List<DocumentoTramite> getDocumentosSeleccionados() { return documentosSeleccionados; }
+
+    public List<History> getHistorialEntradas() { return historialEntradas; }
+    public Tramite getTramiteParaHistorial() { return tramiteParaHistorial; }
 }

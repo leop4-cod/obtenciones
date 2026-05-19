@@ -33,6 +33,7 @@ import senadi.gob.ec.adminob.dao.VegetableFormsDAO;
 import senadi.gob.ec.adminob.enums.FlowPhase;
 import senadi.gob.ec.adminob.enums.Status;
 import senadi.gob.ec.adminob.enums.StatusFlow;
+import senadi.gob.ec.adminob.dao.HistoryDAO;
 import senadi.gob.ec.adminob.model.ComprobantePago;
 import senadi.gob.ec.adminob.model.History;
 import senadi.gob.ec.adminob.model.VegetableForms;
@@ -55,7 +56,6 @@ public class VegetableBean implements Serializable {
 
     private VegetableForms vegetableForms;
     private List<VegetableForms> vegetables;
-    private List<VegetableForms> vegetablesFilter;
     private UIData vegetableTable;
 
     private String previewPath;
@@ -66,7 +66,7 @@ public class VegetableBean implements Serializable {
 
     private boolean byDate;
 
-    private String historial;
+    private List<History> historialList = new java.util.ArrayList<>();
     private String newAssignedUser;
     private String reassignComment;
     private String statusObservation;
@@ -78,8 +78,6 @@ public class VegetableBean implements Serializable {
     private static final long   MAX_FORM_PDF_SIZE    = 10L * 1024 * 1024;
     private static final long   MAX_PAYMENT_PDF_SIZE =  5L * 1024 * 1024;
     private static final long   MAX_PHOTO_SIZE       =  5L * 1024 * 1024;
-    private static final double A4_RATIO             = 297.0 / 210.0;
-    private static final double A4_TOLERANCE         = 0.15;
 
     private final TramiteFlowService tramiteService = new TramiteFlowService();
 
@@ -290,6 +288,33 @@ public class VegetableBean implements Serializable {
         }
     }
 
+    public void aceptarObtencion(ActionEvent ae) {
+        if (vegetableForms == null || vegetableForms.getId() == null) {
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
+            return;
+        }
+        Controller c = new Controller();
+        VegetableForms current = c.getVegetableFormsById(vegetableForms.getId());
+        if (current == null) {
+            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
+            return;
+        }
+        if (current.getStatus() != Status.DELIVERED) {
+            Operations.message(Operations.AVISO, "Solo se pueden aceptar trámites en estado EN PROCESO (DELIVERED).");
+            return;
+        }
+        current.setStatus(Status.ACCEPTED);
+        if (c.updateVegetableForms(current)) {
+            saveHistoryEntry(current.getApplicationNumber(),
+                "Tramite ACEPTADO por " + login.getLogin());
+            onRadioSelected();
+            Operations.message(Operations.INFORMACION,
+                "Trámite " + current.getApplicationNumber() + " aceptado correctamente por " + login.getLogin() + ".");
+        } else {
+            Operations.message(Operations.ERROR, "No se pudo aceptar el trámite.");
+        }
+    }
+
     public void prepareReassign(ActionEvent ae) {
         if (vegetableForms != null) {
             newAssignedUser = vegetableForms.getAssignedUser();
@@ -396,30 +421,22 @@ public class VegetableBean implements Serializable {
     }
 
     public void prepararHistorial(ActionEvent ae) {
-        // No necesitas getRowData() porque f:setPropertyActionListener ya hizo el trabajo
-        if (this.vegetableForms != null && this.vegetableForms.getApplicationNumber() != null) {
-            try {
-                Controller c = new Controller();
-                List<History> hists = c.getHistoriesByAppNumber(this.vegetableForms.getApplicationNumber());
-                
-                if (hists != null && !hists.isEmpty()) {
-                    StringBuilder sb = new StringBuilder();
-                    for (History h : hists) {
-                        sb.append(h.toString()).append("\n");
-                    }
-                    this.historial = sb.toString();
-                } else {
-                    this.historial = "Estado Actual: " + this.vegetableForms.getStatus() 
-                                    + "\n(No hay eventos previos registrados)";
-                }
-            } catch (Exception e) {
-                this.historial = "Error al conectar con el servidor de historial.";
-                e.printStackTrace();
-            }
-        } else {
-            this.historial = "Error: No hay un trámite seleccionado.";
+        historialList = new java.util.ArrayList<>();
+        if (this.vegetableForms == null || this.vegetableForms.getApplicationNumber() == null) {
+            Operations.message(Operations.ERROR, "No hay un trámite seleccionado.");
+            return;
         }
-    }   
+        try {
+            Controller c = new Controller();
+            List<History> hists = c.getHistoriesByAppNumber(this.vegetableForms.getApplicationNumber());
+            if (hists != null) {
+                historialList = hists;
+            }
+        } catch (Exception e) {
+            Operations.message(Operations.ERROR, "Error al cargar historial: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     // ── UPLOAD DE COMPROBANTES DE PAGO ────────────────────────────────────────
 
     /**
@@ -566,16 +583,6 @@ public class VegetableBean implements Serializable {
         return null;
     }
 
-    private Sheet findDataSheet(Workbook workbook, DataFormatter formatter) {
-        for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
-            Sheet sheet = workbook.getSheetAt(i);
-            if (sheet != null && findHeaderRow(sheet, formatter) != null) {
-                return sheet;
-            }
-        }
-        return null;
-    }
-
     private Row findHeaderRow(Sheet sheet, DataFormatter formatter) {
         if (sheet == null) return null;
         for (int i = sheet.getFirstRowNum(); i <= sheet.getLastRowNum(); i++) {
@@ -711,148 +718,11 @@ public class VegetableBean implements Serializable {
         return StatusFlow.PENDING;
     }
 
-    private String cleanDash(String value) {
-        if (value == null) return null;
-        String text = value.trim();
-        return text.equals("-") || text.equals("—") || text.isEmpty() ? null : text;
-    }
-
     private String limit(String value, int maxLength) {
         if (value == null) return null;
         String text = value.trim();
         if (text.isEmpty()) return null;
         return text.length() <= maxLength ? text : text.substring(0, maxLength);
-    }
-
-    private String buildRegistryObservation(Row row, Map<String, Integer> columns, DataFormatter formatter) {
-        String solicitante = firstValue(row, columns, formatter, "solicitante titular");
-        String pais = firstValue(row, columns, formatter, "pais origen solicitante titular");
-        String cultivo = firstValue(row, columns, formatter, "tipo de cultivo");
-        String certificado = firstValue(row, columns, formatter, "numero de certificado de obtentor");
-        String obsTecnica = firstValue(row, columns, formatter, "observacion tecnica");
-        String obsLegal = firstValue(row, columns, formatter, "observacion legal");
-        String etapa = firstValue(row, columns, formatter, "etapa actual");
-        String expediente = firstValue(row, columns, formatter, "estado del expediente");
-
-        StringBuilder sb = new StringBuilder("Importado desde Registro Nacional.");
-        appendObservation(sb, "Solicitante/Titular", solicitante);
-        appendObservation(sb, "Pais", pais);
-        appendObservation(sb, "Tipo cultivo", cultivo);
-        appendObservation(sb, "Certificado", certificado);
-        appendObservation(sb, "Etapa actual", etapa);
-        appendObservation(sb, "Estado expediente", expediente);
-        appendObservation(sb, "Obs. tecnica", obsTecnica);
-        appendObservation(sb, "Obs. legal", obsLegal);
-        return sb.toString();
-    }
-
-    private void appendObservation(StringBuilder sb, String label, String value) {
-        if (value != null && !value.trim().isEmpty()) {
-            sb.append(" ").append(label).append(": ").append(value.trim()).append(".");
-        }
-    }
-
-    public void upload(FileUploadEvent event) {
-        try {
-            UploadedFile file = event.getFile();
-            if (file == null) return;
-
-            if (this.vegetableForms == null || this.vegetableForms.getId() == null) {
-                Operations.message(Operations.ERROR, "Seleccione un trámite primero.");
-                return;
-            }
-
-            Integer tramiteId = this.vegetableForms.getId();
-            String nombreOriginal = file.getFileName();
-            String nombreMin      = nombreOriginal.toLowerCase();
-            long   tamano         = file.getSize();
-
-            boolean esPhoto = nombreMin.endsWith(".jpg") || nombreMin.endsWith(".jpeg")
-                           || nombreMin.endsWith(".png");
-            boolean esPdf   = nombreMin.endsWith(".pdf");
-
-            if (!esPhoto && !esPdf) {
-                Operations.message(Operations.ERROR,
-                    "Tipo no permitido: " + nombreOriginal
-                    + ". Use PDF para comprobantes o JPG/PNG para fotografías.");
-                return;
-            }
-
-            // Validar tamaño
-            long limite = esPhoto ? MAX_PHOTO_SIZE : MAX_PAYMENT_PDF_SIZE;
-            if (tamano > limite) {
-                Operations.message(Operations.ERROR,
-                    "El archivo supera el límite de " + (limite / (1024 * 1024)) + " MB: " + nombreOriginal);
-                return;
-            }
-
-            // Validar proporción A4 solo para fotografías
-            if (esPhoto) {
-                byte[] contenido = file.getContent();
-                try (java.io.ByteArrayInputStream bais = new java.io.ByteArrayInputStream(contenido)) {
-                    java.awt.image.BufferedImage img = javax.imageio.ImageIO.read(bais);
-                    if (img != null) {
-                        double relacion = (double) img.getHeight() / img.getWidth();
-                        if (Math.abs(relacion - A4_RATIO) > A4_TOLERANCE) {
-                            Operations.message(Operations.ERROR,
-                                "Fotografía sin proporción A4 (1:1.41): " + nombreOriginal
-                                + " [alto/ancho=" + String.format("%.2f", relacion) + "]");
-                            return;
-                        }
-                    }
-                } catch (Exception ex) {
-                    // Si no se puede leer la imagen, se advierte pero no se bloquea
-                    Operations.message(Operations.AVISO,
-                        "No se pudo verificar dimensiones de: " + nombreOriginal);
-                }
-            }
-
-            // Ruta configurable via System Property "upload.base.path"
-            String baseDir = AppConfig.get("upload.base.path", "UPLOAD_BASE_PATH",
-                "C:" + File.separator + "uploads");
-            String rutaDestino = baseDir + File.separator + tramiteId + File.separator;
-
-            File carpeta = new File(rutaDestino);
-            if (!carpeta.exists() && !carpeta.mkdirs()) {
-                Operations.message(Operations.ERROR,
-                    "No se pudo crear el directorio de destino: " + rutaDestino);
-                return;
-            }
-
-            // Nombre único — nunca sobrescribe archivos anteriores
-            String extension  = nombreMin.substring(nombreMin.lastIndexOf('.'));
-            String nombreUnico = (esPdf ? "comprobante" : "foto")
-                + "_" + tramiteId + "_" + System.currentTimeMillis() + extension;
-            File archivoDestino = new File(rutaDestino + nombreUnico);
-
-            try (InputStream in = file.getInputStream()) {
-                // Sin REPLACE_EXISTING: si ya existe el nombre único, es un error real
-                Files.copy(in, archivoDestino.toPath());
-            }
-
-            if (!archivoDestino.exists()) {
-                Operations.message(Operations.ERROR, "Error al guardar en disco: " + nombreOriginal);
-                return;
-            }
-
-            // Registrar en BD todos los archivos subidos (PDF y fotos)
-            ComprobantePago cp = new ComprobantePago();
-            cp.setVegetableFormId(tramiteId);
-            cp.setNombreArchivo(nombreOriginal);
-            cp.setRutaArchivo(archivoDestino.getAbsolutePath());
-            cp.setFechaCarga(new java.sql.Timestamp(System.currentTimeMillis()));
-            cp.setCargadoPor(login != null ? login.getLogin() : "SISTEMA");
-            cp.setTamanoBytes(tamano);
-            new ComprobantePagoDAO(cp).persist();
-
-            Operations.message(Operations.INFORMACION,
-                "Archivo cargado correctamente: " + nombreOriginal);
-
-        } catch (Exception e) {
-            java.util.logging.Logger.getLogger(getClass().getName())
-                .log(java.util.logging.Level.SEVERE, "Error en upload de archivo", e);
-            Operations.message(Operations.ERROR, "Error al guardar archivo: " + e.getMessage());
-        }
     }
 
     public void prepareViewUploaded(ActionEvent ae) {
@@ -884,46 +754,11 @@ public class VegetableBean implements Serializable {
         return getUploadedFileCount(tramiteId) > 0;
     }
 
-    public void migrarSavedADelivered() {
-        try {
-            int n = new VegetableFormsDAO(null).updateAllSavedToDelivered();
-            onRadioSelected();
-            Operations.message(Operations.INFORMACION,
-                n + " registro(s) cambiados de GUARDADO a EN PROCESO.");
-        } catch (Exception e) {
-            Operations.message(Operations.ERROR,
-                "Error al migrar estados: " + e.getMessage());
-        }
-    }
-
-    public void onRowSelect(org.primefaces.event.SelectEvent<VegetableForms> event) {
-        this.vegetableForms = event.getObject();
-        System.out.println("SELECCIONADO: " + vegetableForms.getApplicationNumber());
-    }
-
-    /** Elimina el trámite seleccionado (solo si no tiene comprobantes de pago asociados). */
-    public void eliminarRegistro(ActionEvent ae) {
-        if (vegetableForms == null || vegetableForms.getId() == null) {
-            Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
-            return;
-        }
-        try {
-            new VegetableFormsDAO(null).deleteById(vegetableForms.getId());
-            Operations.message(Operations.INFORMACION,
-                "Registro eliminado correctamente: " + vegetableForms.getApplicationNumber());
-            onRadioSelected();
-        } catch (Exception e) {
-            Operations.message(Operations.ERROR, "No se pudo eliminar el registro: " + e.getMessage());
-        }
-    }
-
         // --- GETTERS Y SETTERS COMPLETOS ---
         public LoginBean getLogin() { return login; }
         public void setLogin(LoginBean login) { this.login = login; }
         public List<VegetableForms> getVegetables() { return vegetables; }
         public void setVegetables(List<VegetableForms> vegetables) { this.vegetables = vegetables; }
-        public List<VegetableForms> getVegetablesFilter() { return vegetablesFilter; }
-        public void setVegetablesFilter(List<VegetableForms> vegetablesFilter) { this.vegetablesFilter = vegetablesFilter; }
         public UIData getVegetableTable() { return vegetableTable; }
         public void setVegetableTable(UIData vegetableTable) { this.vegetableTable = vegetableTable; }
         public VegetableForms getVegetableForms() { return vegetableForms; }
@@ -938,8 +773,7 @@ public class VegetableBean implements Serializable {
         public void setEndDate(Date endDate) { this.endDate = endDate; }
         public boolean isByDate() { return byDate; }
         public void setByDate(boolean byDate) { this.byDate = byDate; }
-        public String getHistorial() { return historial; }
-        public void setHistorial(String historial) { this.historial = historial; }
+        public List<History> getHistorialList() { return historialList; }
         public String getNewAssignedUser() { return newAssignedUser; }
         public void setNewAssignedUser(String newAssignedUser) { this.newAssignedUser = newAssignedUser; }
         public String getReassignComment() { return reassignComment; }

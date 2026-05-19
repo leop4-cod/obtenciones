@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -18,11 +17,9 @@ import org.primefaces.model.file.UploadedFile;
 import org.primefaces.model.file.UploadedFiles;
 import senadi.gob.ec.adminob.dao.ComprobantePagoDAO;
 import senadi.gob.ec.adminob.dao.VegetableFormsDAO;
-import senadi.gob.ec.adminob.enums.DenominationType;
 import senadi.gob.ec.adminob.enums.FlowPhase;
 import senadi.gob.ec.adminob.enums.Status;
 import senadi.gob.ec.adminob.enums.StatusFlow;
-import senadi.gob.ec.adminob.enums.VarietyTransferType;
 import senadi.gob.ec.adminob.model.ComprobantePago;
 import senadi.gob.ec.adminob.model.History;
 import senadi.gob.ec.adminob.model.VegetableForms;
@@ -147,8 +144,8 @@ public class RegistroBean implements Serializable {
             registrarHistorial(form, "Registro actualizado");
 
             addInfo("CAMBIOS GUARDADOS CORRECTAMENTE");
-
-            return null;
+            FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+            return "index?faces-redirect=true";
 
         } catch (Exception e) {
 
@@ -298,9 +295,7 @@ public class RegistroBean implements Serializable {
             h.setDescription(descripcion + " por " + (login != null ? login.getLogin() : "sistema"));
             h.setFecha(new Timestamp(System.currentTimeMillis()));
             h.setHistoryUser(login != null ? login.getLogin() : "sistema");
-            if (assignedTo != null && !assignedTo.trim().isEmpty()) {
-                h.setAssignedTo(assignedTo.trim());
-            }
+            // El asignado se guarda en la descripción, la columna assigned_to no existe en BD
             new Controller().saveHistory(h);
         } catch (Exception e) {
             System.err.println("[RegistroBean] No se pudo guardar historial: " + e.getMessage());
@@ -340,26 +335,6 @@ public class RegistroBean implements Serializable {
         }
     }
 
-    public String getFlowPhaseLabel(FlowPhase fp) {
-        if (fp == null) return "—";
-        switch (fp) {
-            case INITIAL: return "Inicial";
-            case ASSIGNED: return "Asignado";
-            case FORM_REVIEW: return "Revisión de Forma";
-            case ADMITTED: return "Admitido";
-            case SUBSTANCE_REVIEW: return "Revisión de Fondo";
-            case LIVE_SAMPLE_DEPOSIT: return "Depósito de Muestra";
-            case DEPOSIT_CERTIFICATE: return "Certificado de Depósito";
-            case OPPOSITION_PERIOD: return "Período de Oposición";
-            case OPPOSITION_RESOLUTION: return "Resolución de Oposición";
-            case DHE_EXAM: return "Examen DHE";
-            case TECHNICAL_OPINION: return "Dictamen Técnico";
-            case RESOLUTION: return "Resolución";
-            case CERTIFICATE_ISSUED: return "Certificado Emitido";
-            case ARCHIVED: return "Archivado";
-            default: return fp.name();
-        }
-    }
     public void eliminarArchivo(ComprobantePago archivo) {
 
         try {
@@ -394,12 +369,6 @@ public class RegistroBean implements Serializable {
             e.printStackTrace();
         }
     }
-    public List<Status> getStatusList() { return Arrays.asList(Status.values()); }
-    public List<DenominationType> getDenominationTypes() { return Arrays.asList(DenominationType.values()); }
-    public List<VarietyTransferType> getVarietyTransferTypes() { return Arrays.asList(VarietyTransferType.values()); }
-    public List<FlowPhase> getFlowPhases() { return Arrays.asList(FlowPhase.values()); }
-    public List<StatusFlow> getStatusFlows() { return Arrays.asList(StatusFlow.values()); }
-
     private void addInfo(String msg) {
         FacesContext.getCurrentInstance().addMessage(null,
             new FacesMessage(FacesMessage.SEVERITY_INFO, msg, null));

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
 
     <f:metadata>
         <f:viewAction action="#{anualidadBean.limpiarFiltros}" onPostback="false"/>
@@ -24,35 +25,36 @@
         <style>
 
             /* ══════════════════════════════════════════════
-               CORRECCIÓN DE BOTONES (sobreescribe ui-state-default
-               que estaba poniendo background blanco con !important)
+               ANUALIDADES — Botones v6.0 premium
             ══════════════════════════════════════════════ */
 
             /* Botón principal verde — "Crear anualidades" */
             button.ui-button.sn-btn-new,
             .sn-btn-new.ui-button,
             .sn-btn-new {
-                background: #1b6b3a !important;
-                border: 2px solid #155b30 !important;
+                background: linear-gradient(135deg, #27924a 0%, #1b6b3a 55%, #135226 100%) !important;
+                border: 1px solid #0f4d1c !important;
                 color: #ffffff !important;
                 font-weight: 800 !important;
                 font-size: 13px !important;
-                border-radius: 7px !important;
-                padding: 9px 22px !important;
+                border-radius: 8px !important;
+                padding: 10px 24px !important;
                 display: inline-flex !important;
                 align-items: center !important;
                 gap: 7px !important;
                 cursor: pointer !important;
-                box-shadow: 0 2px 8px rgba(27,107,58,.35) !important;
-                transition: background .18s, transform .14s !important;
+                box-shadow: 0 2px 10px rgba(27,107,58,.40), 0 1px 3px rgba(0,0,0,.12) !important;
+                transition: all .22s ease !important;
                 white-space: nowrap !important;
+                letter-spacing: .02em !important;
             }
             button.ui-button.sn-btn-new:hover,
             .sn-btn-new.ui-button:hover,
             .sn-btn-new:hover {
-                background: #0f4d1c !important;
-                border-color: #0f4d1c !important;
-                transform: translateY(-1px) !important;
+                background: linear-gradient(135deg, #2fa355 0%, #27924a 55%, #1b6b3a 100%) !important;
+                border-color: #0a3d1a !important;
+                box-shadow: 0 5px 18px rgba(27,107,58,.52), 0 2px 5px rgba(0,0,0,.15) !important;
+                transform: translateY(-2px) !important;
             }
             .sn-btn-new .ui-button-text { color: #fff !important; font-weight: 800 !important; }
             .sn-btn-new .pi,
@@ -63,23 +65,27 @@
             .sn-btn-outline.ui-button,
             .sn-btn-outline {
                 background: transparent !important;
-                border: 2px solid #1b6b3a !important;
+                border: 2px solid rgba(27,107,58,.60) !important;
                 color: #1b6b3a !important;
                 font-weight: 700 !important;
                 font-size: 12px !important;
-                border-radius: 7px !important;
-                padding: 7px 16px !important;
+                border-radius: 8px !important;
+                padding: 8px 18px !important;
                 display: inline-flex !important;
                 align-items: center !important;
                 gap: 6px !important;
                 cursor: pointer !important;
-                transition: all .18s !important;
+                transition: all .20s ease !important;
                 white-space: nowrap !important;
+                box-shadow: 0 1px 4px rgba(27,107,58,.12) !important;
             }
             button.ui-button.sn-btn-outline:hover,
             .sn-btn-outline.ui-button:hover {
-                background: #1b6b3a !important;
+                background: linear-gradient(135deg, #1b6b3a, #0f4d1c) !important;
+                border-color: #0f4d1c !important;
                 color: #fff !important;
+                box-shadow: 0 3px 10px rgba(27,107,58,.35) !important;
+                transform: translateY(-1px) !important;
             }
             .sn-btn-outline .ui-button-text { color: inherit !important; font-weight: 700 !important; }
             .sn-btn-outline .pi,
@@ -87,31 +93,34 @@
             .sn-btn-outline:hover .pi,
             .sn-btn-outline.ui-button:hover .pi { color: #fff !important; }
 
-            /* Botón cancelar — gris neutro */
+            /* Botón cancelar — gris neutro premium */
             button.ui-button.btn-cancelar,
             .btn-cancelar.ui-button,
             .btn-cancelar {
-                background: #f3f4f6 !important;
+                background: linear-gradient(135deg, #f9fafb, #f3f4f6) !important;
                 border: 1px solid #d1d5db !important;
                 color: #374151 !important;
                 font-weight: 700 !important;
                 font-size: 13px !important;
-                border-radius: 7px !important;
-                padding: 8px 18px !important;
+                border-radius: 8px !important;
+                padding: 9px 20px !important;
                 display: inline-flex !important;
                 align-items: center !important;
                 gap: 6px !important;
+                box-shadow: 0 1px 4px rgba(0,0,0,.08) !important;
+                transition: all .18s ease !important;
             }
             button.ui-button.btn-cancelar:hover,
             .btn-cancelar.ui-button:hover {
-                background: #e5e7eb !important;
+                background: linear-gradient(135deg, #e5e7eb, #d1d5db) !important;
                 border-color: #9ca3af !important;
+                transform: translateY(-1px) !important;
             }
             .btn-cancelar .ui-button-text { color: #374151 !important; }
             .btn-cancelar .pi { color: #374151 !important; }
 
             /* ══════════════════════════════════════════════
-               DIÁLOGO — posicionamiento y estilo
+               DIÁLOGO — posicionamiento y estilo v6.0
             ══════════════════════════════════════════════ */
             .ui-dialog {
                 position: fixed !important;
@@ -119,28 +128,36 @@
                 left: 50% !important;
                 transform: translate(-50%, -50%) !important;
                 z-index: 9000 !important;
-                border-radius: 12px !important;
+                border-radius: 14px !important;
                 overflow: hidden !important;
-                box-shadow: 0 20px 60px rgba(0,0,0,.35) !important;
+                box-shadow: 0 24px 64px rgba(0,0,0,.42), 0 8px 24px rgba(0,0,0,.20), 0 0 0 1px rgba(255,255,255,.06) !important;
             }
             .ui-dialog .ui-dialog-titlebar {
-                background: linear-gradient(135deg, #0f4d1c, #1b6b3a) !important;
+                background: linear-gradient(135deg, #041f10 0%, #0a3d1a 45%, #167030 100%) !important;
                 color: #fff !important;
                 font-weight: 700 !important;
-                padding: 14px 20px !important;
+                padding: 15px 22px !important;
                 font-size: 14px !important;
                 border-radius: 0 !important;
+                letter-spacing: .03em !important;
+                text-shadow: 0 1px 3px rgba(0,0,0,.30) !important;
             }
             .ui-dialog .ui-dialog-titlebar-close { background: transparent !important; border: none !important; }
             .ui-dialog .ui-dialog-titlebar-close .ui-icon { color: rgba(255,255,255,.85) !important; }
             .ui-dialog .ui-dialog-content {
-                background: #fff !important;
-                padding: 22px 24px !important;
+                background: #ffffff !important;
+                padding: 24px 26px !important;
                 border: none !important;
+            }
+            .ui-dialog .ui-dialog-footer {
+                background: linear-gradient(135deg, #f8fdf9, #f0f9f2) !important;
+                border-top: 1px solid rgba(31,111,67,.12) !important;
             }
             /* overlay del modal */
             .ui-widget-overlay {
-                background: rgba(0,0,0,.55) !important;
+                background: rgba(4,13,8,.65) !important;
+                backdrop-filter: blur(3px) !important;
+                -webkit-backdrop-filter: blur(3px) !important;
                 z-index: 8999 !important;
                 position: fixed !important;
                 top: 0 !important; left: 0 !important;
@@ -148,101 +165,118 @@
             }
 
             /* ══════════════════════════════════════════════
-               ESTADÍSTICAS
+               ESTADÍSTICAS v6.0
             ══════════════════════════════════════════════ */
-            .anu-stats-bar { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:18px; }
+            .anu-stats-bar { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
             .anu-stat-card {
-                background:#fff; border-radius:10px;
-                border:1px solid #e2e8e2; padding:14px 18px;
-                display:flex; align-items:center; gap:12px;
-                box-shadow:0 2px 8px rgba(15,77,28,.08); flex:1; min-width:140px;
+                background: linear-gradient(135deg, #ffffff, #f8fdf9) !important;
+                border-radius: 12px !important;
+                border: 1px solid rgba(31,111,67,.12) !important;
+                padding: 16px 20px !important;
+                display: flex; align-items: center; gap: 14px;
+                box-shadow: 0 2px 10px rgba(15,77,28,.09), 0 1px 3px rgba(0,0,0,.05) !important;
+                flex: 1; min-width: 148px;
+                transition: box-shadow .25s ease, transform .25s ease, border-color .25s ease !important;
+            }
+            .anu-stat-card:hover {
+                box-shadow: 0 8px 28px rgba(15,77,28,.18) !important;
+                transform: translateY(-3px) !important;
+                border-color: rgba(31,111,67,.28) !important;
             }
             .anu-stat-icon {
-                width:42px; height:42px; border-radius:10px;
-                display:flex; align-items:center; justify-content:center;
-                font-size:18px; flex-shrink:0;
+                width: 46px; height: 46px; border-radius: 12px;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 20px; flex-shrink: 0;
+                box-shadow: 0 2px 6px rgba(0,0,0,.10);
             }
-            .anu-stat-icon.green { background:#d1fae5; color:#065f46; }
-            .anu-stat-icon.amber { background:#fef3c7; color:#92400e; }
-            .anu-stat-icon.blue  { background:#dbeafe; color:#1e40af; }
-            .anu-stat-num { font-size:22px; font-weight:800; color:#1a2e1a; line-height:1; }
-            .anu-stat-lbl { font-size:11px; color:#6b7280; font-weight:600; margin-top:2px; }
+            .anu-stat-icon.green { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; }
+            .anu-stat-icon.amber { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #78350f; }
+            .anu-stat-icon.blue  { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e3a8a; }
+            .anu-stat-num { font-size: 24px; font-weight: 900; color: #041f10; line-height: 1; }
+            .anu-stat-lbl { font-size: 11px; color: #5a7a68; font-weight: 700; margin-top: 3px; letter-spacing: .02em; }
 
             /* ══════════════════════════════════════════════
-               PANEL ALERTAS
+               PANEL ALERTAS v6.0
             ══════════════════════════════════════════════ */
             .anu-alert-panel {
-                background:linear-gradient(135deg,#fff8e1,#fffbf0);
-                border:2px solid #f59e0b; border-radius:12px;
-                padding:16px 20px; margin-bottom:18px;
-                box-shadow:0 2px 8px rgba(245,158,11,.15);
+                background: linear-gradient(135deg, #fffbeb, #fef9e0) !important;
+                border: 2px solid #f59e0b; border-radius: 14px;
+                padding: 18px 22px; margin-bottom: 20px;
+                box-shadow: 0 3px 14px rgba(245,158,11,.18);
             }
             .anu-alert-title {
-                font-size:13px; font-weight:800; color:#b45309;
-                margin-bottom:10px; display:flex; align-items:center; gap:8px;
+                font-size: 13.5px; font-weight: 800; color: #92400e;
+                margin-bottom: 12px; display: flex; align-items: center; gap: 9px;
             }
             .anu-alert-grid {
-                display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:6px;
+                display: grid; grid-template-columns: repeat(auto-fill,minmax(290px,1fr)); gap: 7px;
             }
             .anu-alert-item {
-                background:rgba(255,255,255,.75); border-radius:6px;
-                padding:6px 10px; font-size:12px; color:#78350f;
-                border:1px solid #fde68a; display:flex; align-items:center; gap:6px;
+                background: rgba(255,255,255,.85) !important;
+                border-radius: 8px;
+                padding: 7px 12px; font-size: 12px; color: #78350f;
+                border: 1px solid #fde68a; display: flex; align-items: center; gap: 7px;
+                box-shadow: 0 1px 4px rgba(245,158,11,.10);
             }
 
             /* ══════════════════════════════════════════════
-               CARD CREAR ANUALIDADES
+               CARD CREAR ANUALIDADES v6.0
             ══════════════════════════════════════════════ */
             .anu-crear-card {
-                background:linear-gradient(135deg,#f0fdf4,#ecfdf5);
-                border:2px solid #86efac; border-radius:12px;
-                padding:18px 22px; margin-bottom:18px;
-                box-shadow:0 2px 8px rgba(15,77,28,.08);
+                background: linear-gradient(135deg, #f0fdf4, #e4f9ec, #dcfce7) !important;
+                border: 2px solid #86efac; border-radius: 14px;
+                padding: 20px 24px; margin-bottom: 20px;
+                box-shadow: 0 3px 14px rgba(15,77,28,.10);
             }
             .anu-crear-title {
-                font-size:15px; font-weight:800; color:#0f4d1c;
-                margin-bottom:5px; display:flex; align-items:center; gap:8px;
+                font-size: 15.5px; font-weight: 900; color: #041f10;
+                margin-bottom: 5px; display: flex; align-items: center; gap: 9px;
+                text-shadow: 0 1px 2px rgba(0,0,0,.08);
             }
-            .anu-crear-sub { font-size:12px; color:#4b7c5c; margin-bottom:14px; }
-            .anu-crear-row { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+            .anu-crear-sub { font-size: 12px; color: #3d6b50; margin-bottom: 16px; font-weight: 600; }
+            .anu-crear-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 
             /* ══════════════════════════════════════════════
-               FILTROS
+               FILTROS v6.0
             ══════════════════════════════════════════════ */
             .anu-filtros {
-                background:#f8faf9; border:1px solid #d1e8d1;
-                border-radius:10px; padding:14px 18px; margin-bottom:14px;
-                display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end;
+                background: linear-gradient(135deg, #f4fbf6, #ecf8ef) !important;
+                border: 1px solid rgba(31,111,67,.16) !important;
+                border-radius: 12px; padding: 16px 20px; margin-bottom: 16px;
+                display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end;
+                box-shadow: 0 2px 10px rgba(15,77,28,.07);
             }
             .anu-filtros label {
-                font-size:11px; font-weight:800; color:#0f4d1c;
-                display:block; margin-bottom:4px; text-transform:uppercase; letter-spacing:.3px;
+                font-size: 11px; font-weight: 800; color: #1a4a28;
+                display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px;
             }
 
             /* ══════════════════════════════════════════════
-               BADGES DE ESTADO
+               BADGES DE ESTADO v6.0 — gradientes
             ══════════════════════════════════════════════ */
             .anu-badge {
-                display:inline-block; padding:3px 10px; border-radius:20px;
-                font-size:10px; font-weight:800; letter-spacing:.4px; text-transform:uppercase;
+                display: inline-block; padding: 4px 12px; border-radius: 20px;
+                font-size: 10.5px; font-weight: 900; letter-spacing: .4px; text-transform: uppercase;
+                box-shadow: 0 1px 4px rgba(0,0,0,.10);
             }
-            .anu-pendiente  { background:#fef9ec; color:#92400e; border:1px solid #fcd34d; }
-            .anu-pagado     { background:#059669; color:#fff; border:1px solid #047857; font-weight:900 !important; }
-            .anu-vencido    { background:#fff1f2; color:#9f1239; border:1px solid #fca5a5; }
-            .anu-alerta     { background:#fffbeb; color:#92400e; border:1px solid #fbbf24; }
-            .anu-exonerado  { background:#eff6ff; color:#1d4ed8; border:1px solid #93c5fd; }
-            .anu-anulado    { background:#f9fafb; color:#4b5563; border:1px solid #d1d5db; }
+            .anu-pendiente  { background: linear-gradient(135deg, #fef9ec, #fef3c7); color: #78350f; border: 1px solid #fcd34d; }
+            .anu-pagado     { background: linear-gradient(135deg, #059669, #047857); color: #fff; border: 1px solid #065f46; box-shadow: 0 2px 6px rgba(5,150,105,.35) !important; }
+            .anu-vencido    { background: linear-gradient(135deg, #fff1f2, #ffe4e6); color: #881337; border: 1px solid #fca5a5; }
+            .anu-alerta     { background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #78350f; border: 1px solid #fbbf24; }
+            .anu-exonerado  { background: linear-gradient(135deg, #eff6ff, #dbeafe); color: #1e3a8a; border: 1px solid #93c5fd; }
+            .anu-anulado    { background: linear-gradient(135deg, #f9fafb, #f3f4f6); color: #374151; border: 1px solid #d1d5db; }
 
             /* ══════════════════════════════════════════════
-               TABLA
+               TABLA v6.0
             ══════════════════════════════════════════════ */
             .anu-table th.ui-state-default {
-                background: linear-gradient(135deg,#0f4d1c,#1b6b3a) !important;
-                color:#fff !important; font-size:11px !important;
-                font-weight:800 !important; letter-spacing:.3px !important;
-                text-transform:uppercase !important; padding:10px 10px !important;
-                border-right:1px solid rgba(255,255,255,.15) !important;
-                white-space:nowrap !important;
+                background: linear-gradient(180deg, #237a47 0%, #1f6f43 55%, #174f31 100%) !important;
+                color: #fff !important; font-size: 11px !important;
+                font-weight: 800 !important; letter-spacing: .35px !important;
+                text-transform: uppercase !important; padding: 11px 10px !important;
+                border-right: 1px solid rgba(255,255,255,.15) !important;
+                white-space: nowrap !important;
+                text-shadow: 0 1px 2px rgba(0,0,0,.20) !important;
             }
             .anu-table td {
                 font-size:12px !important; vertical-align:middle !important;
@@ -280,19 +314,20 @@
             }
 
             /* ══════════════════════════════════════════════
-               SELECTONEMENU — panel desplegable blanco
+               SELECTONEMENU — panel desplegable SIEMPRE OPACO v6.0
             ══════════════════════════════════════════════ */
             .ui-selectonemenu-panel {
                 background: #ffffff !important;
-                border: 1px solid #d1d5db !important;
-                border-radius: 8px !important;
-                box-shadow: 0 4px 16px rgba(0,0,0,.18) !important;
+                background-color: #ffffff !important;
+                border: 1px solid rgba(31,111,67,.20) !important;
+                border-radius: 10px !important;
+                box-shadow: 0 8px 28px rgba(0,0,0,.20) !important;
                 overflow: hidden !important;
             }
             .ui-selectonemenu-filter-container {
-                background: #f9fafb !important;
-                border-bottom: 1px solid #e5e7eb !important;
-                padding: 6px 8px !important;
+                background: linear-gradient(135deg, #f4fbf6, #ecf8ef) !important;
+                border-bottom: 1px solid rgba(31,111,67,.14) !important;
+                padding: 7px 10px !important;
             }
             .ui-selectonemenu-filter-container .ui-selectonemenu-filter {
                 background: #ffffff !important;
@@ -331,35 +366,132 @@
             }
 
             /* ══════════════════════════════════════════════
-               DIÁLOGO — contenido
+               DIÁLOGO — contenido v6.0
             ══════════════════════════════════════════════ */
             .anu-dialog-info {
-                background:linear-gradient(135deg,#f0fdf4,#ecfdf5);
-                border-radius:8px; padding:10px 14px; margin-bottom:16px;
-                border-left:4px solid #1b6b3a; font-size:12px; color:#374151;
+                background: linear-gradient(135deg, #f0fdf4, #dcfce7) !important;
+                border-radius: 10px; padding: 12px 16px; margin-bottom: 18px;
+                border-left: 4px solid #1b6b3a; font-size: 12.5px; color: #1a3a28;
+                box-shadow: 0 2px 8px rgba(15,77,28,.08);
             }
             .anu-dlg-grid { width:100%; border-collapse:collapse; }
-            .anu-dlg-grid td { padding:5px 6px; vertical-align:middle; }
-            .anu-dlg-lbl { width:160px; font-weight:700; font-size:12px; color:#0f4d1c; white-space:nowrap; }
-            .anu-dlg-val { font-size:12px; }
+            .anu-dlg-grid td { padding: 6px 7px; vertical-align: middle; }
+            .anu-dlg-lbl { width: 165px; font-weight: 800; font-size: 12px; color: #0f4d1c; white-space: nowrap; }
+            .anu-dlg-val { font-size: 12.5px; }
             .anu-dlg-val .ui-inputfield,
-            .anu-dlg-val .ui-selectonemenu { width:100% !important; font-size:12px !important; }
+            .anu-dlg-val .ui-selectonemenu { width: 100% !important; font-size: 12px !important; }
             .anu-section-sep {
-                background:#f0fdf4; border-radius:4px; padding:4px 10px;
-                font-size:10px; font-weight:800; color:#1b6b3a;
-                text-transform:uppercase; letter-spacing:.5px; margin:8px 0 4px;
-                border-left:3px solid #1b6b3a;
+                background: linear-gradient(135deg, #f0fdf4, #e4f9ec) !important;
+                border-radius: 6px; padding: 5px 12px;
+                font-size: 10.5px; font-weight: 800; color: #0f4d1c;
+                text-transform: uppercase; letter-spacing: .5px; margin: 10px 0 5px;
+                border-left: 3px solid #1b6b3a;
+                box-shadow: 0 1px 4px rgba(15,77,28,.08);
             }
             .anu-section-sep.amber {
-                background:#fef9ec; color:#92400e; border-color:#f59e0b;
+                background: linear-gradient(135deg, #fffbeb, #fef3c7) !important;
+                color: #78350f; border-color: #f59e0b;
             }
             .anu-section-sep.blue {
-                background:#eff6ff; color:#1d4ed8; border-color:#93c5fd;
+                background: linear-gradient(135deg, #eff6ff, #dbeafe) !important;
+                color: #1d4ed8; border-color: #93c5fd;
             }
             .anu-dlg-footer {
-                display:flex; gap:8px; justify-content:flex-end;
-                margin-top:18px; padding-top:14px; border-top:1px solid #e2e8e2;
+                display: flex; gap: 9px; justify-content: flex-end;
+                margin-top: 20px; padding-top: 16px;
+                border-top: 1px solid rgba(31,111,67,.14);
             }
+
+            /* ══════════════════════════════════════════════
+               ACORDEÓN — CARPETAS / TRAMITES v6.0
+            ══════════════════════════════════════════════ */
+            .anu-folder-row {
+                cursor: pointer;
+                background: linear-gradient(135deg, #f0fdf4, #e4f9ec, #ddf6e8) !important;
+                border-top: 2px solid #86efac !important;
+                user-select: none;
+                transition: background .18s ease;
+            }
+            .anu-folder-row:hover > td {
+                background: linear-gradient(135deg, #d1fae5, #c6f5dd) !important;
+            }
+            .anu-folder-row > td {
+                padding: 11px 16px !important;
+                border-bottom: 1px solid rgba(31,111,67,.16) !important;
+            }
+            .anu-folder-header {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+                flex-wrap: wrap;
+            }
+            .anu-folder-chevron {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 22px; height: 22px;
+                flex-shrink: 0;
+                color: #1b6b3a;
+                transition: transform .22s ease;
+            }
+            .anu-folder-row.anu-folder-open .anu-folder-chevron {
+                transform: rotate(90deg);
+            }
+            .anu-folder-row.anu-folder-open .pi-folder {
+                /* swap to open folder icon when expanded */
+                font-family: 'primeicons';
+            }
+            .anu-folder-stats {
+                margin-left: auto;
+                display: flex;
+                gap: 6px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+            .anu-folder-count {
+                font-size: 11px; color: #6b7280;
+                background: #f3f4f6;
+                padding: 2px 9px; border-radius: 10px;
+                font-weight: 600;
+            }
+            /* detail rows: indented feel */
+            .anu-detail-row > td:first-child {
+                border-left: 3px solid #86efac !important;
+                padding-left: 20px !important;
+            }
+            .anu-detail-row > td {
+                background: #fafffe !important;
+            }
+            .anu-detail-row.anu-row-pagada  > td { background: #ecfdf5 !important; }
+            .anu-detail-row.anu-row-vencida > td { background: #fff1f2 !important; }
+            .anu-detail-row.anu-row-alerta  > td { background: #fffbeb !important; }
+            .anu-detail-row:hover > td            { background: #f0fdf4 !important; }
+            .anu-detail-row.anu-row-pagada:hover  > td { background: #d1fae5 !important; }
+            .anu-detail-row.anu-row-vencida:hover > td { background: #ffe4e6 !important; }
+            .anu-detail-row.anu-row-alerta:hover  > td { background: #fef3c7 !important; }
+            /* tabla header cuando es HTML puro */
+            .anu-acc-thead th {
+                background: linear-gradient(135deg,#0f4d1c,#1b6b3a) !important;
+                color:#fff !important; font-size:11px !important;
+                font-weight:800 !important; letter-spacing:.3px !important;
+                text-transform:uppercase !important; padding:10px 10px !important;
+                border-right:1px solid rgba(255,255,255,.15) !important;
+                white-space:nowrap !important;
+            }
+            .anu-empty-acc {
+                text-align: center; padding: 48px 20px;
+                color: #9ca3af; font-size: 13px;
+            }
+            .anu-empty-acc i { display:block; font-size:36px; margin-bottom:12px; }
+            /* botones expandir/colapsar */
+            .anu-acc-ctrl {
+                display:inline-flex; align-items:center; gap:5px;
+                font-size:11px; font-weight:700; cursor:pointer;
+                color:#1b6b3a; background:#f0fdf4;
+                border:1px solid #86efac; border-radius:6px;
+                padding:4px 10px; transition:background .15s;
+            }
+            .anu-acc-ctrl:hover { background:#dcfce7; }
         </style>
     </h:head>
 
@@ -371,6 +503,38 @@
                     try { PF('dlgEdit').hide(); } catch(e) {}
                 }, 100);
             });
+
+            /* ── Acordeón de anualidades ── */
+            function toggleFolder(headerRow, groupClass) {
+                var rows = document.querySelectorAll('tr.' + groupClass);
+                var isOpen = headerRow.classList.contains('anu-folder-open');
+                rows.forEach(function(r) {
+                    r.style.display = isOpen ? 'none' : '';
+                });
+                if (isOpen) {
+                    headerRow.classList.remove('anu-folder-open');
+                } else {
+                    headerRow.classList.add('anu-folder-open');
+                }
+            }
+
+            function expandAllFolders() {
+                document.querySelectorAll('.anu-folder-row').forEach(function(hdr) {
+                    var grp = hdr.dataset.group;
+                    if (!grp) return;
+                    document.querySelectorAll('tr.' + grp).forEach(function(r) { r.style.display = ''; });
+                    hdr.classList.add('anu-folder-open');
+                });
+            }
+
+            function collapseAllFolders() {
+                document.querySelectorAll('.anu-folder-row').forEach(function(hdr) {
+                    var grp = hdr.dataset.group;
+                    if (!grp) return;
+                    document.querySelectorAll('tr.' + grp).forEach(function(r) { r.style.display = 'none'; });
+                    hdr.classList.remove('anu-folder-open');
+                });
+            }
         </script>
 
         <p:growl id="mensajes" showDetail="true" life="6000" sticky="false"/>
@@ -447,11 +611,16 @@
                             <div class="anu-stat-lbl">Completadas / Pagadas</div>
                         </div>
                     </div>
-                    <div class="anu-stat-card" style="border-left:3px solid #f59e0b;">
+                    <div class="anu-stat-card" style="border-left:3px solid #f59e0b; cursor:pointer;"
+                         onclick="PF('dlgProxVenc').show();"
+                         title="Ver trámites con vencimiento próximo">
                         <div class="anu-stat-icon amber"><i class="pi pi-bell"/></div>
                         <div>
                             <div class="anu-stat-num" style="color:#92400e;">#{anualidadBean.totalAlertas}</div>
-                            <div class="anu-stat-lbl">Próx. vencimiento (15 días)</div>
+                            <div class="anu-stat-lbl" style="display:flex;align-items:center;gap:4px;">
+                                Próx. vencimiento (15 días)
+                                <i class="pi pi-external-link" style="font-size:9px;color:#f59e0b;"/>
+                            </div>
                         </div>
                     </div>
                     <div class="anu-stat-card">
@@ -466,34 +635,6 @@
                 </div>
                 </p:outputPanel>
 
-                <!-- ════ PANEL ALERTAS ════ -->
-                <p:outputPanel id="panelAlertas">
-                <h:panelGroup rendered="#{anualidadBean.totalAlertas gt 0}">
-                    <div class="anu-alert-panel">
-                        <div class="anu-alert-title">
-                            <i class="pi pi-exclamation-triangle" style="font-size:16px;"/>
-                            #{anualidadBean.totalAlertas} anualidad(es) vencen en los próximos 15 días
-                        </div>
-                        <div class="anu-alert-grid">
-                            <p:dataList value="#{anualidadBean.alertas}" var="al" paginator="false">
-                                <div class="anu-alert-item">
-                                    <i class="pi pi-clock" style="color:#f59e0b;flex-shrink:0;"/>
-                                    <span>
-                                        <strong>#{anualidadBean.getVegetableForm(al.vegetableFormId) != null
-                                            ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
-                                            : al.vegetableFormId}</strong>
-                                        — #{al.etiqueta} —
-                                        <h:outputText value="#{al.fechaVencimiento}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                        </h:outputText>
-                                    </span>
-                                    <span class="#{al.estadoBadgeClass}" style="margin-left:auto;">#{al.estadoBadgeLabel}</span>
-                                </div>
-                            </p:dataList>
-                        </div>
-                    </div>
-                </h:panelGroup>
-                </p:outputPanel>
 
                 <!-- ════ CREAR ANUALIDADES ════ -->
                 <p:outputPanel id="panelCrear">
@@ -503,26 +644,34 @@
                             Crear Anualidades por Trámite
                         </div>
                         <div class="anu-crear-sub">
-                            Seleccione un trámite y presione <strong>"Crear anualidades"</strong>
-                            para generar los 20 registros (Año1…Año20).
-                            Solo se crean <strong>una vez por trámite</strong>.
+                            Seleccione un trámite <strong>ACEPTADO</strong>, indique la cantidad y presione
+                            <strong>"Crear anualidades"</strong>. Solo se crean <strong>una vez por trámite</strong>.
                         </div>
                         <div class="anu-crear-row">
-                            <!-- selectOneMenu con p:ajax para sincronizar INMEDIATAMENTE el valor al bean -->
                             <p:selectOneMenu id="selTramite"
                                              value="#{anualidadBean.tramiteSeleccionadoId}"
-                                             style="min-width:360px;max-width:480px;font-size:13px;"
+                                             style="min-width:340px;max-width:460px;font-size:13px;"
                                              filter="true" filterMatchMode="contains">
-                                <f:selectItem itemLabel="— Seleccione un trámite —"
+                                <f:selectItem itemLabel="— Seleccione un trámite Aceptado —"
                                               itemValue=""
                                               noSelectionOption="true"/>
                                 <f:selectItems value="#{anualidadBean.tramites}"
                                                var="vf"
                                                itemLabel="#{vf.applicationNumber}#{vf.commonName != null and vf.commonName != '' ? ' — '.concat(vf.commonName) : ''}"
                                                itemValue="#{vf.id}"/>
-                                <!-- sincroniza valor al bean al cambiar la selección -->
                                 <p:ajax process="@this" update="@none"/>
                             </p:selectOneMenu>
+
+                            <div style="display:flex;flex-direction:column;gap:3px;">
+                                <label style="font-size:10px;font-weight:800;color:#1a4a28;text-transform:uppercase;letter-spacing:.4px;">
+                                    Cantidad de anualidades (máx. 20)
+                                </label>
+                                <p:inputText id="spinCantidad"
+                                             value="#{anualidadBean.cantidadAnualidades}"
+                                             type="number"
+                                             style="width:110px;font-size:13px;text-align:center;padding:6px 10px;border-radius:6px;"
+                                             maxlength="2"/>
+                            </div>
 
                             <p:commandButton id="btnCrear"
                                              value="Crear anualidades"
@@ -530,8 +679,8 @@
                                              styleClass="sn-btn-new"
                                              actionListener="#{anualidadBean.crearAnualidades}"
                                              update=":mensajes @form"
-                                             process="@this :frmAnu:selTramite"
-                                             onclick="if(!confirm('¿Generar 20 anualidades (Año1-Año20) para este trámite?')) return false;"/>
+                                             process=":frmAnu:selTramite :frmAnu:spinCantidad @this"
+                                             onclick="if(!confirm('¿Generar las anualidades para este trámite?')) return false;"/>
                         </div>
                     </div>
                 </p:outputPanel>
@@ -561,7 +710,8 @@
                                              style="font-size:12px;width:240px;">
                                     <p:ajax event="keyup" delay="400"
                                             update=":frmAnu:tablaAnualidades :frmAnu:barraConteo :frmAnu:conteoFiltro"
-                                            process="@this"/>
+                                            process="@this"
+                                            oncomplete="expandAllFolders()"/>
                                 </p:inputText>
                             </div>
                             <div>
@@ -573,7 +723,8 @@
                                     <f:selectItem itemLabel="Pendiente"    itemValue="PENDIENTE"/>
                                     <f:selectItem itemLabel="Vencida"      itemValue="VENCIDO"/>
                                     <p:ajax update=":frmAnu:tablaAnualidades :frmAnu:barraConteo :frmAnu:conteoFiltro"
-                                            process="@this"/>
+                                            process="@this"
+                                            oncomplete="expandAllFolders()"/>
                                 </p:selectOneMenu>
                             </div>
                             <p:commandButton value="Limpiar filtros"
@@ -582,124 +733,252 @@
                                              actionListener="#{anualidadBean.limpiarFiltros}"
                                              update=":frmAnu:tablaAnualidades :frmAnu:barraConteo :frmAnu:conteoFiltro :frmAnu:inFiltroTramite"
                                              process="@this"/>
+                            <!-- Controles de acordeón -->
+                            <div style="margin-left:auto;display:flex;gap:6px;align-items:flex-end;padding-bottom:2px;">
+                                <span class="anu-acc-ctrl" onclick="expandAllFolders()">
+                                    <i class="pi pi-angle-double-down"/> Expandir todos
+                                </span>
+                                <span class="anu-acc-ctrl" onclick="collapseAllFolders()">
+                                    <i class="pi pi-angle-double-up"/> Colapsar todos
+                                </span>
+                            </div>
                         </div>
 
-                        <!-- Tabla -->
-                        <div style="overflow-x:auto;border-radius:8px;border:1px solid #e2e8e2;">
-                            <p:dataTable id="tablaAnualidades"
-                                         value="#{anualidadBean.anualidadesFiltradas}"
-                                         var="anu"
-                                         rowKey="#{anu.id}"
-                                         rowStyleClass="#{anu.rowClass}"
-                                         paginator="true"
-                                         rows="50"
-                                         rowsPerPageTemplate="25,50,100,200"
-                                         paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                         paginatorPosition="bottom"
-                                         styleClass="anu-table"
-                                         sortMode="multiple"
-                                         style="min-width:1100px;"
-                                         emptyMessage="No hay registros. Use 'Crear anualidades' para generar los registros de un trámite.">
+                        <!-- Tabla acordeón -->
+                        <p:outputPanel id="tablaAnualidades" layout="block">
+                            <h:panelGroup rendered="#{anualidadBean.tramitesFiltradosConAnualidades.isEmpty()}">
+                                <div class="anu-empty-acc">
+                                    <i class="pi pi-inbox"/>
+                                    No hay registros. Use "Crear anualidades" para generar los registros de un trámite.
+                                </div>
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{not anualidadBean.tramitesFiltradosConAnualidades.isEmpty()}">
+                                <div style="overflow-x:auto;border-radius:8px;border:1px solid #e2e8e2;">
+                                    <table class="anu-table" style="min-width:1100px;border-collapse:collapse;width:100%;">
+                                        <thead class="anu-acc-thead">
+                                            <tr>
+                                                <th style="min-width:130px;">N° Trámite</th>
+                                                <th style="min-width:100px;">Num. Interna</th>
+                                                <th style="width:70px;text-align:center;">Año</th>
+                                                <th style="min-width:120px;text-align:center;">Fecha Vencimiento</th>
+                                                <th style="min-width:110px;text-align:center;">Fecha de Pago</th>
+                                                <th style="width:115px;text-align:right;">Valor Pagado ($)</th>
+                                                <th style="min-width:135px;">N° Comprobante Pago</th>
+                                                <th style="width:115px;text-align:right;">Valor Recargo ($)</th>
+                                                <th style="min-width:135px;">N° Comprobante Recargo</th>
+                                                <th style="width:110px;text-align:center;">Estado</th>
+                                                <th style="min-width:130px;">Observaciones</th>
+                                                <th style="width:52px;"/>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <ui:repeat value="#{anualidadBean.tramitesFiltradosConAnualidades}" var="tramite">
 
-                                <p:column headerText="N° Trámite" sortBy="#{anu.vegetableFormId}"
-                                          style="min-width:130px;">
-                                    <span class="anu-tramite-num">
-                                        #{anualidadBean.getVegetableForm(anu.vegetableFormId) != null
-                                            ? anualidadBean.getVegetableForm(anu.vegetableFormId).applicationNumber
-                                            : anu.vegetableFormId}
-                                    </span>
-                                </p:column>
+                                                <!-- ── Fila-carpeta (header del trámite) ── -->
+                                                <tr class="anu-folder-row"
+                                                    data-group="grp#{tramite.id}"
+                                                    onclick="toggleFolder(this,'grp#{tramite.id}')">
+                                                    <td colspan="12">
+                                                        <div class="anu-folder-header">
+                                                            <span class="anu-folder-chevron">
+                                                                <i class="pi pi-chevron-right" style="font-size:13px;font-weight:900;"/>
+                                                            </span>
+                                                            <i class="pi pi-folder" style="color:#1b6b3a;font-size:17px;flex-shrink:0;"/>
+                                                            <span class="anu-tramite-num" style="font-size:14px;">
+                                                                #{tramite.applicationNumber}
+                                                            </span>
+                                                            <h:panelGroup rendered="#{tramite.numeracionInterna != null and tramite.numeracionInterna != ''}">
+                                                                <span style="color:#c4d4c4;font-size:12px;">|</span>
+                                                                <span style="font-size:11px;color:#6b7280;">#{tramite.numeracionInterna}</span>
+                                                            </h:panelGroup>
+                                                            <h:panelGroup rendered="#{tramite.commonName != null and tramite.commonName != ''}">
+                                                                <span style="color:#c4d4c4;font-size:12px;">—</span>
+                                                                <span style="font-size:12px;color:#4b7c5c;font-style:italic;">#{tramite.commonName}</span>
+                                                            </h:panelGroup>
+                                                            <div class="anu-folder-stats">
+                                                                <span class="anu-folder-count">
+                                                                    #{anualidadBean.getAnualidadesFiltradasPorTramite(tramite.id).size()} años
+                                                                </span>
+                                                                <h:panelGroup rendered="#{anualidadBean.contarPagadasPorTramite(tramite.id) gt 0}">
+                                                                    <span class="anu-badge anu-pagado" style="font-size:10px;">
+                                                                        ✓ #{anualidadBean.contarPagadasPorTramite(tramite.id)} pag.
+                                                                    </span>
+                                                                </h:panelGroup>
+                                                                <h:panelGroup rendered="#{anualidadBean.contarVencidasPorTramite(tramite.id) gt 0}">
+                                                                    <span class="anu-badge anu-vencido" style="font-size:10px;">
+                                                                        #{anualidadBean.contarVencidasPorTramite(tramite.id)} venc.
+                                                                    </span>
+                                                                </h:panelGroup>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
 
-                                <p:column headerText="Num. Interna" style="min-width:100px;">
-                                    <h:outputText value="#{anualidadBean.getVegetableForm(anu.vegetableFormId) != null
-                                        ? anualidadBean.getVegetableForm(anu.vegetableFormId).numeracionInterna
-                                        : ''}"
-                                                  style="font-size:11px;color:#555;"/>
-                                </p:column>
+                                                <!-- ── Filas detalle (anualidades del trámite, ocultas por defecto) ── -->
+                                                <ui:repeat value="#{anualidadBean.getAnualidadesFiltradasPorTramite(tramite.id)}" var="anu">
+                                                    <tr class="anu-detail-row grp#{tramite.id} #{anu.rowClass}"
+                                                        style="display:none;">
+                                                        <td>
+                                                            <span class="anu-tramite-num" style="font-size:11px;color:#b0c4b0;">
+                                                                #{anualidadBean.getVegetableForm(anu.vegetableFormId) != null
+                                                                    ? anualidadBean.getVegetableForm(anu.vegetableFormId).applicationNumber
+                                                                    : anu.vegetableFormId}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <h:outputText value="#{anualidadBean.getVegetableForm(anu.vegetableFormId) != null
+                                                                ? anualidadBean.getVegetableForm(anu.vegetableFormId).numeracionInterna
+                                                                : ''}"
+                                                                          style="font-size:11px;color:#b0c4b0;"/>
+                                                        </td>
+                                                        <td style="text-align:center;">
+                                                            <span class="anu-anio-chip">#{anu.etiqueta}</span>
+                                                        </td>
+                                                        <td style="text-align:center;">
+                                                            <h:outputText value="#{anu.fechaVencimiento}"
+                                                                          rendered="#{anu.fechaVencimiento != null}">
+                                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                                            </h:outputText>
+                                                            <h:panelGroup rendered="#{anu.fechaVencimiento == null}">
+                                                                <span class="anu-dash">—</span>
+                                                            </h:panelGroup>
+                                                        </td>
+                                                        <td style="text-align:center;">
+                                                            <h:outputText value="#{anu.fechaPago}"
+                                                                          rendered="#{anu.fechaPago != null}">
+                                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                                            </h:outputText>
+                                                            <h:panelGroup rendered="#{anu.fechaPago == null}">
+                                                                <span class="anu-dash">—</span>
+                                                            </h:panelGroup>
+                                                        </td>
+                                                        <td style="text-align:right;">
+                                                            <h:panelGroup rendered="#{anu.monto != null}">
+                                                                <span class="anu-monto-verde">
+                                                                    <h:outputText value="#{anu.monto}">
+                                                                        <f:convertNumber type="currency" currencySymbol="$"
+                                                                                         groupingUsed="true" minFractionDigits="2"/>
+                                                                    </h:outputText>
+                                                                </span>
+                                                            </h:panelGroup>
+                                                            <h:panelGroup rendered="#{anu.monto == null}">
+                                                                <span class="anu-dash">—</span>
+                                                            </h:panelGroup>
+                                                        </td>
+                                                        <td>
+                                                            <span class="anu-comp">
+                                                                #{anu.numeroComprobante != null ? anu.numeroComprobante : '—'}
+                                                            </span>
+                                                        </td>
+                                                        <td style="text-align:right;">
+                                                            <h:panelGroup rendered="#{anu.valorPagadoRecargo != null}">
+                                                                <span class="anu-monto-amber">
+                                                                    <h:outputText value="#{anu.valorPagadoRecargo}">
+                                                                        <f:convertNumber type="currency" currencySymbol="$"
+                                                                                         groupingUsed="true" minFractionDigits="2"/>
+                                                                    </h:outputText>
+                                                                </span>
+                                                            </h:panelGroup>
+                                                            <h:panelGroup rendered="#{anu.valorPagadoRecargo == null}">
+                                                                <span class="anu-dash">—</span>
+                                                            </h:panelGroup>
+                                                        </td>
+                                                        <td>
+                                                            <span class="anu-comp">
+                                                                #{anu.numeroComprobanteRecargo != null ? anu.numeroComprobanteRecargo : '—'}
+                                                            </span>
+                                                        </td>
+                                                        <td style="text-align:center;">
+                                                            <span class="#{anu.estadoBadgeClass}">#{anu.estadoBadgeLabel}</span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="anu-obs" title="#{anu.observaciones}">
+                                                                #{anu.observaciones != null ? anu.observaciones : '—'}
+                                                            </span>
+                                                        </td>
+                                                        <td style="text-align:center;">
+                                                            <p:commandButton icon="pi pi-pencil"
+                                                                             title="Editar anualidad"
+                                                                             styleClass="accion-btn ui-button-info"
+                                                                             actionListener="#{anualidadBean.prepararEdicion(anu)}"
+                                                                             update=":frmAnu:dlgEdit"
+                                                                             oncomplete="PF('dlgEdit').show()"
+                                                                             process="@this"/>
+                                                        </td>
+                                                    </tr>
+                                                </ui:repeat>
 
-                                <p:column headerText="Año" sortBy="#{anu.anio}"
-                                          style="width:70px;text-align:center;">
-                                    <span class="anu-anio-chip">#{anu.etiqueta}</span>
-                                </p:column>
-
-                                <p:column headerText="Fecha Vencimiento" sortBy="#{anu.fechaVencimiento}"
-                                          style="min-width:120px;text-align:center;">
-                                    <h:outputText value="#{anu.fechaVencimiento}"
-                                                  rendered="#{anu.fechaVencimiento != null}">
-                                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                    </h:outputText>
-                                    <span class="anu-dash" rendered="#{anu.fechaVencimiento == null}">—</span>
-                                </p:column>
-
-                                <p:column headerText="Fecha de Pago" sortBy="#{anu.fechaPago}"
-                                          style="min-width:110px;text-align:center;">
-                                    <h:outputText value="#{anu.fechaPago}" rendered="#{anu.fechaPago != null}">
-                                        <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                    </h:outputText>
-                                    <span class="anu-dash" rendered="#{anu.fechaPago == null}">—</span>
-                                </p:column>
-
-                                <p:column headerText="Valor Pagado ($)" sortBy="#{anu.monto}"
-                                          style="width:115px;text-align:right;">
-                                    <span class="anu-monto-verde" rendered="#{anu.monto != null}">
-                                        <h:outputText value="#{anu.monto}">
-                                            <f:convertNumber type="currency" currencySymbol="$"
-                                                             groupingUsed="true" minFractionDigits="2"/>
-                                        </h:outputText>
-                                    </span>
-                                    <span class="anu-dash" rendered="#{anu.monto == null}">—</span>
-                                </p:column>
-
-                                <p:column headerText="N° Comprobante Pago" style="min-width:135px;">
-                                    <span class="anu-comp">
-                                        #{anu.numeroComprobante != null ? anu.numeroComprobante : '—'}
-                                    </span>
-                                </p:column>
-
-                                <p:column headerText="Valor Recargo ($)" sortBy="#{anu.valorPagadoRecargo}"
-                                          style="width:115px;text-align:right;">
-                                    <span class="anu-monto-amber" rendered="#{anu.valorPagadoRecargo != null}">
-                                        <h:outputText value="#{anu.valorPagadoRecargo}">
-                                            <f:convertNumber type="currency" currencySymbol="$"
-                                                             groupingUsed="true" minFractionDigits="2"/>
-                                        </h:outputText>
-                                    </span>
-                                    <span class="anu-dash" rendered="#{anu.valorPagadoRecargo == null}">—</span>
-                                </p:column>
-
-                                <p:column headerText="N° Comprobante Recargo" style="min-width:135px;">
-                                    <span class="anu-comp">
-                                        #{anu.numeroComprobanteRecargo != null ? anu.numeroComprobanteRecargo : '—'}
-                                    </span>
-                                </p:column>
-
-                                <p:column headerText="Estado" sortBy="#{anu.estado}"
-                                          style="width:110px;text-align:center;">
-                                    <span class="#{anu.estadoBadgeClass}">#{anu.estadoBadgeLabel}</span>
-                                </p:column>
-
-                                <p:column headerText="Observaciones" style="min-width:130px;">
-                                    <span class="anu-obs" title="#{anu.observaciones}">
-                                        #{anu.observaciones != null ? anu.observaciones : '—'}
-                                    </span>
-                                </p:column>
-
-                                <p:column headerText="" style="width:52px;text-align:center;">
-                                    <p:commandButton icon="pi pi-pencil"
-                                                     title="Editar anualidad"
-                                                     styleClass="accion-btn ui-button-info"
-                                                     actionListener="#{anualidadBean.prepararEdicion(anu)}"
-                                                     update=":frmAnu:dlgEdit"
-                                                     oncomplete="PF('dlgEdit').show()"
-                                                     process="@this"/>
-                                </p:column>
-
-                            </p:dataTable>
-                        </div>
+                                            </ui:repeat>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </h:panelGroup>
+                        </p:outputPanel>
                     </div>
                 </div>
 
             </div><!-- /sn-wrap-wide -->
+
+            <!-- ════ DIÁLOGO PRÓXIMOS VENCIMIENTOS ════ -->
+            <p:dialog id="dlgProxVenc"
+                      header="Trámites con vencimiento en los próximos 15 días"
+                      widgetVar="dlgProxVenc"
+                      modal="true" resizable="true" width="680"
+                      dynamic="true">
+                <h:panelGroup rendered="#{anualidadBean.totalAlertas == 0}">
+                    <div style="text-align:center; padding:30px; color:#6b7280; font-size:13px;">
+                        <i class="pi pi-check-circle" style="font-size:28px; color:#10b981; display:block; margin-bottom:10px;"/>
+                        No hay anualidades próximas a vencer en los próximos 15 días.
+                    </div>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{anualidadBean.totalAlertas gt 0}">
+                    <div style="overflow-x:auto;">
+                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                        <thead>
+                            <tr style="background:linear-gradient(135deg,#0f4d1c,#1b6b3a);">
+                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:left; font-size:11px; text-transform:uppercase;">N° Trámite</th>
+                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Año</th>
+                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Vencimiento</th>
+                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Estado</th>
+                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:left; font-size:11px; text-transform:uppercase;">Titular</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ui:repeat value="#{anualidadBean.alertas}" var="al">
+                                <tr style="border-bottom:1px solid #f0f4f0;">
+                                    <td style="padding:9px 12px; font-weight:700; color:#0f4d1c;">
+                                        #{anualidadBean.getVegetableForm(al.vegetableFormId) != null
+                                            ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
+                                            : al.vegetableFormId}
+                                    </td>
+                                    <td style="padding:9px 12px; text-align:center;">
+                                        <span class="anu-anio-chip">#{al.etiqueta}</span>
+                                    </td>
+                                    <td style="padding:9px 12px; text-align:center; font-weight:700; color:#b45309;">
+                                        <h:outputText value="#{al.fechaVencimiento}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                        </h:outputText>
+                                    </td>
+                                    <td style="padding:9px 12px; text-align:center;">
+                                        <span class="#{al.estadoBadgeClass}">#{al.estadoBadgeLabel}</span>
+                                    </td>
+                                    <td style="padding:9px 12px; font-size:11px; color:#374151;">
+                                        #{anualidadBean.getVegetableForm(al.vegetableFormId) != null
+                                            ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName
+                                            : '—'}
+                                    </td>
+                                </tr>
+                            </ui:repeat>
+                        </tbody>
+                    </table>
+                    </div>
+                </h:panelGroup>
+                <div style="text-align:right; margin-top:14px; padding-top:12px; border-top:1px solid #e2e8e2;">
+                    <p:commandButton value="Cerrar" type="button" styleClass="btn-cancelar"
+                                     icon="pi pi-times"
+                                     onclick="PF('dlgProxVenc').hide();"/>
+                </div>
+            </p:dialog>
 
             <!-- ════ DIÁLOGO EDICIÓN ════ -->
             <p:dialog id="dlgEdit"
@@ -828,8 +1107,8 @@
                                         Marcar como Completado (Pagado)
                                     </span>
                                 </div>
-                                <!-- Aviso de próximo vencimiento automático — solo si el año siguiente existe -->
-                                <h:panelGroup rendered="#{anualidadBean.anualidadEnEdicion.anio lt 20}">
+                                <!-- Aviso de próximo vencimiento automático — solo si hay anualidad siguiente -->
+                                <h:panelGroup rendered="#{anualidadBean.anioSiguiente gt 0}">
                                     <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;
                                                 padding:8px 12px;margin-top:8px;display:flex;align-items:center;gap:8px;">
                                         <i class="pi pi-calendar-plus" style="color:#3b82f6;font-size:13px;"/>

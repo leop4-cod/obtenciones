@@ -47,7 +47,6 @@ public class TramiteDAO extends DAOAbstractM<Tramite> {
         }
     }
 
-    /** Verifica si ya existe un trámite con esa numeración interna (excluyendo el ID dado). */
     public boolean existeNumeracionInterna(String numeracion, Integer excluirId) {
         try {
             String jpql = "SELECT COUNT(t) FROM Tramite t WHERE t.numeracionInterna = :num"

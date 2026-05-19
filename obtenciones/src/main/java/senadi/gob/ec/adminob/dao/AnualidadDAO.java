@@ -25,19 +25,6 @@ public class AnualidadDAO extends DAOAbstractM<Anualidad> {
         }
     }
 
-    public List<Anualidad> buscarPorVegetableFormId(Integer vegetableFormId) {
-        EntityManager em = EntityManagerM.getEntityManager();
-        try {
-            return em.createQuery(
-                "SELECT a FROM Anualidad a WHERE a.vegetableFormId = :vid ORDER BY a.anio",
-                Anualidad.class)
-                .setParameter("vid", vegetableFormId)
-                .getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
     public boolean existenAnualidades(Integer vegetableFormId) {
         EntityManager em = EntityManagerM.getEntityManager();
         try {
@@ -52,13 +39,15 @@ public class AnualidadDAO extends DAOAbstractM<Anualidad> {
         }
     }
 
-    public void crearAnualidadesVacias(Integer vegetableFormId, String usuarioRegistro) throws Exception {
+    public void crearAnualidadesVacias(Integer vegetableFormId, String usuarioRegistro, int cantidad) throws Exception {
         if (existenAnualidades(vegetableFormId)) return;
+        if (cantidad < 1) cantidad = 1;
+        if (cantidad > 50) cantidad = 50;
         EntityManager em = EntityManagerM.getEntityManager();
         em.getTransaction().begin();
         try {
             Timestamp ahora = new Timestamp(System.currentTimeMillis());
-            for (int i = 1; i <= 20; i++) {
+            for (int i = 1; i <= cantidad; i++) {
                 Anualidad a = new Anualidad();
                 a.setVegetableFormId(vegetableFormId);
                 a.setAnio(i);
