@@ -56,7 +56,12 @@
             <property name="hibernate.hbm2ddl.auto"          value="none"/>
             <property name="hibernate.show_sql"              value="false"/>
             <property name="hibernate.format_sql"            value="false"/>
-            <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_HOLD"/>
+            <!-- Libera la conexión al terminar cada transacción en vez de mantenerla abierta -->
+            <property name="hibernate.connection.handling_mode" value="DELAYED_ACQUISITION_AND_RELEASE_AFTER_TRANSACTION"/>
+            <!-- Pool interno de Hibernate (Agroal): mínimo 2, máximo 10 conexiones -->
+            <property name="hibernate.agroal.maxSize"        value="10"/>
+            <property name="hibernate.agroal.minSize"        value="2"/>
+            <property name="hibernate.agroal.initialSize"    value="2"/>
         </properties>
 
     </persistence-unit>

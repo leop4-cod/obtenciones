@@ -68,6 +68,18 @@ public class ComprobantePagoDAO extends DAOAbstractM<ComprobantePago> {
         }
     }
     
+    /** Una sola consulta que devuelve todos los vegetableFormId que tienen al menos un archivo. */
+    public java.util.Set<Integer> getDistinctVegetableFormIds() {
+        try {
+            java.util.List<Integer> ids = getEntityManager()
+                .createQuery("SELECT DISTINCT c.vegetableFormId FROM ComprobantePago c", Integer.class)
+                .getResultList();
+            return new java.util.HashSet<>(ids);
+        } finally {
+            getEntityManager().close();
+        }
+    }
+
     public void delete(Integer id) throws Exception {
         javax.persistence.EntityManager em = getEntityManager();
         em.getTransaction().begin();

@@ -37,7 +37,14 @@ public class AnualidadBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        cargar();
+        // Carga mínima al iniciar sesión: solo las alertas para el card de index.xhtml.
+        // El resto (todasLasAnualidades, tramites, marcarVencidas) se carga en cargar(),
+        // que es llamado por limpiarFiltros() cuando el usuario entra al módulo.
+        try {
+            alertas = new AnualidadDAO(null).buscarConAlerta(15);
+        } catch (Exception e) {
+            alertas = new ArrayList<>();
+        }
     }
 
     public void cargar() {

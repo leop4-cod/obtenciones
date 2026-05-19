@@ -74,6 +74,7 @@ public class VegetableBean implements Serializable {
     private StatusFlow previousStatusFlow;
 
     private List<ComprobantePago> archivosSubidos;
+    private Set<Integer> idsConArchivos = new HashSet<>();
 
     private static final long   MAX_FORM_PDF_SIZE    = 10L * 1024 * 1024;
     private static final long   MAX_PAYMENT_PDF_SIZE =  5L * 1024 * 1024;
@@ -101,6 +102,12 @@ public class VegetableBean implements Serializable {
             c.precargarLockers(vegetables);
         } catch (Exception ex) {
             System.err.println("[VegetableBean] No se pudieron cargar casilleros: " + ex.getMessage());
+        }
+        try {
+            idsConArchivos = new ComprobantePagoDAO(null).getDistinctVegetableFormIds();
+        } catch (Exception ex) {
+            idsConArchivos = new HashSet<>();
+            System.err.println("[VegetableBean] No se pudieron cargar IDs con archivos: " + ex.getMessage());
         }
     }
 
@@ -140,6 +147,11 @@ public class VegetableBean implements Serializable {
         } catch (Exception ex) {
             vegetables = new java.util.ArrayList<>();
             Operations.message(Operations.ERROR, "No se pudo consultar la base de datos local.");
+        }
+        try {
+            idsConArchivos = new ComprobantePagoDAO(null).getDistinctVegetableFormIds();
+        } catch (Exception ex) {
+            idsConArchivos = new HashSet<>();
         }
         cleanDate();
     }
@@ -740,18 +752,8 @@ public class VegetableBean implements Serializable {
 
     public List<ComprobantePago> getArchivosSubidos() { return archivosSubidos; }
 
-    /** Cantidad de comprobantes de pago registrados para un trámite. */
-    public int getUploadedFileCount(Integer tramiteId) {
-        if (tramiteId == null) return 0;
-        try {
-            return new ComprobantePagoDAO(null).getByVegetableFormId(tramiteId).size();
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
     public boolean hasUploadedFiles(Integer tramiteId) {
-        return getUploadedFileCount(tramiteId) > 0;
+        return tramiteId != null && idsConArchivos != null && idsConArchivos.contains(tramiteId);
     }
 
         // --- GETTERS Y SETTERS COMPLETOS ---

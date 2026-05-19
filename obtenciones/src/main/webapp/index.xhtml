@@ -12,7 +12,10 @@
         <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}" />
         <link rel="preconnect" href="https://fonts.googleapis.com"/>
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
-        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+        <!-- display=swap: la página renderiza con fuente del sistema primero y
+             reemplaza cuando Google Fonts carga — elimina el bloqueo de render -->
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+        <noscript><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/></noscript>
         <!-- Envolver los estilos en f:facet asegura que no sean aplastados por PrimeFaces -->
         <f:facet name="last">
         <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}" />
@@ -431,7 +434,7 @@
                             <!-- Filtro de Estado -->
                             <div style="display:flex; align-items:center;">
                                 <p:selectOneRadio id="line" value="#{vegetableBean.radioOption}" layout="lineDirection">
-                                    <f:selectItem itemLabel="En Proceso (DELIVERED)" itemValue="Iniciados"/>
+                                    <f:selectItem itemLabel="Entregados"             itemValue="Iniciados"/>
                                     <f:selectItem itemLabel="Aceptados"              itemValue="Aceptados"/>
                                     <f:selectItem itemLabel="Todos"                  itemValue="Todos"/>
                                     <f:selectItem itemLabel="Pagados"                itemValue="Pagados"/>
