@@ -23,6 +23,92 @@
         <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}"/>
         <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}"/>
         <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}"/>
+        <f:facet name="last">
+        <style>
+            /* ── TAB VIEW CUSTOM FIX FOR PRIMEFACES 12 ── */
+            html body .ui-tabs .ui-tabs-nav,
+            html body .ui-tabview .ui-tabview-nav {
+                background: linear-gradient(135deg, #0f4d1c 0%, #1f6f43 100%) !important;
+                border-bottom: 3px solid #c9a227 !important;
+                padding: 0 8px !important;
+                display: flex !important;
+                align-items: flex-end !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-default,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-default {
+                background: rgba(255, 255, 255, 0.12) !important;
+                border: 1px solid rgba(255, 255, 255, 0.25) !important;
+                border-bottom: none !important;
+                margin: 0 2px 0 0 !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-default a,
+            html body .ui-tabs .ui-tabs-nav li.ui-state-default a span,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-default a,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-default a span {
+                color: rgba(255, 255, 255, 0.95) !important;
+                background: transparent !important;
+                text-shadow: none !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-default:hover,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-default:hover,
+            html body .ui-tabs .ui-tabs-nav li.ui-state-hover,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-hover {
+                background: rgba(255, 255, 255, 0.22) !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-default:hover a,
+            html body .ui-tabs .ui-tabs-nav li.ui-state-default:hover a span,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-default:hover a,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-default:hover a span {
+                color: #ffffff !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-active,
+            html body .ui-tabs .ui-tabs-nav li.ui-tabs-selected,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-active,
+            html body .ui-tabview .ui-tabview-nav li.ui-tabs-selected {
+                background: #ffffff !important;
+                border: 1px solid #dfe7e2 !important;
+                border-bottom: none !important;
+                border-top: 3px solid #c9a227 !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-active a,
+            html body .ui-tabs .ui-tabs-nav li.ui-state-active a span,
+            html body .ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
+            html body .ui-tabs .ui-tabs-nav li.ui-tabs-selected a span,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-active a,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-active a span,
+            html body .ui-tabview .ui-tabview-nav li.ui-tabs-selected a,
+            html body .ui-tabview .ui-tabview-nav li.ui-tabs-selected a span {
+                color: #1f6f43 !important;
+                background: #ffffff !important;
+                font-weight: 800 !important;
+                text-shadow: none !important;
+            }
+            html body .ui-tabs .ui-tabs-panels,
+            html body .ui-tabview .ui-tabview-panels {
+                background: #ffffff !important;
+                border: 1px solid #dfe7e2 !important;
+                border-top: none !important;
+                padding: 20px !important;
+            }
+
+            /* ── PAGINATOR OVERRIDE FOR PRIMEFACES 12 (HIDE FALLBACK LETTERS) ── */
+            .ui-paginator span.ui-icon-seek-first,
+            .ui-paginator span.ui-icon-seek-prev,
+            .ui-paginator span.ui-icon-seek-next,
+            .ui-paginator span.ui-icon-seek-end,
+            .ui-paginator span.ui-icon-carat-2-w,
+            .ui-paginator span.ui-icon-carat-2-e {
+                font-size: 0 !important;
+                color: transparent !important;
+            }
+            .ui-paginator span.ui-icon-seek-first::before { font-size: 18px !important; color: var(--primary, #1c6c2c) !important; }
+            .ui-paginator span.ui-icon-seek-prev::before,
+            .ui-paginator span.ui-icon-carat-2-w::before  { font-size: 18px !important; color: var(--primary, #1c6c2c) !important; }
+            .ui-paginator span.ui-icon-seek-next::before,
+            .ui-paginator span.ui-icon-carat-2-e::before  { font-size: 18px !important; color: var(--primary, #1c6c2c) !important; }
+            .ui-paginator span.ui-icon-seek-end::before   { font-size: 18px !important; color: var(--primary, #1c6c2c) !important; }
+        </style>
+        </f:facet>
     </h:head>
 
     <h:body>

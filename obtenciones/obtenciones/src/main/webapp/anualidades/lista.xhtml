@@ -279,8 +279,9 @@
                 text-shadow: 0 1px 2px rgba(0,0,0,.20) !important;
             }
             .anu-table td {
-                font-size:12px !important; vertical-align:middle !important;
+                font-size:13px !important; vertical-align:middle !important;
                 padding:8px 10px !important; border-bottom:1px solid #f0f4f0 !important;
+                color: #111827 !important;
             }
             /* filas coloreadas — !important necesario para ganar sobre ui-datatable-even/odd */
             .anu-row-vencida > td { background:#fff1f2 !important; }
@@ -299,19 +300,22 @@
                 border-top:1px solid #e2e8e2 !important;
                 padding:8px !important;
             }
-            .anu-tramite-num { font-weight:700; color:#0f4d1c; font-size:12px; }
+            .anu-tramite-num { font-weight:700; color:#0f4d1c; font-size:13px; }
             .anu-anio-chip {
                 background:#1b6b3a; color:#fff; border-radius:6px;
                 padding:2px 8px; font-size:11px; font-weight:700;
             }
             .anu-monto-verde { font-weight:700; color:#065f46; }
             .anu-monto-amber { font-weight:700; color:#92400e; }
-            .anu-comp { font-size:11px; color:#374151; font-family:monospace; }
-            .anu-dash { color:#d1d5db; }
+            .anu-comp { font-size:11.5px; color:#111827; font-family:monospace; font-weight:600; }
+            .anu-dash { color:#4b5563; font-weight:bold; }
             .anu-obs  {
-                font-size:11px; color:#6b7280; max-width:160px;
+                font-size:11.5px; color:#111827; max-width:160px;
                 overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-block;
             }
+
+            /* Expandir contenedor principal de la tabla */
+            .sn-wrap-wide { max-width: 98% !important; padding-left: 1% !important; padding-right: 1% !important; }
 
             /* ══════════════════════════════════════════════
                SELECTONEMENU — panel desplegable SIEMPRE OPACO v6.0
@@ -819,7 +823,7 @@
                                                     <tr class="anu-detail-row grp#{tramite.id} #{anu.rowClass}"
                                                         style="display:none;">
                                                         <td>
-                                                            <span class="anu-tramite-num" style="font-size:11px;color:#b0c4b0;">
+                                                            <span class="anu-tramite-num" style="font-size:13px;color:#4b5563;">
                                                                 #{anualidadBean.getVegetableForm(anu.vegetableFormId) != null
                                                                     ? anualidadBean.getVegetableForm(anu.vegetableFormId).applicationNumber
                                                                     : anu.vegetableFormId}
@@ -829,7 +833,7 @@
                                                             <h:outputText value="#{anualidadBean.getVegetableForm(anu.vegetableFormId) != null
                                                                 ? anualidadBean.getVegetableForm(anu.vegetableFormId).numeracionInterna
                                                                 : ''}"
-                                                                          style="font-size:11px;color:#b0c4b0;"/>
+                                                                          style="font-size:13px;color:#4b5563;"/>
                                                         </td>
                                                         <td style="text-align:center;">
                                                             <span class="anu-anio-chip">#{anu.etiqueta}</span>

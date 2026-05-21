@@ -372,7 +372,7 @@ textarea.ui-inputfield {
     box-shadow: 0 0 0 3px rgba(31,111,67,.12) !important;
 }
 .ui-selectonemenu .ui-selectonemenu-label {
-    background: transparent !important;
+    background: #ffffff !important;
     border: none !important;
     color: var(--text) !important;
     font-size: 13px !important;
@@ -714,18 +714,18 @@ textarea.ui-inputfield {
     height: auto !important;
     overflow: visible !important;
     display: inline-block !important;
-    font-size: 18px !important;
+    font-size: 0 !important; /* Oculta letras F, P, N, E */
+    color: transparent !important; /* Oculta letras en navegadores antiguos */
     line-height: 1 !important;
     font-weight: 900 !important;
-    color: var(--primary, #1c6c2c) !important;
     text-align: center !important;
 }
-.ui-paginator span.ui-icon-seek-first::before { content: "\00AB" !important; }
+.ui-paginator span.ui-icon-seek-first::before { content: "\00AB" !important; font-size: 18px !important; color: var(--primary, #1c6c2c) !important; }
 .ui-paginator span.ui-icon-seek-prev::before,
-.ui-paginator span.ui-icon-carat-2-w::before  { content: "\2039" !important; }
+.ui-paginator span.ui-icon-carat-2-w::before  { content: "\2039" !important; font-size: 18px !important; color: var(--primary, #1c6c2c) !important; }
 .ui-paginator span.ui-icon-seek-next::before,
-.ui-paginator span.ui-icon-carat-2-e::before  { content: "\203A" !important; }
-.ui-paginator span.ui-icon-seek-end::before   { content: "\00BB" !important; }
+.ui-paginator span.ui-icon-carat-2-e::before  { content: "\203A" !important; font-size: 18px !important; color: var(--primary, #1c6c2c) !important; }
+.ui-paginator span.ui-icon-seek-end::before   { content: "\00BB" !important; font-size: 18px !important; color: var(--primary, #1c6c2c) !important; }
 
 /* Estado desactivado */
 .ui-paginator .ui-state-disabled {
@@ -756,68 +756,116 @@ textarea.ui-inputfield {
 .ui-tabview {
     border: none !important;
 }
-.ui-tabview .ui-tabview-nav {
-    background: #edf5ed !important;
-    border-bottom: 2px solid var(--primary) !important;
+/* ═══════════════════════════════════════════════════════════
+   TABVIEW — p:tabView
+   ═══════════════════════════════════════════════════════════ */
+.ui-tabview,
+.ui-tabs {
+    border: none !important;
+}
+/* ── Contenedor nav: fondo y borde ── */
+html body .ui-tabview .ui-tabview-nav,
+html body .ui-tabs .ui-tabs-nav {
+    background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%) !important;
+    border-bottom: 3px solid var(--gold) !important;
     border-top: none !important;
     border-left: none !important;
     border-right: none !important;
-    padding: 0 4px !important;
+    padding: 0 8px !important;
     margin: 0 !important;
     list-style: none !important;
     display: flex !important;
     flex-wrap: wrap !important;
+    gap: 4px !important;
+    align-items: flex-end !important;
 }
-.ui-tabview .ui-tabview-nav li {
-    margin-bottom: -2px !important;
+/* ── Todos los li: sin fondo propio ── */
+html body .ui-tabview .ui-tabview-nav li,
+html body .ui-tabview .ui-tabview-nav li.ui-state-default,
+html body .ui-tabs .ui-tabs-nav li,
+html body .ui-tabs .ui-tabs-nav li.ui-state-default {
+    margin-bottom: 0 !important;
     border: none !important;
     background: transparent !important;
+    color: rgba(255,255,255,0.85) !important;
 }
-.ui-tabview .ui-tabview-nav li a span,
-.ui-tabview .ui-tabview-nav li > a span {
-    color: inherit !important;
-}
-.ui-tabview .ui-tabview-nav li a,
-.ui-tabview .ui-tabview-nav li > a {
-    color: var(--muted) !important;
+/* ── Anchor de tabs NO activos ── */
+html body .ui-tabview .ui-tabview-nav li a,
+html body .ui-tabview .ui-tabview-nav li.ui-state-default a,
+html body .ui-tabs .ui-tabs-nav li a,
+html body .ui-tabs .ui-tabs-nav li.ui-state-default a {
+    color: rgba(255,255,255,0.85) !important;
     font-size: 13px !important;
     font-weight: 600 !important;
-    padding: 9px 16px !important;
-    border: 1px solid transparent !important;
+    padding: 9px 18px !important;
+    border: 1px solid rgba(255,255,255,0.25) !important;
     border-bottom: none !important;
     border-radius: var(--radius) var(--radius) 0 0 !important;
     display: block !important;
-    transition: color .18s, background .18s !important;
+    transition: color .18s, background .18s, border-color .18s !important;
     text-decoration: none !important;
+    background: rgba(255,255,255,0.08) !important;
+}
+html body .ui-tabview .ui-tabview-nav li a span,
+html body .ui-tabview .ui-tabview-nav li.ui-state-default a span,
+html body .ui-tabs .ui-tabs-nav li a span,
+html body .ui-tabs .ui-tabs-nav li.ui-state-default a span {
+    color: rgba(255,255,255,0.85) !important;
     background: transparent !important;
 }
-.ui-tabview .ui-tabview-nav li:hover a,
-.ui-tabview .ui-tabview-nav li.ui-state-hover a,
-.ui-tabview .ui-tabview-nav li:hover a span,
-.ui-tabview .ui-tabview-nav li.ui-state-hover a span {
-    color: var(--primary) !important;
-    background: var(--accent) !important;
-    border-color: transparent !important;
+/* ── Hover de tabs no activos ── */
+html body .ui-tabview .ui-tabview-nav li:hover a,
+html body .ui-tabview .ui-tabview-nav li.ui-state-hover a,
+html body .ui-tabs .ui-tabs-nav li:hover a,
+html body .ui-tabs .ui-tabs-nav li.ui-state-hover a {
+    color: #fff !important;
+    background: rgba(255,255,255,0.20) !important;
+    border-color: rgba(255,255,255,0.45) !important;
 }
-.ui-tabview .ui-tabview-nav li:hover a span,
-.ui-tabview .ui-tabview-nav li.ui-state-hover a span {
+html body .ui-tabview .ui-tabview-nav li:hover a span,
+html body .ui-tabview .ui-tabview-nav li.ui-state-hover a span,
+html body .ui-tabs .ui-tabs-nav li:hover a span,
+html body .ui-tabs .ui-tabs-nav li.ui-state-hover a span {
+    color: #fff !important;
     background: transparent !important;
 }
-.ui-tabview .ui-tabview-nav li.ui-tabs-selected a,
-.ui-tabview .ui-tabview-nav li.ui-state-active a,
-.ui-tabview .ui-tabview-nav li.ui-tabs-selected a span,
-.ui-tabview .ui-tabview-nav li.ui-state-active a span {
+/* ── Tab ACTIVO / SELECCIONADO ── */
+html body .ui-tabview .ui-tabview-nav li.ui-tabs-selected,
+html body .ui-tabview .ui-tabview-nav li.ui-state-active,
+html body .ui-tabs .ui-tabs-nav li.ui-tabs-selected,
+html body .ui-tabs .ui-tabs-nav li.ui-state-active {
+    background: #ffffff !important;
+    border: none !important;
+    border-radius: var(--radius) var(--radius) 0 0 !important;
     color: var(--primary) !important;
+}
+html body .ui-tabview .ui-tabview-nav li.ui-tabs-selected a,
+html body .ui-tabview .ui-tabview-nav li.ui-state-active a,
+html body .ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
+html body .ui-tabs .ui-tabs-nav li.ui-state-active a {
+    background: #ffffff !important;
+    color: #1f6f43 !important;
     font-weight: 800 !important;
-}
-.ui-tabview .ui-tabview-nav li.ui-tabs-selected a,
-.ui-tabview .ui-tabview-nav li.ui-state-active a {
-    background: #fff !important;
     border-top: 3px solid var(--gold) !important;
     border-left: 1px solid var(--border) !important;
     border-right: 1px solid var(--border) !important;
+    border-bottom: none !important;
+    border-radius: var(--radius) var(--radius) 0 0 !important;
 }
-.ui-tabview-panels {
+html body .ui-tabview .ui-tabview-nav li.ui-tabs-selected a span,
+html body .ui-tabview .ui-tabview-nav li.ui-state-active a span,
+html body .ui-tabview .ui-tabview-nav li.ui-tabs-selected > a > span,
+html body .ui-tabview .ui-tabview-nav li.ui-state-active > a > span,
+html body .ui-tabs .ui-tabs-nav li.ui-tabs-selected a span,
+html body .ui-tabs .ui-tabs-nav li.ui-state-active a span,
+html body .ui-tabs .ui-tabs-nav li.ui-tabs-selected > a > span,
+html body .ui-tabs .ui-tabs-nav li.ui-state-active > a > span {
+    color: #1f6f43 !important;
+    background: transparent !important;
+    font-weight: 800 !important;
+}
+.ui-tabview-panels,
+.ui-tabs-panels {
     background: #fff !important;
     border: 1px solid var(--border) !important;
     border-top: none !important;
@@ -1815,4 +1863,48 @@ html body .ui-datatable thead tr th {
 html body .ui-datatable thead tr th.sn-col-wide {
     min-width: 120px !important;
     white-space: normal !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FIX v4.3 — Texto visible al seleccionar / enfocar campos
+   Evita que .ui-state-focus y .ui-state-active (reglas globales)
+   hagan invisible el texto dentro de inputs y selectOneMenu.
+   ═══════════════════════════════════════════════════════════ */
+
+/* Inputs de texto: fondo blanco y texto oscuro siempre al enfocar */
+html body .ui-inputtext:focus,
+html body input.ui-inputfield:focus,
+html body .ui-inputtextarea:focus,
+html body textarea.ui-inputfield:focus {
+    background: #ffffff !important;
+    color: #263238 !important;
+}
+
+/* SelectOneMenu contenedor: nunca hereda fondo oscuro de estado */
+html body .ui-selectonemenu.ui-state-default,
+html body .ui-selectonemenu.ui-state-hover,
+html body .ui-selectonemenu.ui-state-focus,
+html body .ui-selectonemenu.ui-state-active {
+    background: #ffffff !important;
+    color: #263238 !important;
+}
+
+/* SelectOneMenu label (texto del valor seleccionado): siempre legible */
+html body .ui-selectonemenu .ui-selectonemenu-label {
+    color: #263238 !important;
+    background: #ffffff !important;
+}
+
+/* FIX: asegurar visibilidad del texto en select/SelectOneMenu
+   - fuerza color, visibilidad y prioridad frente a reglas globales
+   - incrementa z-index en caso de solapamiento por overlays */
+.ui-selectonemenu .ui-selectonemenu-label,
+.ui-selectonemenu.ui-state-default .ui-selectonemenu-label,
+.ui-selectonemenu.ui-state-focus .ui-selectonemenu-label,
+.ui-selectonemenu.ui-state-active .ui-selectonemenu-label {
+    color: #263238 !important;
+    background: #ffffff !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 50 !important;
 }

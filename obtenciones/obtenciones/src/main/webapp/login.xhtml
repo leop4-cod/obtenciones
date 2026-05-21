@@ -19,6 +19,22 @@
 
         <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
 
+        <style>
+            /* Mejoras de contraste para modo oscuro en Login */
+            #formlog .ui-panel { background: rgba(20, 25, 35, 0.95) !important; border: 1px solid #1f2d3d !important; border-radius: 10px; }
+            #formlog p { color: #f8fafc !important; letter-spacing: 0.5px; }
+            #formlog label { color: #cbd5e1 !important; font-size: 13px; }
+            #formlog input[type="text"], 
+            #formlog input[type="password"] { color: #ffffff !important; border-bottom: 1px solid #64748b !important; }
+            #formlog input[type="text"]:focus, 
+            #formlog input[type="password"]:focus { border-bottom: 1px solid #2ea378 !important; box-shadow: 0 1px 0 0 #2ea378 !important; }
+            .material-icons.prefix { color: #cbd5e1; }
+            
+            /* Notificaciones (Growl) */
+            .ui-growl-item-container { background: rgba(30, 41, 59, 0.95) !important; border: 1px solid #334155 !important; }
+            .ui-growl-title { color: #ffffff !important; font-weight: bold !important; letter-spacing: 0.5px; }
+            .ui-growl-message p { color: #cbd5e1 !important; font-size: 13px; }
+        </style>
     </h:head>
     <h:body style="
             min-height:100vh;
@@ -143,7 +159,7 @@
             user = document.getElementById(ima);
             if (inputtext.value == "") {
                 iconLabel.className = "";
-                user.style = 'color: rgb(79, 79, 79); !important;';
+                user.style = 'color: rgb(203, 213, 225) !important;';
             } else {
                 iconLabel.className = "active";
                 user.style = 'color: rgb(47, 165, 154) !important;';
@@ -155,7 +171,7 @@
             user = document.getElementById(ima);
             if (inputtext.value == "") {
                 iconLabel.className = "";
-                user.style = 'color: rgb(79, 79, 79); !important;';
+                user.style = 'color: rgb(203, 213, 225) !important;';
             } else {
                 iconLabel.className = "active";
                 user.style = 'color: rgb(47, 165, 154) !important;';

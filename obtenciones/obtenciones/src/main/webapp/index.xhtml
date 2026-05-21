@@ -38,19 +38,19 @@
                 height: auto !important;
                 overflow: visible !important;
                 display: inline-block !important;
-                font-size: 18px !important;
+                font-size: 0 !important; /* Hide fallback text F P N E */
+                color: transparent !important;
                 line-height: 1 !important;
                 font-weight: 900 !important;
-                color: #1c6c2c !important;
                 text-align: center !important;
                 vertical-align: middle !important;
             }
-            .ui-paginator .ui-icon-seek-first:before { content: "\00AB" !important; }
+            .ui-paginator .ui-icon-seek-first:before { content: "\00AB" !important; font-size: 18px !important; color: #1c6c2c !important; }
             .ui-paginator .ui-icon-seek-prev:before,
-            .ui-paginator .ui-icon-carat-2-w:before  { content: "\2039" !important; }
+            .ui-paginator .ui-icon-carat-2-w:before  { content: "\2039" !important; font-size: 18px !important; color: #1c6c2c !important; }
             .ui-paginator .ui-icon-seek-next:before,
-            .ui-paginator .ui-icon-carat-2-e:before  { content: "\203A" !important; }
-            .ui-paginator .ui-icon-seek-end:before   { content: "\00BB" !important; }
+            .ui-paginator .ui-icon-carat-2-e:before  { content: "\203A" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-icon-seek-end:before   { content: "\00BB" !important; font-size: 18px !important; color: #1c6c2c !important; }
             /* fallback: si la clase específica no se aplica, usar el contenedor */
             .ui-paginator .ui-paginator-first .ui-icon,
             .ui-paginator .ui-paginator-prev  .ui-icon,
@@ -62,15 +62,15 @@
                 height: auto !important;
                 overflow: visible !important;
                 display: inline-block !important;
-                font-size: 18px !important;
+                font-size: 0 !important; /* Hide fallback text */
+                color: transparent !important;
                 line-height: 1 !important;
                 font-weight: 900 !important;
-                color: #1c6c2c !important;
             }
-            .ui-paginator .ui-paginator-first .ui-icon:before { content: "\00AB"; }
-            .ui-paginator .ui-paginator-prev  .ui-icon:before { content: "\2039"; }
-            .ui-paginator .ui-paginator-next  .ui-icon:before { content: "\203A"; }
-            .ui-paginator .ui-paginator-last  .ui-icon:before { content: "\00BB"; }
+            .ui-paginator .ui-paginator-first .ui-icon:before { content: "\00AB" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-paginator-prev  .ui-icon:before { content: "\2039" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-paginator-next  .ui-icon:before { content: "\203A" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-paginator-last  .ui-icon:before { content: "\00BB" !important; font-size: 18px !important; color: #1c6c2c !important; }
 
             /* ── Botones de navegación en el header ── */
             .sn-nav-btn {
@@ -334,6 +334,29 @@
             html body .ui-datatable td {
                 padding: 10px 12px !important;
                 vertical-align: middle !important;
+            }
+
+            /* ── FIX: texto visible al seleccionar / enfocar campos ── */
+            html body .ui-inputtext:focus,
+            html body input.ui-inputfield:focus,
+            html body .ui-inputtextarea:focus {
+                background: #ffffff !important;
+                color: #263238 !important;
+            }
+            html body .ui-selectonemenu,
+            html body .ui-selectonemenu.ui-state-default,
+            html body .ui-selectonemenu.ui-state-hover,
+            html body .ui-selectonemenu.ui-state-focus,
+            html body .ui-selectonemenu.ui-state-active {
+                background: #ffffff !important;
+                background-color: #ffffff !important;
+                color: #263238 !important;
+            }
+            html body .ui-selectonemenu .ui-selectonemenu-label {
+                color: #263238 !important;
+                background: transparent !important;
+                visibility: visible !important;
+                opacity: 1 !important;
             }
 
             /* ── 10. ESTILOS CARD ALERTAS ANUALIDADES ── */
