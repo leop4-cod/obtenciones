@@ -148,6 +148,8 @@
                 background: #ffffff !important;
                 padding: 24px 26px !important;
                 border: none !important;
+                max-height: 75vh !important;
+                overflow-y: auto !important;
             }
             .ui-dialog .ui-dialog-footer {
                 background: linear-gradient(135deg, #f8fdf9, #f0f9f2) !important;
@@ -401,9 +403,9 @@
                 color: #1d4ed8; border-color: #93c5fd;
             }
             .anu-dlg-footer {
-                display: flex; gap: 9px; justify-content: flex-end;
-                margin-top: 20px; padding-top: 16px;
-                border-top: 1px solid rgba(31,111,67,.14);
+                display: flex; gap: 15px; justify-content: center;
+                margin-top: 15px; padding: 18px 0 4px;
+                border-top: 1px solid rgba(31,111,67,.12);
             }
 
             /* ══════════════════════════════════════════════
@@ -711,8 +713,9 @@
                                 <p:inputText id="inFiltroTramite"
                                              value="#{anualidadBean.filtroTramite}"
                                              placeholder="Buscar por número..."
-                                             style="font-size:12px;width:240px;">
-                                    <p:ajax event="keyup" delay="400"
+                                             style="font-size:12px;width:240px;"
+                                             onkeypress="if (event.keyCode == 13) { return false; }">
+                                    <p:ajax event="keyup" delay="700"
                                             update=":frmAnu:tablaAnualidades :frmAnu:barraConteo :frmAnu:conteoFiltro"
                                             process="@this"
                                             oncomplete="expandAllFolders()"/>
@@ -1144,7 +1147,7 @@
                                          icon="pi pi-check"
                                          styleClass="sn-btn-new"
                                          actionListener="#{anualidadBean.guardarEdicion}"
-                                         update=":mensajes :frmAnu:tablaAnualidades :frmAnu:barraConteo :frmAnu:conteoFiltro :frmAnu:panelAlertas :frmAnu:statsBar"
+                                         update=":mensajes :frmAnu:tablaAnualidades :frmAnu:barraConteo :frmAnu:conteoFiltro :frmAnu:statsBar"
                                          process=":frmAnu:dlgEdit"/>
                     </div>
 

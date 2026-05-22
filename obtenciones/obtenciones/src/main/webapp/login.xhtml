@@ -20,33 +20,343 @@
         <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
 
         <style>
-            /* Mejoras de contraste para modo oscuro en Login */
-            #formlog .ui-panel { background: rgba(20, 25, 35, 0.95) !important; border: 1px solid #1f2d3d !important; border-radius: 10px; }
-            #formlog p { color: #f8fafc !important; letter-spacing: 0.5px; }
-            #formlog label { color: #cbd5e1 !important; font-size: 13px; }
+            /* Estilo global del Body con centrado y tema oscuro */
+            body {
+                min-height: 100vh;
+                margin: 0;
+                display: flex !important;
+                justify-content: center;
+                align-items: center;
+                background-color: #04080e !important;
+                position: relative;
+                overflow: hidden;
+                font-family: 'Nunito Sans', sans-serif;
+            }
+            
+            /* Blobs brillantes de fondo (Tema SENADI - Verde esmeralda vegetal y colores de Ecuador) */
+            .bg-glow {
+                position: absolute;
+                border-radius: 50%;
+                filter: blur(130px);
+                opacity: 0.25;
+                z-index: 0;
+                pointer-events: none;
+            }
+            .bg-glow-1 {
+                width: 550px;
+                height: 550px;
+                background: radial-gradient(circle, #10b981 0%, rgba(16,185,129,0) 70%); /* Verde Esmeralda (SENADI Vegetal) */
+                top: -15%;
+                left: -15%;
+                animation: float-blob-1 28s infinite alternate ease-in-out;
+            }
+            .bg-glow-2 {
+                width: 600px;
+                height: 600px;
+                background: radial-gradient(circle, #eab308 0%, rgba(234,179,8,0) 70%); /* Amarillo Ecuatoriano */
+                bottom: -20%;
+                right: -10%;
+                animation: float-blob-2 32s infinite alternate ease-in-out;
+            }
+            .bg-glow-3 {
+                width: 450px;
+                height: 450px;
+                background: radial-gradient(circle, #0284c7 0%, rgba(2,132,199,0) 70%); /* Azul Ecuatoriano */
+                top: 25%;
+                right: 5%;
+                animation: float-blob-3 24s infinite alternate ease-in-out;
+            }
+            .bg-glow-4 {
+                width: 480px;
+                height: 480px;
+                background: radial-gradient(circle, #ef4444 0%, rgba(239,68,68,0) 70%); /* Rojo Ecuatoriano */
+                bottom: 10%;
+                left: 10%;
+                animation: float-blob-4 26s infinite alternate ease-in-out;
+            }
+
+            @keyframes float-blob-1 {
+                0% { transform: translate(0, 0) scale(1); }
+                33% { transform: translate(80px, 60px) scale(1.1); }
+                66% { transform: translate(-30px, 100px) scale(0.95); }
+                100% { transform: translate(0, 0) scale(1); }
+            }
+            @keyframes float-blob-2 {
+                0% { transform: translate(0, 0) scale(1); }
+                33% { transform: translate(-70px, -90px) scale(0.9); }
+                66% { transform: translate(50px, -30px) scale(1.08); }
+                100% { transform: translate(0, 0) scale(1); }
+            }
+            @keyframes float-blob-3 {
+                0% { transform: translate(0, 0) scale(1); }
+                50% { transform: translate(-80px, 60px) scale(1.05); }
+                100% { transform: translate(0, 0) scale(1); }
+            }
+            @keyframes float-blob-4 {
+                0% { transform: translate(0, 0) scale(1); }
+                33% { transform: translate(60px, -70px) scale(0.95); }
+                66% { transform: translate(-50px, 40px) scale(1.08); }
+                100% { transform: translate(0, 0) scale(1); }
+            }
+
+            /* Grid tecnológica sutil de fondo */
+            .bg-grid {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+                background-size: 30px 30px;
+                z-index: 1;
+                pointer-events: none;
+            }
+
+            /* Hojas/Partículas orgánicas flotantes (Obtenciones Vegetales) */
+            .particles-container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                z-index: 2;
+                pointer-events: none;
+            }
+            .particle {
+                position: absolute;
+                bottom: -30px;
+                background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(5, 150, 105, 0.05) 100%);
+                border-radius: 50% 0; /* Forma de hoja/semilla */
+                transform: rotate(-45deg);
+                animation: float-up 18s infinite linear;
+                pointer-events: none;
+                filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.15));
+            }
+            /* Diferentes tamaños, posiciones y retrasos para naturalidad */
+            .p1 { left: 8%; width: 16px; height: 16px; animation-duration: 22s; animation-delay: 0s; }
+            .p2 { left: 22%; width: 12px; height: 12px; animation-duration: 28s; animation-delay: 3s; background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(234, 179, 8, 0.05) 100%); filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.1)); } /* Amarillo */
+            .p3 { left: 35%; width: 20px; height: 20px; animation-duration: 32s; animation-delay: 7s; }
+            .p4 { left: 50%; width: 14px; height: 14px; animation-duration: 26s; animation-delay: 1.5s; background: linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(2, 132, 199, 0.05) 100%); filter: drop-shadow(0 0 6px rgba(2, 132, 199, 0.1)); } /* Azul */
+            .p5 { left: 68%; width: 18px; height: 18px; animation-duration: 30s; animation-delay: 9s; }
+            .p6 { left: 82%; width: 12px; height: 12px; animation-duration: 24s; animation-delay: 4s; }
+            .p7 { left: 15%; width: 22px; height: 22px; animation-duration: 35s; animation-delay: 12s; background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.05) 100%); filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.1)); } /* Rojo */
+            .p8 { left: 90%; width: 15px; height: 15px; animation-duration: 25s; animation-delay: 6s; }
+
+            @keyframes float-up {
+                0% {
+                    transform: translateY(0) translateX(0) rotate(-45deg) scale(0.7);
+                    opacity: 0;
+                }
+                25% {
+                    transform: translateY(-30vh) translateX(15px) rotate(-15deg) scale(0.85);
+                    opacity: 0.7;
+                }
+                50% {
+                    transform: translateY(-60vh) translateX(-15px) rotate(15deg) scale(1);
+                    opacity: 0.7;
+                }
+                75% {
+                    transform: translateY(-90vh) translateX(10px) rotate(45deg) scale(1.15);
+                    opacity: 0.7;
+                }
+                100% {
+                    transform: translateY(-120vh) translateX(-10px) rotate(90deg) scale(1.3);
+                    opacity: 0;
+                }
+            }
+
+            /* Contenedor del Formulario */
+            #formlog {
+                margin: 0 !important;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                z-index: 10;
+            }
+
+            /* Panel de Login Glassmorphism Premium con animación de entrada */
+            #formlog .ui-panel {
+                background: rgba(10, 17, 28, 0.72) !important;
+                border: 1px solid rgba(255, 255, 255, 0.08) !important;
+                border-radius: 18px !important;
+                backdrop-filter: blur(20px) saturate(180%) !important;
+                -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45) !important;
+                width: 320px !important;
+                padding: 20px 25px !important;
+                text-align: center !important;
+                opacity: 0;
+                transform: translateY(25px);
+                transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease !important;
+            }
+            body.loaded #formlog .ui-panel {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            #formlog .ui-panel:hover {
+                border-color: rgba(16, 185, 129, 0.3) !important;
+                transform: translateY(-2px) !important;
+                box-shadow: 0 22px 55px rgba(16, 185, 129, 0.12), 0 20px 50px rgba(0, 0, 0, 0.45) !important;
+            }
+            #formlog .ui-panel-content {
+                padding: 0 !important;
+            }
+
+            /* Textos */
+            #formlog p {
+                color: #ffffff !important;
+                font-weight: 800 !important;
+                font-size: 13px !important;
+                letter-spacing: 0.8px !important;
+                margin-top: 10px !important;
+                margin-bottom: 25px !important;
+                text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+                font-family: 'Nunito Sans', sans-serif;
+            }
+            #formlog label {
+                color: #cbd5e1 !important;
+                font-size: 13px;
+                font-weight: 600;
+            }
             #formlog input[type="text"], 
-            #formlog input[type="password"] { color: #ffffff !important; border-bottom: 1px solid #64748b !important; }
+            #formlog input[type="password"] {
+                color: #ffffff !important;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+                font-weight: 600;
+                font-size: 14px;
+            }
             #formlog input[type="text"]:focus, 
-            #formlog input[type="password"]:focus { border-bottom: 1px solid #2ea378 !important; box-shadow: 0 1px 0 0 #2ea378 !important; }
-            .material-icons.prefix { color: #cbd5e1; }
+            #formlog input[type="password"]:focus {
+                border-bottom: 1px solid #10b981 !important;
+                box-shadow: 0 4px 10px rgba(16, 185, 129, 0.15) !important;
+            }
+            .material-icons.prefix {
+                color: #cbd5e1;
+                transition: color 0.25s ease;
+            }
+            
+            /* Corrección para Autocompletado (Autofill) del Navegador */
+            #formlog input:-webkit-autofill,
+            #formlog input:-webkit-autofill:hover, 
+            #formlog input:-webkit-autofill:focus, 
+            #formlog input:-webkit-autofill:active {
+                -webkit-box-shadow: 0 0 0 30px #0a111c inset !important;
+                -webkit-text-fill-color: #ffffff !important;
+                caret-color: #ffffff !important;
+                transition: background-color 5000s ease-in-out 0s !important;
+            }
+            
+            /* Botón Ingresar */
+            #formlog .btn_peque {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+                border: none !important;
+                border-radius: 8px !important;
+                color: #ffffff !important;
+                font-weight: 800 !important;
+                font-size: 13px !important;
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3) !important;
+                transition: all 0.25s ease !important;
+                width: 100% !important;
+                height: auto !important;
+                letter-spacing: 1px !important;
+                padding: 12px 10px !important;
+            }
+            #formlog .btn_peque:hover {
+                background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+                box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45) !important;
+                transform: translateY(-1.5px) !important;
+            }
+            #formlog .btn_peque:active {
+                transform: translateY(0.5px) !important;
+            }
+            #formlog .ui-button-text {
+                color: #ffffff !important;
+                font-weight: 800 !important;
+            }
+
+            /* Manual de Usuario */
+            .manual-link {
+                margin-top: 15px;
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.6) !important;
+                text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+                position: relative;
+                z-index: 10;
+                text-align: center;
+            }
+            .manual-link a {
+                color: #34d399 !important;
+                font-weight: 700;
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+            .manual-link a:hover {
+                color: #6ee7b7 !important;
+                text-decoration: underline;
+            }
             
             /* Notificaciones (Growl) */
-            .ui-growl-item-container { background: rgba(30, 41, 59, 0.95) !important; border: 1px solid #334155 !important; }
-            .ui-growl-title { color: #ffffff !important; font-weight: bold !important; letter-spacing: 0.5px; }
-            .ui-growl-message p { color: #cbd5e1 !important; font-size: 13px; }
+            .ui-growl-item-container {
+                background: rgba(15, 23, 42, 0.9) !important;
+                border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                backdrop-filter: blur(8px) !important;
+                border-radius: 12px !important;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+            }
+            .ui-growl-title {
+                color: #ffffff !important;
+                font-weight: bold !important;
+                letter-spacing: 0.5px;
+            }
+            .ui-growl-message p {
+                color: #cbd5e1 !important;
+                font-size: 13px;
+            }
+
+            /* Estilos y efectos del Logotipo para fondo oscuro */
+            .logo-container {
+                padding: 10px 0 20px 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+            }
+            .logo-filtered {
+                filter: brightness(0) invert(1);
+                opacity: 0.85;
+                transition: opacity 0.3s ease, transform 0.3s ease;
+                width: 100%;
+            }
+            .logo-filtered:hover {
+                opacity: 1;
+                transform: scale(1.02);
+            }
         </style>
     </h:head>
-    <h:body style="
-            min-height:100vh;
-            margin:0;
-            display:flow;
-            justify-content:center;
-            align-items:center;
-            background-color:#0b0f14;
-            background-image:
-            radial-gradient(circle at 25% 30%, rgba(0,180,255,0.15), transparent 40%),
-            radial-gradient(circle at 75% 70%, rgba(120,0,255,0.12), transparent 45%);
-            ">
+    <h:body>
+        <!-- Glowing background blobs -->
+        <div class="bg-glow bg-glow-1"></div>
+        <div class="bg-glow bg-glow-2"></div>
+        <div class="bg-glow bg-glow-3"></div>
+        <div class="bg-glow bg-glow-4"></div>
+        
+        <!-- Technology grid overlay -->
+        <div class="bg-grid"></div>
+
+        <!-- Floating organic particles (seeds/leaves of innovation) -->
+        <div class="particles-container">
+            <div class="particle p1"></div>
+            <div class="particle p2"></div>
+            <div class="particle p3"></div>
+            <div class="particle p4"></div>
+            <div class="particle p5"></div>
+            <div class="particle p6"></div>
+            <div class="particle p7"></div>
+            <div class="particle p8"></div>
+        </div>
         <!-- Start Page Loading -->
         <div id="loader-wrapper">
             <div id="loader"></div>
@@ -55,14 +365,14 @@
         </div>
         <p:growl id="mensajes" showDetail="true" life="2000" />
 
-        <h:form id="formlog" style="margin-top: 10%;">
-            <p:panel id="panelin" style="width:300px; text-align: center; margin:20px auto; box-shadow: 1px 1px 10px black !important; ">
+        <h:form id="formlog">
+            <p:panel id="panelin">
 
-                <div style="padding: 15px 0">
-                    <h:graphicImage width="100%" value="#{resource['images:iepi.png']}" />
+                <div class="logo-container">
+                    <h:graphicImage styleClass="logo-filtered" value="#{resource['images:iepi.png']}" />
                 </div>
 
-                <p style="text-align: center;  font-weight: bold; font-size: 14px; margin-bottom: 10px;">GESTIÓN DE OBTENCIONES VEGETALES</p>
+                <p>GESTIÓN DE OBTENCIONES VEGETALES</p>
                 <div class="input-field col s6">
                     <i class="material-icons prefix" id="account">account_circle</i>
                     <h:inputText id="icon_usuario" class="validate"
@@ -89,12 +399,12 @@
                 <p:commandButton id="loginButton" value="INGRESAR"
                                  actionListener="#{loginBean.logueo}" update=":mensajes"
                                  oncomplete="manejarLogin(xhr, status, args)"
-                                 style="margin: 25px 0; padding:  10px 5px" class="btn_peque" >
+                                 class="btn_peque">
                     <!--<p:effect rendered="{loginBean.shake}" for="panel" type="shake" event="click" /> -->
                 </p:commandButton>
 
             </p:panel>
-            <div style="color: white; text-align: center !important; margin: 0 auto !important;">Manual de Usuario. Click
+            <div class="manual-link">Manual de Usuario. Click
                 <a target="_blank" href="http://www.derechosintelectuales.gob.ec">Aquí</a>
             </div>
         </h:form>
@@ -110,7 +420,7 @@
                 var indexUs = getIdIndex('icon_usuario');
                 if (doc[indexUs].value != '') {
                     logu = document.getElementById('account');
-                    logu.style = 'color: rgb(47, 165, 154) !important;';
+                    logu.style = 'color: rgb(16, 185, 129) !important;';
                     us = document.getElementById('lbl_usuario');
                     us.className = "active";
                 }
@@ -118,7 +428,7 @@
                 var indexPa = getIdIndex('icon_password');
                 if (doc[indexPa].value != '') {
                     logu = document.getElementById('phoneicon');
-                    logu.style = 'color: rgb(47, 165, 154) !important;';
+                    logu.style = 'color: rgb(16, 185, 129) !important;';
                     us = document.getElementById('lbl_password');
                     us.className = "active";
                 }
@@ -144,14 +454,14 @@
             var indexEspecificar = getIdIndex(input);
             doc[indexEspecificar].focus();
             user = document.getElementById(ima);
-            user.style = 'color: rgb(47, 165, 154) !important;';
+            user.style = 'color: rgb(16, 185, 129) !important;';
         }
 
         function animaOnFocus(label, ima) {
             iconLabel = document.getElementById(label);
             iconLabel.className = "active";
             user = document.getElementById(ima);
-            user.style = 'color: rgb(47, 165, 154) !important;';
+            user.style = 'color: rgb(16, 185, 129) !important;';
         }
 
         function animaOnBlur(inputtext, label, ima) {
@@ -162,7 +472,7 @@
                 user.style = 'color: rgb(203, 213, 225) !important;';
             } else {
                 iconLabel.className = "active";
-                user.style = 'color: rgb(47, 165, 154) !important;';
+                user.style = 'color: rgb(16, 185, 129) !important;';
             }
         }
 
@@ -174,7 +484,7 @@
                 user.style = 'color: rgb(203, 213, 225) !important;';
             } else {
                 iconLabel.className = "active";
-                user.style = 'color: rgb(47, 165, 154) !important;';
+                user.style = 'color: rgb(16, 185, 129) !important;';
             }
         }
 

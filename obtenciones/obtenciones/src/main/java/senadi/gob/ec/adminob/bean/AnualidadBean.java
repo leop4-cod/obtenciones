@@ -25,6 +25,11 @@ public class AnualidadBean implements Serializable {
     private List<Anualidad>      alertas                = new ArrayList<>();
     private List<VegetableForms> tramites               = new ArrayList<>();
     private Set<Integer>         tramitesConAnualidades = new HashSet<>();
+    
+    // Listas pre-calculadas y caché para optimizar el rendimiento de la búsqueda
+    private List<Anualidad>      anualidadesFiltradas   = new ArrayList<>();
+    private List<VegetableForms> tramitesFiltradosConAnualidades = new ArrayList<>();
+    private java.util.Map<Integer, VegetableForms> cacheTramites = new java.util.HashMap<>();
 
     private Anualidad        anualidadEnEdicion;
     private EstadoAnualidad  estadoOriginal;
@@ -60,40 +65,108 @@ public class AnualidadBean implements Serializable {
             System.err.println("[AnualidadBean] Error al cargar: " + e.getMessage());
         }
         try {
-            // Solo los trámites ACEPTADOS pueden tener anualidades
+            // Solo los trámites ACEPTADOS pueden tener anualidades en el combo de creación
             tramites = new VegetableFormsDAO(null).buscarTodosByType("Aceptados");
         } catch (Exception e) {
             tramites = new ArrayList<>();
             System.err.println("[AnualidadBean] Error al cargar trámites: " + e.getMessage());
         }
+
+        // Pre-poblar el caché de VegetableForms para evitar miles de accesos a BD durante el render
+        cacheTramites = new java.util.HashMap<>();
+        if (tramites != null) {
+            for (VegetableForms vf : tramites) {
+                if (vf.getId() != null) {
+                    cacheTramites.put(vf.getId(), vf);
+                }
+            }
+        }
+        if (todasLasAnualidades != null) {
+            List<Integer> idsALoad = new ArrayList<>();
+            for (Anualidad a : todasLasAnualidades) {
+                Integer formId = a.getVegetableFormId();
+                if (formId != null && !cacheTramites.containsKey(formId)) {
+                    idsALoad.add(formId);
+                }
+            }
+            if (!idsALoad.isEmpty()) {
+                VegetableFormsDAO vfDao = new VegetableFormsDAO(null);
+                for (Integer formId : idsALoad) {
+                    if (!cacheTramites.containsKey(formId)) {
+                        try {
+                            VegetableForms vf = vfDao.getVegetableFormsById(formId);
+                            if (vf != null) {
+                                cacheTramites.put(formId, vf);
+                            }
+                        } catch (Exception e) {
+                            // ignore
+                        }
+                    }
+                }
+            }
+        }
+
+        aplicarFiltros();
+    }
+
+    /**
+     * Aplica los filtros sobre todas las anualidades y calcula las listas
+     * filtradas en memoria una sola vez para evitar recálculos en el render.
+     */
+    public void aplicarFiltros() {
+        List<Anualidad> aFiltradas = new ArrayList<>();
+        if (todasLasAnualidades != null) {
+            for (Anualidad a : todasLasAnualidades) {
+                if (!filtroEstado.isEmpty() && (a.getEstado() == null || !filtroEstado.equals(a.getEstado().name()))) continue;
+                if (!filtroTramite.isEmpty()) {
+                    VegetableForms vf = getVegetableForm(a.getVegetableFormId());
+                    if (vf == null) continue;
+                    String appNum = vf.getApplicationNumber() == null ? "" : vf.getApplicationNumber().toLowerCase();
+                    String numInt = vf.getNumeracionInterna()  == null ? "" : vf.getNumeracionInterna().toLowerCase();
+                    String busq   = filtroTramite.toLowerCase();
+                    if (!appNum.contains(busq) && !numInt.contains(busq)) continue;
+                }
+                aFiltradas.add(a);
+            }
+        }
+        this.anualidadesFiltradas = aFiltradas;
+
+        // Re-calcular tramitesFiltradosConAnualidades
+        java.util.LinkedHashSet<Integer> ids = new java.util.LinkedHashSet<>();
+        for (Anualidad a : aFiltradas) {
+            if (a.getVegetableFormId() != null) {
+                ids.add(a.getVegetableFormId());
+            }
+        }
+        List<VegetableForms> tFiltrados = new ArrayList<>();
+        for (Integer id : ids) {
+            VegetableForms vf = getVegetableForm(id);
+            if (vf != null) {
+                tFiltrados.add(vf);
+            }
+        }
+        this.tramitesFiltradosConAnualidades = tFiltrados;
     }
 
     public List<Anualidad> getAnualidadesFiltradas() {
-        if (todasLasAnualidades == null) return new ArrayList<>();
-        List<Anualidad> result = new ArrayList<>();
-        for (Anualidad a : todasLasAnualidades) {
-            if (!filtroEstado.isEmpty() && (a.getEstado() == null || !filtroEstado.equals(a.getEstado().name()))) continue;
-            if (!filtroTramite.isEmpty()) {
-                VegetableForms vf = getVegetableForm(a.getVegetableFormId());
-                if (vf == null) continue;
-                String appNum = vf.getApplicationNumber() == null ? "" : vf.getApplicationNumber().toLowerCase();
-                String numInt = vf.getNumeracionInterna()  == null ? "" : vf.getNumeracionInterna().toLowerCase();
-                String busq   = filtroTramite.toLowerCase();
-                if (!appNum.contains(busq) && !numInt.contains(busq)) continue;
-            }
-            result.add(a);
+        if (anualidadesFiltradas == null) {
+            anualidadesFiltradas = new ArrayList<>();
         }
-        return result;
+        return anualidadesFiltradas;
     }
 
     public VegetableForms getVegetableForm(Integer id) {
-        if (id == null || tramites == null) return null;
-        for (VegetableForms vf : tramites) {
-            if (id.equals(vf.getId())) return vf;
+        if (id == null) return null;
+        if (cacheTramites == null) {
+            cacheTramites = new java.util.HashMap<>();
         }
-        // Fallback: buscar en BD si no está en la lista (p. ej. estado cambiado)
+        if (cacheTramites.containsKey(id)) {
+            return cacheTramites.get(id);
+        }
         try {
-            return new VegetableFormsDAO(null).getVegetableFormsById(id);
+            VegetableForms vf = new VegetableFormsDAO(null).getVegetableFormsById(id);
+            cacheTramites.put(id, vf);
+            return vf;
         } catch (Exception e) {
             return null;
         }
@@ -211,21 +284,16 @@ public class AnualidadBean implements Serializable {
     }
 
     public List<VegetableForms> getTramitesFiltradosConAnualidades() {
-        List<Anualidad> filtradas = getAnualidadesFiltradas();
-        java.util.LinkedHashSet<Integer> ids = new java.util.LinkedHashSet<>();
-        for (Anualidad a : filtradas) ids.add(a.getVegetableFormId());
-        List<VegetableForms> result = new ArrayList<>();
-        for (Integer id : ids) {
-            VegetableForms vf = getVegetableForm(id);
-            if (vf != null) result.add(vf);
+        if (tramitesFiltradosConAnualidades == null) {
+            tramitesFiltradosConAnualidades = new ArrayList<>();
         }
-        return result;
+        return tramitesFiltradosConAnualidades;
     }
 
     public List<Anualidad> getAnualidadesFiltradasPorTramite(Integer vegetableFormId) {
         List<Anualidad> result = new ArrayList<>();
-        if (vegetableFormId == null) return result;
-        for (Anualidad a : getAnualidadesFiltradas()) {
+        if (vegetableFormId == null || anualidadesFiltradas == null) return result;
+        for (Anualidad a : anualidadesFiltradas) {
             if (vegetableFormId.equals(a.getVegetableFormId())) result.add(a);
         }
         return result;
@@ -286,10 +354,10 @@ public class AnualidadBean implements Serializable {
     public void    setTramiteSeleccionadoId(Integer id) { this.tramiteSeleccionadoId = id; }
 
     public String getFiltroTramite()         { return filtroTramite; }
-    public void   setFiltroTramite(String v) { this.filtroTramite = v; }
+    public void   setFiltroTramite(String v) { this.filtroTramite = v != null ? v : ""; aplicarFiltros(); }
 
     public String getFiltroEstado()          { return filtroEstado; }
-    public void   setFiltroEstado(String v)  { this.filtroEstado = v; }
+    public void   setFiltroEstado(String v)  { this.filtroEstado = v != null ? v : ""; aplicarFiltros(); }
 
     public boolean isCompletado()            { return completado; }
     public void    setCompletado(boolean v)  { this.completado = v; }
