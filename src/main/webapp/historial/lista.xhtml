@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <f:metadata>
+        <f:viewParam name="appNumber"   value="#{historialBean.appNumber}"/>
+        <f:viewParam name="tipoEntidad" value="#{historialBean.tipoEntidad}"/>
+        <f:viewParam name="idEntidad"   value="#{historialBean.idEntidad}"/>
+        <f:viewAction action="#{historialBean.cargar}" onPostback="false"/>
+    </f:metadata>
+
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Historial de Auditoría — SENADI</title>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800&amp;family=Playfair+Display:wght@700&amp;display=swap"
+              rel="stylesheet" media="print" onload="this.media='all'"/>
+        <noscript><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/></noscript>
+        <f:facet name="last">
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}"/>
+        <style>
+            html, body { margin:0; padding:0; }
+            .lm-layout { display:flex; min-height:100vh; }
+
+            /* ── Sidebar ── */
+            .lm-sidebar {
+                width:240px; min-width:240px;
+                background:linear-gradient(180deg,#0d1b35 0%,#1a2d52 60%,#0d1b35 100%);
+                display:flex; flex-direction:column;
+                position:fixed; left:0; top:0; bottom:0;
+                overflow-y:auto; z-index:200;
+                box-shadow:3px 0 18px rgba(0,0,0,.32);
+            }
+            .lm-sidebar::-webkit-scrollbar { width:4px; }
+            .lm-sidebar::-webkit-scrollbar-thumb { background:rgba(255,255,255,.18); border-radius:2px; }
+            .lm-logo { padding:18px 16px 14px; border-bottom:1px solid rgba(255,255,255,.10); display:flex; align-items:center; gap:12px; flex-shrink:0; }
+            .lm-logo img { width:42px; height:42px; object-fit:contain; flex-shrink:0; filter:drop-shadow(0 1px 4px rgba(0,0,0,.35)); }
+            .lm-logo-txt { color:#fff; font-family:'Playfair Display',serif; font-size:14px; font-weight:700; line-height:1.25; }
+            .lm-logo-txt small { display:block; font-family:'Nunito Sans',sans-serif; font-size:9.5px; font-weight:700; color:rgba(255,255,255,.48); text-transform:uppercase; letter-spacing:.12em; }
+            .lm-user-card { padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; align-items:center; gap:11px; flex-shrink:0; }
+            .lm-avatar { width:42px; height:42px; border-radius:50%; background:rgba(201,162,39,.22); border:2px solid rgba(201,162,39,.45); display:flex; align-items:center; justify-content:center; font-size:19px; color:#c9a227; flex-shrink:0; }
+            .lm-user-name { color:#fff; font-size:13px; font-weight:700; line-height:1.25; }
+            .lm-user-role { color:rgba(255,255,255,.48); font-size:11px; font-weight:600; }
+            .lm-nav-sec { padding:14px 16px 5px; font-size:9.5px; font-weight:800; color:rgba(255,255,255,.32); text-transform:uppercase; letter-spacing:.14em; }
+            .lm-nav-item { display:flex; align-items:center; gap:10px; padding:10px 14px; margin:2px 8px; color:rgba(255,255,255,.72); font-size:13px; font-weight:600; cursor:pointer; text-decoration:none !important; border-radius:8px; transition:background .18s,color .18s; }
+            .lm-nav-item:hover { background:rgba(255,255,255,.12); color:#fff; text-decoration:none !important; }
+            .lm-nav-item.active { background:#c9a227; color:#fff !important; font-weight:800; }
+            .lm-nav-item .pi { font-size:15px; flex-shrink:0; width:18px; text-align:center; }
+            .lm-sidebar-spacer { flex:1; min-height:20px; }
+            .lm-volver-btn { display:flex; align-items:center; gap:10px; padding:11px 16px; margin:8px; width:calc(100% - 16px); text-decoration:none; background:rgba(255,255,255,.10); border:1px solid rgba(255,255,255,.20); border-radius:8px; color:rgba(255,255,255,.80); font-size:13px; font-weight:700; cursor:pointer; transition:background .18s; }
+            .lm-volver-btn:hover { background:rgba(255,255,255,.20); color:#fff !important; text-decoration:none !important; }
+
+            /* ── Main ── */
+            .lm-main { margin-left:240px; flex:1; background:#edf1f8; min-height:100vh; display:flex; flex-direction:column; }
+            .lm-topbar { background:#fff; height:58px; padding:0 22px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(0,0,0,.07); position:sticky; top:0; z-index:100; flex-shrink:0; }
+            .lm-topbar-left { display:flex; align-items:center; gap:10px; }
+            .lm-topbar-right { display:flex; align-items:center; gap:10px; }
+            .lm-page-badge { background:#eff4ff; color:#0d2b6e; border:1px solid #bbd0f0; padding:4px 14px; border-radius:20px; font-size:12px; font-weight:700; }
+            .lm-btn-refresh { display:inline-flex !important; align-items:center !important; gap:7px !important; background:#1e3a6e !important; color:#fff !important; padding:7px 16px !important; border-radius:8px !important; font-size:13px !important; font-weight:700 !important; border:none !important; cursor:pointer !important; transition:background .18s !important; font-family:'Nunito Sans',sans-serif !important; }
+            .lm-btn-refresh:hover { background:#0d1b35 !important; }
+            .lm-btn-refresh .ui-button-text { display:none !important; }
+            .lm-content { padding:22px 26px 40px; flex:1; }
+            .lm-page-title { display:flex; align-items:center; gap:11px; font-size:18px; font-weight:800; color:#1a1a2e; margin-bottom:4px; }
+            .lm-page-icon { width:38px; height:38px; border-radius:9px; background:linear-gradient(135deg,#1e3a6e,#0d1b35); display:flex; align-items:center; justify-content:center; color:#fff; font-size:17px; flex-shrink:0; }
+            .lm-page-sub { font-size:13px; color:#6b7280; margin-bottom:22px; }
+
+            /* ── Stats ── */
+            .lm-stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:22px; }
+            .lm-stat { background:#fff; border-radius:12px; padding:16px 20px; box-shadow:0 2px 10px rgba(0,0,0,.06); border-left:5px solid #1e3a6e; transition:transform .18s,box-shadow .18s; }
+            .lm-stat:hover { transform:translateY(-2px); box-shadow:0 5px 18px rgba(0,0,0,.10); }
+            .lm-stat.blue   { border-left-color:#1976d2; }
+            .lm-stat.teal   { border-left-color:#0e7490; }
+            .lm-stat.purple { border-left-color:#7c3aed; }
+            .lm-stat-ico { font-size:20px; margin-bottom:6px; }
+            .lm-stat-lbl { font-size:11px; font-weight:700; color:#6b7280; text-transform:uppercase; letter-spacing:.06em; }
+            .lm-stat-val { font-size:30px; font-weight:800; color:#1a1a2e; margin:4px 0 0; line-height:1; }
+
+            /* ── Card ── */
+            .lm-card { background:#fff; border-radius:12px; box-shadow:0 2px 14px rgba(0,0,0,.06); border:1px solid #e5ecf5; margin-bottom:18px; overflow:hidden; }
+            .lm-card-head { padding:14px 20px; border-bottom:1px solid #f0f5fc; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+            .lm-card-title { font-size:15px; font-weight:800; color:#1a1a2e; display:flex; align-items:center; gap:8px; }
+            .lm-card-title .pi { color:#1e3a6e; font-size:16px; }
+            .lm-card-body { padding:16px 20px; }
+
+            /* ── Filtros ── */
+            .lm-filter-bar { display:flex; align-items:flex-end; gap:12px; background:#f8fafc; border:1.5px solid #dde3ef; border-radius:8px; padding:12px 16px; flex-wrap:wrap; }
+            .lm-filter-group { display:flex; flex-direction:column; gap:4px; flex:1; min-width:150px; }
+            .lm-filter-lbl { font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.06em; }
+            .lm-filter-actions { display:flex; gap:8px; align-items:flex-end; flex-shrink:0; padding-bottom:1px; }
+            .lm-btn-filter { display:inline-flex !important; align-items:center !important; gap:6px !important; background:#1e3a6e !important; color:#fff !important; padding:8px 18px !important; border-radius:8px !important; font-size:13px !important; font-weight:700 !important; border:none !important; cursor:pointer !important; font-family:'Nunito Sans',sans-serif !important; transition:background .18s !important; }
+            .lm-btn-filter:hover { background:#0d1b35 !important; }
+            .lm-btn-clear { display:inline-flex !important; align-items:center !important; gap:6px !important; background:#f4f7fb !important; color:#374151 !important; padding:8px 14px !important; border-radius:8px !important; font-size:13px !important; font-weight:700 !important; border:1.5px solid #dde3ef !important; cursor:pointer !important; font-family:'Nunito Sans',sans-serif !important; transition:background .18s !important; }
+            .lm-btn-clear:hover { background:#fee2e2 !important; border-color:#fca5a5 !important; color:#991b1b !important; }
+
+            /* ── Badges de historial ── */
+            .hist-badge { display:inline-block; padding:3px 10px; border-radius:99px; font-size:11px; font-weight:700; white-space:nowrap; }
+            .hist-badge-crear      { background:#dbeafe; color:#1e3a6e; }
+            .hist-badge-actualizar { background:#dbeafe; color:#1e40af; }
+            .hist-badge-eliminar   { background:#fee2e2; color:#991b1b; }
+            .hist-badge-estado     { background:#fef3c7; color:#92400e; }
+            .hist-badge-pago       { background:#ede9fe; color:#5b21b6; }
+            .hist-badge-default    { background:#f3f4f6; color:#374151; }
+            .hist-field-chip { background:#f0f4fb; border-radius:4px; padding:2px 7px; font-size:11px; font-family:monospace; color:#1e3a6e; border:1px solid #c3d7f2; }
+            .hist-val-before { font-size:12px; color:#b91c1c; text-decoration:line-through; }
+            .hist-val-after  { font-size:12px; color:#1e3a6e; font-weight:700; }
+
+            /* Paginator */
+            html body div.ui-paginator, html body .ui-datatable div.ui-paginator {
+                background:linear-gradient(135deg,#edf2fd,#e4eaf8) !important;
+                border-top:1px solid #c3d7f2 !important; padding:8px 14px !important;
+            }
+
+            @media (max-width:900px) {
+                .lm-sidebar { width:64px; min-width:64px; }
+                .lm-logo-txt, .lm-user-name, .lm-user-role, .lm-nav-item span, .lm-nav-sec, .lm-volver-btn span { display:none; }
+                .lm-main { margin-left:64px; }
+                .lm-stats-grid { grid-template-columns:1fr 1fr; }
+            }
+        </style>
+        </f:facet>
+    </h:head>
+
+    <h:body>
+        <p:growl id="mensajes" showDetail="true" life="6000"/>
+
+        <div class="lm-layout">
+ 
+            <!-- ══════════ SIDEBAR ══════════ -->
+            <div class="lm-sidebar">
+                <div class="lm-logo">
+                    <img src="#{resource['images/sena_2.png']}" alt="SENADI"/>
+                    <div class="lm-logo-txt">SENADI<small>Obtenciones Vegetales</small></div>
+                </div>
+
+                <div class="lm-user-card">
+                    <div class="lm-avatar"><i class="pi pi-user"/></div>
+                    <div>
+                        <div class="lm-user-name">#{loginBean.login}</div>
+                        <div class="lm-user-role">Funcionario SENADI</div>
+                    </div>
+                </div>
+
+                <div class="lm-nav-sec">Principal</div>
+                <a href="../index.xhtml" class="lm-nav-item">
+                    <i class="pi pi-home"/> <span>Inicio</span>
+                </a>
+
+                <div class="lm-nav-sec">Módulos</div>
+                <a href="../anualidades/lista.xhtml" class="lm-nav-item">
+                    <i class="pi pi-calendar-plus"/> <span>Anualidades</span>
+                </a>
+                <a href="../historial/lista.xhtml" class="lm-nav-item active">
+                    <i class="pi pi-history"/> <span>Auditoría</span>
+                </a>
+
+                <div class="lm-sidebar-spacer"/>
+
+                <a onclick="history.back()" class="lm-volver-btn">
+                    <i class="pi pi-arrow-left" style="font-size:15px;"/>
+                    <span>Volver</span>
+                </a>
+            </div>
+
+            <!-- ══════════ ÁREA PRINCIPAL ══════════ -->
+            <div class="lm-main">
+
+                <!-- Topbar -->
+                <div class="lm-topbar">
+                    <div class="lm-topbar-left">
+                        <span class="lm-page-badge">
+                            <i class="pi pi-history" style="margin-right:5px;"/>
+                            Historial de Auditoría
+                        </span>
+                    </div>
+                    <div class="lm-topbar-right">
+                        <h:form>
+                            <p:commandButton icon="pi pi-refresh" title="Actualizar"
+                                             action="#{historialBean.cargar}"
+                                             update="tblHistorial tarjetasEstadisticas mensajes"
+                                             styleClass="lm-btn-refresh"/>
+                        </h:form>
+                    </div>
+                </div>
+
+                <!-- Contenido -->
+                <div class="lm-content">
+
+                    <div class="lm-page-title">
+                        <div class="lm-page-icon"><i class="pi pi-history"/></div>
+                        #{historialBean.tituloHistorial}
+                    </div>
+                    <div class="lm-page-sub">Registro completo de cambios: quién actuó, qué modificó y cuándo.</div>
+
+                    <p:outputPanel id="tarjetasEstadisticas" layout="block"/>
+
+                    <!-- ═══ FILTROS ═══ -->
+                    <div class="lm-card">
+                        <div class="lm-card-head">
+                            <div class="lm-card-title">
+                                <i class="pi pi-filter"/> Filtros de búsqueda
+                            </div>
+                        </div>
+                        <div class="lm-card-body">
+                            <h:form id="frmFiltros">
+                                <div class="lm-filter-bar">
+                                    <div class="lm-filter-group">
+                                        <span class="lm-filter-lbl">Usuario</span>
+                                        <p:inputText value="#{historialBean.filtroUsuario}"
+                                                     style="width:100%;" placeholder="Nombre de usuario..."
+                                                     onkeyup="if(event.key==='Enter') document.getElementById('frmFiltros:filterBtn').click()"/>
+                                    </div>
+                                    <div class="lm-filter-group" style="min-width:180px; max-width:210px;">
+                                        <span class="lm-filter-lbl">Tipo de acción</span>
+                                        <p:selectOneMenu value="#{historialBean.filtroAccion}" style="width:100%;">
+                                            <f:selectItem itemLabel="— Todos —"      itemValue=""/>
+                                            <f:selectItem itemLabel="Creación"       itemValue="CREAR"/>
+                                            <f:selectItem itemLabel="Actualización"  itemValue="ACTUALIZAR"/>
+                                            <f:selectItem itemLabel="Eliminación"    itemValue="ELIMINAR"/>
+                                            <f:selectItem itemLabel="Cambio estado"  itemValue="CAMBIO_ESTADO"/>
+                                            <f:selectItem itemLabel="Pago"           itemValue="PAGO"/>
+                                            <f:selectItem itemLabel="Importación"    itemValue="IMPORTAR"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="lm-filter-group" style="max-width:170px;">
+                                        <span class="lm-filter-lbl">Fecha desde</span>
+                                        <p:datePicker value="#{historialBean.fechaDesde}" style="width:100%;"
+                                                      pattern="dd/MM/yyyy" showIcon="true"
+                                                      placeholder="dd/mm/aaaa" locale="es"/>
+                                    </div>
+                                    <div class="lm-filter-group" style="max-width:170px;">
+                                        <span class="lm-filter-lbl">Fecha hasta</span>
+                                        <p:datePicker value="#{historialBean.fechaHasta}" style="width:100%;"
+                                                      pattern="dd/MM/yyyy" showIcon="true"
+                                                      placeholder="dd/mm/aaaa" locale="es"/>
+                                    </div>
+                                    <div class="lm-filter-actions">
+                                        <p:commandButton id="filterBtn" value="Filtrar" icon="pi pi-search"
+                                                         action="#{historialBean.aplicarFiltros}"
+                                                         update="tblHistorial mensajes"
+                                                         styleClass="lm-btn-filter"/>
+                                        <p:commandButton value="Limpiar" icon="pi pi-times"
+                                                         action="#{historialBean.limpiarFiltros}"
+                                                         update="tblHistorial frmFiltros mensajes"
+                                                         styleClass="lm-btn-clear"/>
+                                    </div>
+                                </div>
+                            </h:form>
+                        </div>
+                    </div>
+
+                    <!-- ═══ TABLA ═══ -->
+                    <div class="lm-card">
+                        <div class="lm-card-head">
+                            <div class="lm-card-title">
+                                <i class="pi pi-table"/> Eventos registrados
+                            </div>
+                            <span style="font-size:12px; color:#6b7280; font-weight:600;">
+                                #{historialBean.entradasFiltradas.size()} resultado(s)
+                            </span>
+                        </div>
+                        <div style="overflow-x:auto;">
+                            <p:dataTable id="tblHistorial"
+                                         value="#{historialBean.entradasFiltradas}" var="h"
+                                         tableStyleClass="sn-table" rowStyleClass="sn-row"
+                                         paginator="true" rows="50"
+                                         paginatorTemplate="{FirstPageLink}{PreviousPageLink}{PageLinks}{NextPageLink}{LastPageLink} {RowsPerPageDropdown}"
+                                         rowsPerPageTemplate="25,50,100"
+                                         emptyMessage="No se encontraron eventos de auditoría.">
+
+                                <p:column headerText="Fecha y Hora" style="width:148px; white-space:nowrap;">
+                                    <h:outputText value="#{h.fecha}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" timeZone="America/Guayaquil"/>
+                                    </h:outputText>
+                                </p:column>
+
+                                <p:column headerText="Usuario" style="width:135px;">
+                                    <div style="display:flex; align-items:center; gap:7px;">
+                                        <span style="width:26px; height:26px; border-radius:50%; background:#e8f5e9; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">
+                                            <i class="pi pi-user" style="color:#1e3a6e; font-size:11px;"/>
+                                        </span>
+                                        <strong style="font-size:12px;">#{h.historyUser}</strong>
+                                    </div>
+                                </p:column>
+
+                                <p:column headerText="Acción" style="width:130px; text-align:center;">
+                                    <span class="hist-badge #{h.tipoAccionBadgeClass}">#{h.tipoAccionLabel}</span>
+                                </p:column>
+
+                                <p:column headerText="Módulo / Entidad" style="width:155px;">
+                                    <h:panelGroup rendered="#{not empty h.tipoEntidad}">
+                                        <span style="font-size:12px; color:#374151; font-weight:600;">#{h.tipoEntidad}</span>
+                                        <h:panelGroup rendered="#{not empty h.idEntidad}">
+                                            <br/>
+                                            <span class="hist-field-chip">##{h.idEntidad}</span>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{empty h.tipoEntidad and not empty h.applicationNumber}">
+                                        <span style="font-size:12px; color:#374151; font-weight:600;">Solicitud</span>
+                                        <br/>
+                                        <span class="hist-field-chip">#{h.applicationNumber}</span>
+                                    </h:panelGroup>
+                                </p:column>
+
+                                <p:column headerText="Campo" style="width:150px;">
+                                    <h:panelGroup rendered="#{not empty h.campoModificado}">
+                                        <span class="hist-field-chip">#{h.campoModificado}</span>
+                                    </h:panelGroup>
+                                </p:column>
+
+                                <p:column headerText="Cambio">
+                                    <h:panelGroup rendered="#{not empty h.valorAnterior or not empty h.valorNuevo}">
+                                        <span class="hist-val-before" title="#{h.valorAnterior}">#{h.valorAnterior}</span>
+                                        <i class="pi pi-arrow-right" style="color:#9ca3af; font-size:10px; margin:0 6px;"/>
+                                        <span class="hist-val-after"  title="#{h.valorNuevo}">#{h.valorNuevo}</span>
+                                    </h:panelGroup>
+                                    <h:panelGroup rendered="#{empty h.valorAnterior and empty h.valorNuevo}">
+                                        <span style="font-size:12px; color:#6b7280;">#{h.description}</span>
+                                    </h:panelGroup>
+                                </p:column>
+
+                                <p:column headerText="Descripción" style="max-width:260px;">
+                                    <h:panelGroup rendered="#{not empty h.valorAnterior or not empty h.valorNuevo}">
+                                        <span style="font-size:12px; color:#6b7280;" title="#{h.description}">#{h.description}</span>
+                                    </h:panelGroup>
+                                </p:column>
+
+                            </p:dataTable>
+                        </div>
+                    </div>
+
+                </div><!-- /lm-content -->
+            </div><!-- /lm-main -->
+        </div><!-- /lm-layout -->
+    </h:body>
+</html>

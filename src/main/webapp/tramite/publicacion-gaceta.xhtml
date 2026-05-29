@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RUTA: src/main/webapp/tramite/publicacion-gaceta.xhtml -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Publicación en Gaceta — SENADI</title>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}"/>
+    </h:head>
+    <h:body>
+
+        <!-- ── HEADER ── -->
+        <div class="sn-tramite-header">
+            <img src="#{resource['images/logo.png']}" alt="SENADI" onerror="this.style.display='none'"/>
+            <span class="sn-tramite-title">
+                <i class="fa fa-book"/> Verificación y Publicación en Gaceta
+            </span>
+            <span class="sn-tramite-user">#{loginBean.login}</span>
+        </div>
+        <div class="sn-tramite-gold"></div>
+
+        <!-- ── CONTENIDO ── -->
+        <div class="sn-flow-card">
+            <h4>
+                <span class="sn-step-badge">Paso 8</span>
+                Verificación de Denominación y Publicación en Gaceta de Derechos Intelectuales
+            </h4>
+
+            <p:messages autoUpdate="true" showDetail="true" closable="true"/>
+
+            <h:form id="fGaceta">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="sn-fl">ID del Trámite <span style="color:var(--sn-danger);">*</span></div>
+                        <p:inputText id="formId" style="width:100%;"/>
+                        <p:commandButton value="Cargar" icon="fa fa-search"
+                                         styleClass="sn-btn-secondary" style="margin-top:8px;"
+                                         action="#{muestraFlowBean.cargarTramite(formId.value)}"
+                                         update="infoPanel gacetaPanel" process="@form"/>
+                    </div>
+                </div>
+
+                <p:outputPanel id="infoPanel">
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null and muestraFlowBean.selectedForm.id != null}">
+                        <div class="sn-tramite-info" style="margin-top:15px;">
+                            <span><strong>Expediente:</strong> #{muestraFlowBean.selectedForm.applicationNumber}</span>
+                            <span><strong>Denominación provisional:</strong> #{muestraFlowBean.selectedForm.provitionalDesignation}</span>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+
+                <p:outputPanel id="gacetaPanel">
+                    <!-- Publicación ya realizada -->
+                    <h:panelGroup rendered="#{muestraFlowBean.publicacionGaceta != null}">
+                        <div class="sn-info-blue" style="margin-top:15px;">
+                            <i class="fa fa-newspaper-o" style="font-size:20px; flex-shrink:0;"></i>
+                            <div>
+                                <strong>Gaceta N°:</strong> #{muestraFlowBean.publicacionGaceta.numGaceta}<br/>
+                                <strong>Denominación genérica:</strong> #{muestraFlowBean.publicacionGaceta.denominacionGenerica}<br/>
+                                <strong>Denominación válida:</strong> #{muestraFlowBean.publicacionGaceta.denominacionValida ? 'Sí' : 'No'}<br/>
+                                <strong>Fecha publicación:</strong>
+                                <h:outputText value="#{muestraFlowBean.publicacionGaceta.fechaPublicacion}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText><br/>
+                                <strong>Fin período oposición:</strong>
+                                <h:outputText value="#{muestraFlowBean.publicacionGaceta.fechaFinOposicion}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText><br/>
+                                <strong>¿Tiene oposición?:</strong> #{muestraFlowBean.publicacionGaceta.tieneOposicion ? 'SÍ' : 'No'}
+                            </div>
+                        </div>
+                        <div class="sn-info-amber" style="margin-top:10px;">
+                            <i class="fa fa-clock-o" style="font-size:18px; flex-shrink:0;"></i>
+                            <div>El período de 30 días para presentar oposición corre desde la fecha de publicación.</div>
+                        </div>
+                        <div style="margin-top:12px;">
+                            <p:button value="Gestionar Oposición / Continuar" icon="fa fa-arrow-right"
+                                      styleClass="sn-btn-primary"
+                                      outcome="/tramite/oposicion"/>
+                        </div>
+                    </h:panelGroup>
+
+                    <!-- Formulario de publicación -->
+                    <h:panelGroup rendered="#{muestraFlowBean.selectedForm != null
+                                             and muestraFlowBean.selectedForm.id != null
+                                             and muestraFlowBean.publicacionGaceta == null}">
+                        <div class="row" style="margin-top:18px;">
+                            <div class="col-md-6">
+                                <div class="sn-fl">Denominación Genérica Adecuada <span style="color:var(--sn-danger);">*</span></div>
+                                <p:inputText value="#{muestraFlowBean.denominacionGenerica}" style="width:100%;"
+                                             required="true" requiredMessage="La denominación genérica es obligatoria."/>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="sn-fl">N° de Gaceta <span style="color:var(--sn-danger);">*</span></div>
+                                <p:inputText value="#{muestraFlowBean.numGaceta}" style="width:100%;"
+                                             required="true" requiredMessage="El número de gaceta es obligatorio."/>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top:10px;">
+                            <div class="col-md-6">
+                                <label style="display:flex; align-items:center; gap:8px; font-size:13px; color:#444; cursor:pointer; margin-top:4px;">
+                                    <p:selectBooleanCheckbox value="#{muestraFlowBean.denominacionValida}"/>
+                                    Sí, la denominación es adecuada
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="sn-fl">Observaciones</div>
+                                <p:inputText value="#{muestraFlowBean.observaciones}" style="width:100%;"/>
+                            </div>
+                        </div>
+                        <div style="margin-top:15px;">
+                            <p:commandButton value="Registrar Publicación en Gaceta" icon="fa fa-book"
+                                             styleClass="sn-btn-primary"
+                                             action="#{muestraFlowBean.publicarEnGaceta}"
+                                             update="@form infoPanel gacetaPanel" process="@form"/>
+                        </div>
+                    </h:panelGroup>
+                </p:outputPanel>
+            </h:form>
+        </div>
+
+    </h:body>
+</html>

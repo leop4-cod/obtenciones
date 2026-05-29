@@ -1,0 +1,1440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RUTA: src/main/webapp/index.xhtml -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Obtenciones Vegetales — SENADI</title>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}" />
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'"/>
+        <noscript><link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,400;0,600;0,700;0,800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/></noscript>
+        <f:facet name="last">
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}" />
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}" />
+        <style>
+            /* ══════════════════════════════════════════════════
+               LAYOUT PRINCIPAL
+            ══════════════════════════════════════════════════ */
+            html, body { margin: 0; padding: 0; }
+            .lm-layout { display: flex; min-height: 100vh; }
+
+            /* ══════════════════════════════════════════════════
+               SIDEBAR
+            ══════════════════════════════════════════════════ */
+            .lm-sidebar {
+                width: 255px; min-width: 255px;
+                background: linear-gradient(180deg, #0d1b35 0%, #1a2d52 60%, #0d1b35 100%);
+                display: flex; flex-direction: column;
+                position: fixed; left: 0; top: 0; bottom: 0;
+                overflow-y: auto; z-index: 200;
+                box-shadow: 3px 0 18px rgba(0,0,0,.32);
+            }
+            .lm-sidebar::-webkit-scrollbar { width: 4px; }
+            .lm-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); border-radius: 2px; }
+
+            .lm-logo {
+                padding: 18px 16px 14px;
+                border-bottom: 1px solid rgba(255,255,255,.10);
+                display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+            }
+            .lm-logo img { width: 42px; height: 42px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 1px 4px rgba(0,0,0,.35)); }
+            .lm-logo-txt {
+                color: #fff; font-family: 'Playfair Display', serif;
+                font-size: 14px; font-weight: 700; line-height: 1.25;
+            }
+            .lm-logo-txt small {
+                display: block; font-family: 'Nunito Sans', sans-serif;
+                font-size: 9.5px; font-weight: 700;
+                color: rgba(255,255,255,.48); text-transform: uppercase; letter-spacing: .12em;
+            }
+
+            .lm-user-card {
+                padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.08);
+                display: flex; align-items: center; gap: 11px; flex-shrink: 0;
+            }
+            .lm-avatar {
+                width: 42px; height: 42px; border-radius: 50%;
+                background: rgba(201,162,39,.22); border: 2px solid rgba(201,162,39,.45);
+                display: flex; align-items: center; justify-content: center;
+                font-size: 19px; color: #c9a227; flex-shrink: 0;
+            }
+            .lm-user-name { color: #fff; font-size: 13px; font-weight: 700; line-height: 1.25; }
+            .lm-user-role { color: rgba(255,255,255,.48); font-size: 11px; font-weight: 600; }
+
+            .lm-nav-sec {
+                padding: 14px 16px 5px;
+                font-size: 9.5px; font-weight: 800;
+                color: rgba(255,255,255,.32); text-transform: uppercase; letter-spacing: .14em;
+            }
+
+            .lm-nav-item {
+                display: flex; align-items: center; gap: 10px;
+                padding: 10px 14px; margin: 2px 8px;
+                color: rgba(255,255,255,.72); font-size: 13px; font-weight: 600;
+                cursor: pointer; text-decoration: none !important;
+                border-radius: 8px; transition: background .18s, color .18s;
+            }
+            .lm-nav-item:hover { background: rgba(255,255,255,.12); color: #fff; text-decoration: none !important; }
+            .lm-nav-item.active { background: #c9a227; color: #fff !important; font-weight: 800; }
+            .lm-nav-item.active:hover { background: #a8841e; }
+            .lm-nav-item .pi { font-size: 15px; flex-shrink: 0; width: 18px; text-align: center; }
+
+            .lm-sidebar-spacer { flex: 1; min-height: 20px; }
+
+            .lm-logout-btn,
+            .lm-logout-btn.ui-button {
+                display: flex !important; align-items: center !important; gap: 10px !important;
+                padding: 11px 16px !important; margin: 8px !important;
+                width: calc(100% - 16px) !important;
+                background: rgba(214,69,69,.22) !important; border: 1px solid rgba(214,69,69,.40) !important;
+                color: #f87171 !important; font-size: 13px !important; font-weight: 700 !important;
+                border-radius: 8px !important; cursor: pointer !important;
+                justify-content: flex-start !important; transition: background .18s !important;
+                text-align: left !important;
+            }
+            .lm-logout-btn:hover, .lm-logout-btn.ui-button:hover { background: rgba(214,69,69,.42) !important; color: #fff !important; }
+            .lm-logout-btn .ui-button-text { color: #f87171 !important; }
+            .lm-logout-btn:hover .ui-button-text { color: #fff !important; }
+            .lm-logout-btn .pi { color: #f87171 !important; font-size: 15px !important; }
+
+            /* ══════════════════════════════════════════════════
+               ÁREA PRINCIPAL
+            ══════════════════════════════════════════════════ */
+            .lm-main {
+                margin-left: 255px; flex: 1;
+                background: #edf1f8; min-height: 100vh;
+                display: flex; flex-direction: column;
+            }
+
+            .lm-topbar {
+                background: #fff; height: 58px; padding: 0 22px;
+                display: flex; align-items: center; justify-content: space-between;
+                box-shadow: 0 2px 8px rgba(0,0,0,.07);
+                position: sticky; top: 0; z-index: 100; flex-shrink: 0;
+            }
+            .lm-topbar-left { display: flex; align-items: center; gap: 10px; }
+            .lm-topbar-right { display: flex; align-items: center; gap: 10px; }
+            .lm-page-badge {
+                background: #eff4ff; color: #0d2b6e; border: 1px solid #bfdbfe;
+                padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+            }
+            .lm-icon-btn {
+                width: 36px; height: 36px; border-radius: 50%;
+                display: flex; align-items: center; justify-content: center;
+                background: #f4f7fb; color: #6b7280; font-size: 15px;
+                border: 1.5px solid #dde3ef; text-decoration: none !important;
+                transition: background .18s, color .18s; cursor: pointer;
+            }
+            .lm-icon-btn:hover { background: #dde8f8; color: #1e3a6e; text-decoration: none !important; }
+            .lm-btn-add {
+                display: inline-flex; align-items: center; gap: 7px;
+                background: #1e3a6e; color: #fff !important; padding: 8px 18px;
+                border-radius: 8px; font-size: 13px; font-weight: 700;
+                text-decoration: none !important; border: none; cursor: pointer;
+                transition: background .18s, transform .14s;
+                box-shadow: 0 2px 8px rgba(30,58,110,.28);
+            }
+            .lm-btn-add:hover { background: #0d1b35; transform: translateY(-1px); color: #fff !important; }
+
+            .lm-content { padding: 20px 24px 40px; flex: 1; }
+
+            .lm-page-title {
+                display: flex; align-items: center; gap: 11px;
+                font-size: 18px; font-weight: 800; color: #1a1a2e; margin-bottom: 20px;
+            }
+            .lm-page-icon {
+                width: 38px; height: 38px; border-radius: 9px;
+                background: linear-gradient(135deg, #1e3a6e, #0d1b35);
+                display: flex; align-items: center; justify-content: center;
+                color: #fff; font-size: 17px; flex-shrink: 0;
+            }
+
+            /* ══════════════════════════════════════════════════
+               PESTAÑAS
+            ══════════════════════════════════════════════════ */
+            .lm-tabs { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
+            .lm-tab-btn {
+                padding: 12px 22px; border-radius: 10px;
+                font-size: 13px; font-weight: 700; cursor: pointer; border: none;
+                transition: background .2s, transform .15s, box-shadow .2s;
+                display: flex; align-items: center; gap: 8px;
+                min-width: 150px; justify-content: center;
+                font-family: 'Nunito Sans', sans-serif; outline: none;
+            }
+            .lm-tab-btn:not(.active) { background: #182d46; color: #fff; }
+            .lm-tab-btn:not(.active):hover { background: #1e3c5e; transform: translateY(-1px); }
+            .lm-tab-btn.active { background: #c9a227; color: #fff; box-shadow: 0 4px 14px rgba(201,162,39,.38); transform: translateY(-1px); }
+            .lm-tab-btn .pi { font-size: 14px; }
+
+            .lm-tab-panel { display: none; animation: tabIn .22s ease; }
+            .lm-tab-panel.active { display: block; }
+            @keyframes tabIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+
+            /* ══════════════════════════════════════════════════
+               TARJETAS
+            ══════════════════════════════════════════════════ */
+            .lm-card {
+                background: #fff; border-radius: 12px;
+                box-shadow: 0 2px 14px rgba(0,0,0,.06);
+                border: 1px solid #e5ecf5; margin-bottom: 18px; overflow: hidden;
+            }
+            .lm-card-head {
+                padding: 14px 20px; border-bottom: 1px solid #f0f5fc;
+                display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+            }
+            .lm-card-title { font-size: 15px; font-weight: 800; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
+            .lm-card-title .pi { color: #1e3a6e; font-size: 16px; }
+            .lm-card-body { padding: 18px 20px; }
+            .lm-card-body-flush { padding: 0; }
+
+            .lm-btn-export {
+                display: inline-flex !important; align-items: center !important; gap: 7px !important;
+                background: #1e3a6e !important; color: #fff !important;
+                padding: 8px 18px !important; border-radius: 8px !important;
+                font-size: 13px !important; font-weight: 700 !important;
+                text-decoration: none !important; border: none !important; cursor: pointer !important;
+                transition: background .18s !important; font-family: 'Nunito Sans', sans-serif !important;
+            }
+            .lm-btn-export:hover { background: #0d1b35 !important; }
+            .lm-btn-export .pi { color: #fff !important; }
+            .lm-btn-export .ui-button-text { display: none !important; }
+
+            /* ══════════════════════════════════════════════════
+               ESTADÍSTICAS (Pestaña Resumen)
+            ══════════════════════════════════════════════════ */
+            .lm-stats-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+                gap: 16px; margin-bottom: 22px;
+            }
+            .lm-stat {
+                background: #fff; border-radius: 12px; padding: 18px 20px;
+                box-shadow: 0 2px 10px rgba(0,0,0,.06); border-left: 5px solid #1e3a6e;
+                transition: transform .18s, box-shadow .18s;
+            }
+            .lm-stat:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(0,0,0,.10); }
+            .lm-stat.gold  { border-left-color: #c9a227; }
+            .lm-stat.blue  { border-left-color: #1976d2; }
+            .lm-stat.teal  { border-left-color: #0e7490; }
+            .lm-stat-lbl  { font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .06em; }
+            .lm-stat-val  { font-size: 32px; font-weight: 800; color: #1a1a2e; margin: 4px 0 0; line-height: 1; }
+            .lm-stat-sub  { font-size: 11px; color: #9ca3af; margin-top: 5px; }
+
+            /* ══════════════════════════════════════════════════
+               FILTROS Y ZOOM (Pestaña Solicitudes)
+            ══════════════════════════════════════════════════ */
+            .lm-filter-bar {
+                display: flex; align-items: center; gap: 14px;
+                background: #f8fafc; border: 1.5px solid #dde3ef;
+                border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; flex-wrap: wrap;
+            }
+            .lm-zoom-bar {
+                display: flex; align-items: center; gap: 10px;
+                background: #f5f7fb; border: 1px solid #dde3ef;
+                border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; flex-wrap: wrap;
+            }
+            .lm-zoom-lbl { font-size: 11px; font-weight: 700; color: #555; }
+            .lm-zoom-btn {
+                background: #fff; border: 1px solid #dde3ef; padding: 4px 10px;
+                border-radius: 4px; cursor: pointer; font-size: 13px; color: #555;
+                transition: background .15s;
+            }
+            .lm-zoom-btn:hover { background: #e0edf8; }
+            .lm-zoom-sep { border-left: 1px solid #dde3ef; height: 18px; margin: 0 4px; }
+            .lm-table-wrap { overflow-x: auto; overflow-y: hidden; }
+
+            /* ══════════════════════════════════════════════════
+               PAGINATOR OVERRIDES
+            ══════════════════════════════════════════════════ */
+            .ui-paginator .ui-icon-seek-first,
+            .ui-paginator .ui-icon-seek-prev,
+            .ui-paginator .ui-icon-seek-next,
+            .ui-paginator .ui-icon-seek-end,
+            .ui-paginator .ui-icon-carat-2-w,
+            .ui-paginator .ui-icon-carat-2-e {
+                background-image: none !important; background: transparent !important;
+                text-indent: 0 !important; width: auto !important; min-width: 14px !important;
+                height: auto !important; overflow: visible !important; display: inline-block !important;
+                font-size: 0 !important; color: transparent !important;
+                line-height: 1 !important; font-weight: 900 !important;
+                text-align: center !important; vertical-align: middle !important;
+            }
+            .ui-paginator .ui-icon-seek-first:before { content: "\00AB" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-icon-seek-prev:before,
+            .ui-paginator .ui-icon-carat-2-w:before  { content: "\2039" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-icon-seek-next:before,
+            .ui-paginator .ui-icon-carat-2-e:before  { content: "\203A" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-icon-seek-end:before   { content: "\00BB" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-paginator-first .ui-icon,
+            .ui-paginator .ui-paginator-prev  .ui-icon,
+            .ui-paginator .ui-paginator-next  .ui-icon,
+            .ui-paginator .ui-paginator-last  .ui-icon {
+                background-image: none !important; text-indent: 0 !important;
+                width: auto !important; height: auto !important; overflow: visible !important;
+                display: inline-block !important; font-size: 0 !important;
+                color: transparent !important; line-height: 1 !important; font-weight: 900 !important;
+            }
+            .ui-paginator .ui-paginator-first .ui-icon:before { content: "\00AB" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-paginator-prev  .ui-icon:before { content: "\2039" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-paginator-next  .ui-icon:before { content: "\203A" !important; font-size: 18px !important; color: #1c6c2c !important; }
+            .ui-paginator .ui-paginator-last  .ui-icon:before { content: "\00BB" !important; font-size: 18px !important; color: #1c6c2c !important; }
+
+            html body div.ui-paginator,
+            html body div.ui-paginator-top,
+            html body div.ui-paginator-bottom,
+            html body .ui-datatable div.ui-paginator,
+            html body div.ui-paginator.ui-widget-header {
+                background: linear-gradient(135deg, #edf7ed, #e4f2e4) !important;
+                background-color: #edf7ed !important; background-image: none !important;
+                border-top: 1px solid #c3dfc3 !important; border-bottom: 1px solid #c3dfc3 !important;
+                color: #263238 !important; padding: 8px 14px !important;
+            }
+            html body div.ui-paginator .ui-paginator-current { color: #1e3a6e !important; font-weight: 700 !important; font-size: 12px !important; }
+            html body div.ui-paginator .ui-paginator-page {
+                background: #fff !important; border: 1px solid #b8d4b8 !important; color: #1e3a6e !important;
+                border-radius: 6px !important; min-width: 30px !important; height: 30px !important;
+                font-weight: 700 !important; font-size: 12px !important;
+            }
+            html body div.ui-paginator .ui-paginator-page.ui-state-active {
+                background: linear-gradient(135deg, #2a5aad, #1e3a6e) !important;
+                border-color: #1e3a6e !important; color: #fff !important;
+                box-shadow: 0 2px 8px rgba(30,58,110,.35) !important;
+            }
+            html body div.ui-paginator .ui-paginator-first,
+            html body div.ui-paginator .ui-paginator-prev,
+            html body div.ui-paginator .ui-paginator-next,
+            html body div.ui-paginator .ui-paginator-last {
+                background: #fff !important; border: 1px solid #b8d4b8 !important; color: #1e3a6e !important;
+                border-radius: 6px !important; width: 30px !important; height: 30px !important;
+            }
+            html body div.ui-paginator .ui-paginator-rpp-options {
+                background: #fff !important; border: 1px solid #b8d4b8 !important; color: #263238 !important;
+                border-radius: 6px !important; padding: 4px 8px !important; font-size: 12px !important; font-weight: 600 !important;
+            }
+
+            /* ══ RADIO PILLS ══ */
+            .ui-selectoneradio table,
+            .ui-selectoneradio tbody { display: block !important; border: none !important; background: transparent !important; }
+            .ui-selectoneradio tr    { display: flex !important; flex-wrap: wrap !important; gap: 6px !important; align-items: center !important; }
+            .ui-selectoneradio td    { display: block !important; padding: 0 !important; margin: 0 !important; border: none !important; background: transparent !important; line-height: 0 !important; }
+            .ui-selectoneradio .ui-radiobutton { display: none !important; }
+            .ui-selectoneradio label {
+                display: inline-block !important; padding: 8px 18px !important; border-radius: 30px !important;
+                border: 1px solid rgba(30,58,110,0.2) !important; background: #ffffff !important;
+                color: #2e4a36 !important; font-size: 13px !important; font-weight: 700 !important;
+                cursor: pointer !important; transition: all .25s cubic-bezier(0.4,0,0.2,1) !important;
+                white-space: nowrap !important; user-select: none !important; line-height: 1.4 !important;
+                box-shadow: 0 2px 5px rgba(0,0,0,.04) !important; margin: 0 !important;
+            }
+            .ui-selectoneradio label:hover {
+                background: #f0f4ff !important; border-color: rgba(30,58,110,0.4) !important;
+                color: #1e3a6e !important; box-shadow: 0 4px 12px rgba(30,58,110,.15) !important;
+                transform: translateY(-1.5px) !important;
+            }
+            .ui-selectoneradio label.pill-active {
+                background: linear-gradient(135deg, #2a5aad 0%, #0d1b35 100%) !important;
+                border-color: transparent !important; color: #ffffff !important;
+                box-shadow: 0 6px 16px rgba(30,58,110,0.35) !important;
+                transform: translateY(-2px) !important; letter-spacing: 0.2px !important;
+            }
+
+            /* ══ CHECKBOX FECHA ══ */
+            .ui-selectbooleancheckbox {
+                display: inline-flex !important; align-items: center !important; gap: 8px !important;
+                background: #fff !important; border: 1px solid rgba(30,58,110,0.2) !important;
+                border-radius: 30px !important; padding: 7px 16px 7px 12px !important;
+                cursor: pointer !important; transition: all .25s cubic-bezier(0.4,0,0.2,1) !important;
+                box-shadow: 0 2px 5px rgba(0,0,0,.04) !important;
+            }
+            .ui-selectbooleancheckbox:hover { border-color: rgba(30,58,110,0.4) !important; background: #f0f4ff !important; box-shadow: 0 4px 12px rgba(30,58,110,.15) !important; transform: translateY(-1.5px) !important; }
+            .ui-selectbooleancheckbox .ui-chkbox { display: flex !important; align-items: center !important; }
+            .ui-selectbooleancheckbox .ui-chkbox-box { width: 15px !important; height: 15px !important; border-radius: 4px !important; border: 1.5px solid #9db4d8 !important; background: #fff !important; flex-shrink: 0 !important; transition: all .15s !important; }
+            .ui-selectbooleancheckbox .ui-chkbox-box.ui-state-active { background: #1e3a6e !important; border-color: #1e3a6e !important; box-shadow: 0 2px 6px rgba(30,58,110,.32) !important; }
+            .ui-selectbooleancheckbox .ui-chkbox-label { font-size: 12px !important; font-weight: 700 !important; color: #1e3a6e !important; cursor: pointer !important; white-space: nowrap !important; line-height: 1 !important; }
+
+            /* ══ BOTÓN IMPORTAR EXCEL ══ */
+            .sn-import-excel .ui-fileupload-choose,
+            .sn-import-excel button.ui-button {
+                background: linear-gradient(135deg, #0d2b6e, #0d1b35) !important;
+                border: none !important; border-radius: 22px !important; color: #fff !important;
+                font-size: 12px !important; font-weight: 700 !important; padding: 8px 20px !important;
+                transition: all .22s ease !important; box-shadow: 0 3px 10px rgba(22,101,52,.35) !important; letter-spacing: .03em !important;
+            }
+            .sn-import-excel .ui-fileupload-choose:hover,
+            .sn-import-excel button.ui-button:hover { background: linear-gradient(135deg, #0d1b35, #0d2b6e) !important; box-shadow: 0 5px 16px rgba(30,58,110,.48) !important; transform: translateY(-1px) !important; }
+            .sn-import-excel .ui-fileupload-choose .ui-button-text,
+            .sn-import-excel button.ui-button .ui-button-text { color: #fff !important; font-weight: 700 !important; }
+            .sn-import-excel .ui-fileupload-choose .pi,
+            .sn-import-excel button.ui-button .pi { color: #fff !important; }
+
+            /* ══ TABLA ══ */
+            html body .ui-datatable thead tr th,
+            html body .ui-datatable thead tr th.ui-state-default { box-shadow: inset 0 -3px 0 rgba(0,0,0,.12) !important; }
+
+            .sn-badge { font-size: 11px !important; padding: 4px 12px !important; font-weight: 800 !important; letter-spacing: .06em !important; }
+
+            html body .ui-datatable .ui-datatable-tablewrapper { overflow-x: auto !important; overflow-y: hidden !important; width: 100% !important; }
+            html body .ui-datatable table { table-layout: auto !important; min-width: 1250px !important; }
+            html body .ui-datatable th { white-space: nowrap !important; padding: 12px 16px !important; }
+            html body .ui-datatable td { padding: 10px 12px !important; vertical-align: middle !important; }
+
+            html body .ui-inputtext:focus,
+            html body input.ui-inputfield:focus,
+            html body .ui-inputtextarea:focus { background: #ffffff !important; color: #263238 !important; }
+            html body .ui-selectonemenu,
+            html body .ui-selectonemenu.ui-state-default,
+            html body .ui-selectonemenu.ui-state-hover,
+            html body .ui-selectonemenu.ui-state-focus,
+            html body .ui-selectonemenu.ui-state-active { background: #ffffff !important; background-color: #ffffff !important; color: #263238 !important; }
+            html body .ui-selectonemenu .ui-selectonemenu-label { color: #263238 !important; background: transparent !important; visibility: visible !important; opacity: 1 !important; }
+
+            /* ══ ANUALIDADES ALERT CARD ══ */
+            .anu-stat-card {
+                background: linear-gradient(135deg, #ffffff, #f8fdf9) !important;
+                border-radius: 12px !important; border: 1px solid rgba(30,58,110,.12) !important;
+                padding: 12px 18px !important; display: flex; align-items: center; gap: 14px;
+                box-shadow: 0 2px 10px rgba(15,77,28,.09), 0 1px 3px rgba(0,0,0,.05) !important;
+                transition: box-shadow .25s ease, transform .25s ease, border-color .25s ease !important;
+            }
+            .anu-stat-card:hover { box-shadow: 0 8px 28px rgba(15,77,28,.18) !important; transform: translateY(-3px) !important; border-color: rgba(30,58,110,.28) !important; }
+            .anu-stat-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,.10); }
+            .anu-stat-icon.amber { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #78350f; }
+            .anu-stat-num { font-size: 20px; font-weight: 900; color: #041f10; line-height: 1; }
+            .anu-stat-lbl { font-size: 11px; color: #5a7a68; font-weight: 700; margin-top: 2px; letter-spacing: .02em; }
+
+            /* ══ RESPONSIVE ══ */
+            @media (max-width: 900px) {
+                .lm-sidebar { width: 64px; min-width: 64px; }
+                .lm-logo-txt, .lm-user-name, .lm-user-role,
+                .lm-nav-sec, .lm-nav-item span { display: none !important; }
+                .lm-nav-item { justify-content: center; padding: 10px 5px; margin: 2px 4px; }
+                .lm-logout-btn, .lm-logout-btn.ui-button { justify-content: center !important; padding: 10px 5px !important; }
+                .lm-logout-btn .ui-button-text { display: none !important; }
+                .lm-main { margin-left: 64px; }
+                .lm-tab-btn { min-width: auto; padding: 10px 14px; font-size: 12px; }
+            }
+            @media (max-width: 600px) {
+                .lm-content { padding: 14px 12px 30px; }
+                .lm-stats-grid { grid-template-columns: 1fr 1fr; }
+                .lm-topbar { padding: 0 12px; }
+            }
+        </style>
+        </f:facet>
+    </h:head>
+
+    <h:body>
+        <p:growl id="mensajes" showDetail="true" life="4000"/>
+
+        <h:form id="allform" enctype="multipart/form-data">
+        <div class="lm-layout">
+
+            <!-- ══════════════ SIDEBAR ══════════════ -->
+            <div class="lm-sidebar">
+                <div class="lm-logo">
+                    <img src="#{resource['images/sena_2.png']}" alt="SENADI"/>
+                    <div class="lm-logo-txt">SENADI<small>Obtenciones Vegetales</small></div>
+                </div>
+
+                <div class="lm-user-card">
+                    <div class="lm-avatar"><i class="pi pi-user"/></div>
+                    <div>
+                        <div class="lm-user-name">
+                            <p:outputLabel value="#{vegetableBean.login.login}" style="color:#fff; font-size:13px; font-weight:700;"/>
+                        </div>
+                        <div class="lm-user-role">Funcionario SENADI</div>
+                    </div>
+                </div>
+
+                <div class="lm-nav-sec">Principal</div>
+
+                <a href="index.xhtml" class="lm-nav-item active">
+                    <i class="pi pi-home"/> <span>Inicio</span>
+                </a>
+
+                <div class="lm-nav-sec">Módulos</div>
+
+                <a href="anualidades/lista.xhtml" class="lm-nav-item">
+                    <i class="pi pi-calendar-plus"/> <span>Anualidades</span>
+                </a>
+
+                <div class="lm-sidebar-spacer"/>
+
+                <p:commandLink actionListener="#{loginBean.logout}"
+                               oncomplete="logout(xhr, status, args)"
+                               immediate="true"
+                               styleClass="lm-logout-btn"
+                               style="display:flex !important; align-items:center !important; gap:10px !important;
+                                      padding:11px 16px !important; margin:8px !important;
+                                      width:calc(100% - 16px) !important; text-decoration:none !important;
+                                      background:rgba(214,69,69,.22) !important; border:1px solid rgba(214,69,69,.40) !important;
+                                      border-radius:8px !important; color:#f87171 !important;
+                                      font-size:13px !important; font-weight:700 !important; cursor:pointer !important;">
+                    <i class="pi pi-power-off" style="color:#f87171; font-size:15px;"/>
+                    <span style="color:#f87171; font-weight:700; font-size:13px;">Cerrar Sesión</span>
+                </p:commandLink>
+            </div>
+
+            <!-- ══════════════ ÁREA PRINCIPAL ══════════════ -->
+            <div class="lm-main">
+
+                <!-- Barra superior -->
+                <div class="lm-topbar">
+                    <div class="lm-topbar-left">
+                        <span class="lm-page-badge">
+                            <i class="pi pi-leaf" style="margin-right:5px;"/>
+                            Obtenciones Vegetales
+                        </span>
+                    </div>
+                    <div class="lm-topbar-right">
+                        <a href="anualidades/lista.xhtml" class="lm-icon-btn" title="Módulo de Anualidades">
+                            <i class="pi pi-calendar-plus"/>
+                        </a>
+                        <p:commandButton title="Buscar e importar trámite del portal"
+                                         icon="pi pi-cloud-download"
+                                         style="display:inline-flex !important; align-items:center !important; gap:7px !important;
+                                                background:#1565c0 !important; color:#fff !important;
+                                                padding:8px 16px !important; border-radius:8px !important;
+                                                font-size:13px !important; font-weight:700 !important;
+                                                border:none !important; cursor:pointer !important;
+                                                box-shadow:0 2px 8px rgba(21,101,192,.32) !important;
+                                                font-family:'Nunito Sans',sans-serif !important;"
+                                         actionListener="#{vegetableBean.limpiarBusquedaPortal}"
+                                         process="@this"
+                                         update=":dlgBuscarPortal"
+                                         oncomplete="PF('dlgBuscarPortal').show();">
+                            <span style="color:#fff; font-weight:700; font-size:13px; margin-left:4px;">Importar Portal</span>
+                        </p:commandButton>
+                    </div>
+                </div>
+
+                <!-- Contenido principal -->
+                <div class="lm-content">
+
+                    <!-- Título -->
+                    <div class="lm-page-title">
+                        <div class="lm-page-icon"><i class="pi pi-list"/></div>
+                        Registros de Solicitudes
+                    </div>
+
+                    <!-- ══ 4 PESTAÑAS ══ -->
+                    <div class="lm-tabs">
+                        <button type="button" class="lm-tab-btn"
+                                onclick="switchTab('resumen', this)">
+                            <i class="pi pi-chart-bar"/> Resumen
+                        </button>
+                        <button type="button" class="lm-tab-btn active"
+                                onclick="switchTab('solicitudes', this)">
+                            <i class="pi pi-list"/> Solicitudes
+                        </button>
+                        <button type="button" class="lm-tab-btn"
+                                onclick="switchTab('importar', this)">
+                            <i class="pi pi-file-import"/> Importar Excel
+                        </button>
+                        <button type="button" class="lm-tab-btn"
+                                onclick="switchTab('herramientas', this)">
+                            <i class="pi pi-cog"/> Herramientas
+                        </button>
+                    </div>
+
+                    <!-- ══════════ PESTAÑA 1: RESUMEN ══════════ -->
+                    <div id="tab-resumen" class="lm-tab-panel">
+
+                        <div class="lm-stats-grid">
+                            <div class="lm-stat">
+                                <div class="lm-stat-lbl">Total Solicitudes</div>
+                                <div class="lm-stat-val">#{vegetableBean.vegetables.size()}</div>
+                                <div class="lm-stat-sub">Según filtro activo</div>
+                            </div>
+                            <div class="lm-stat gold">
+                                <div class="lm-stat-lbl">Alertas Anualidades</div>
+                                <div class="lm-stat-val">#{anualidadBean.totalAlertas}</div>
+                                <div class="lm-stat-sub">Vencen en 15 días</div>
+                            </div>
+                            <div class="lm-stat blue">
+                                <div class="lm-stat-lbl">Módulo Activo</div>
+                                <div class="lm-stat-val" style="font-size:18px; padding-top:6px;">SENADI</div>
+                                <div class="lm-stat-sub">Obtenciones Vegetales</div>
+                            </div>
+                            <div class="lm-stat teal">
+                                <div class="lm-stat-lbl">Anualidades</div>
+                                <div class="lm-stat-val" style="font-size:14px; padding-top:8px;">
+                                    <a href="anualidades/lista.xhtml"
+                                       style="color:#0e7490; font-weight:800; text-decoration:none; display:flex; align-items:center; gap:6px;">
+                                        <i class="pi pi-calendar-plus" style="font-size:18px;"/> Ver módulo
+                                    </a>
+                                </div>
+                                <div class="lm-stat-sub">Gestión de pagos anuales</div>
+                            </div>
+                        </div>
+
+                        <!-- Alerta anualidades (condicional) -->
+                        <h:panelGroup rendered="#{anualidadBean.totalAlertas gt 0}" style="display:block;">
+                            <div class="lm-card">
+                                <div class="lm-card-head">
+                                    <div class="lm-card-title">
+                                        <i class="pi pi-bell" style="color:#f59e0b;"/> Anualidades Próximas a Vencer (15 días)
+                                    </div>
+                                    <p:commandButton value="Ver todas" type="button"
+                                                     icon="pi pi-external-link"
+                                                     styleClass="lm-btn-export"
+                                                     onclick="PF('dlgProxVencIndex').show();"/>
+                                </div>
+                                <div class="lm-card-body">
+                                    <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+                                        <div class="anu-stat-card" style="border-left:3px solid #f59e0b; cursor:pointer;"
+                                             onclick="PF('dlgProxVencIndex').show();"
+                                             title="Ver anualidades con vencimiento próximo">
+                                            <div class="anu-stat-icon amber"><i class="pi pi-bell"/></div>
+                                            <div>
+                                                <div class="anu-stat-num" style="color:#92400e;">#{anualidadBean.totalAlertas}</div>
+                                                <div class="anu-stat-lbl" style="display:flex;align-items:center;gap:4px;">
+                                                    Próx. vencimiento (15 días)
+                                                    <i class="pi pi-external-link" style="font-size:9px;color:#f59e0b;"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <a href="anualidades/lista.xhtml"
+                                           style="font-size:13px; color:#1e3a6e; font-weight:700; text-decoration:underline;">
+                                            Ir al módulo de Anualidades →
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </h:panelGroup>
+
+                        <!-- Guía de estados -->
+                        <div class="lm-card">
+                            <div class="lm-card-head">
+                                <div class="lm-card-title">
+                                    <i class="pi pi-info-circle"/> Guía de Estados
+                                </div>
+                            </div>
+                            <div class="lm-card-body">
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; font-size:13px;">
+                                    <div>
+                                        <p style="font-weight:800; color:#1e3a6e; margin:0 0 10px;">Estados de solicitud:</p>
+                                        <div style="display:flex; flex-direction:column; gap:8px;">
+                                            <div style="display:flex; align-items:center; gap:10px;">
+                                                <span class="sn-badge sn-badge-DELIVERED">EN PROCESO</span>
+                                                <span style="color:#555; font-size:12px;">Pendiente de revisión</span>
+                                            </div>
+                                            <div style="display:flex; align-items:center; gap:10px;">
+                                                <span class="sn-badge sn-badge-ACCEPTED">ACEPTADO</span>
+                                                <span style="color:#555; font-size:12px;">Solicitud aceptada formalmente</span>
+                                            </div>
+                                            <div style="display:flex; align-items:center; gap:10px;">
+                                                <span class="sn-badge sn-badge-FINISHED">FINALIZADO</span>
+                                                <span style="color:#555; font-size:12px;">Proceso concluido</span>
+                                            </div>
+                                            <div style="display:flex; align-items:center; gap:10px;">
+                                                <span class="sn-badge sn-badge-PREVIEW">VISTA PREV.</span>
+                                                <span style="color:#555; font-size:12px;">En revisión previa</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <p style="font-weight:800; color:#1e3a6e; margin:0 0 10px;">Acciones disponibles:</p>
+                                        <ul style="margin:0 0 0 16px; line-height:2; color:#555; font-size:12px;">
+                                            <li>Editar solicitudes en estado <strong>EN PROCESO</strong> o <strong>ACEPTADO</strong></li>
+                                            <li>Reasignar trámites <strong>EN PROCESO</strong> a otro funcionario</li>
+                                            <li>Ver archivos adjuntos por solicitud</li>
+                                            <li>Consultar historial completo de cambios</li>
+                                            <li>Exportar tabla a Excel</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- /tab-resumen -->
+
+                    <!-- ══════════ PESTAÑA 2: SOLICITUDES (activa) ══════════ -->
+                    <div id="tab-solicitudes" class="lm-tab-panel active">
+
+                        <div class="lm-card">
+                            <div class="lm-card-head">
+                                <div class="lm-card-title">
+                                    <i class="pi pi-list"/> Registros de Solicitudes
+                                </div>
+                                <h:commandLink styleClass="lm-btn-export" immediate="true"
+                                               rendered="#{!loginBean.lectura}" title="Exportar a Excel">
+                                    <i class="pi pi-download"/>
+                                    <p:dataExporter type="xlsx" target="tablaDeObtenciones" fileName="obtenciones"/>
+                                </h:commandLink>
+                            </div>
+                            <div class="lm-card-body">
+
+                                <!-- Filtros -->
+                                <div class="lm-filter-bar">
+                                    <i class="pi pi-filter" style="color:#1e3a6e; font-size:15px;"/>
+                                    <span style="font-size:12px; font-weight:700; color:#444;">ESTADO:</span>
+                                    <p:selectOneRadio id="line" value="#{vegetableBean.radioOption}" layout="lineDirection">
+                                        <f:selectItem itemLabel="Entregados" itemValue="Iniciados"/>
+                                        <f:selectItem itemLabel="Aceptados"  itemValue="Aceptados"/>
+                                        <f:selectItem itemLabel="Todos"      itemValue="Todos"/>
+                                        <p:ajax update=":mensajes tablaDeObtenciones dates checkd"
+                                                listener="#{vegetableBean.onRadioSelected}"/>
+                                    </p:selectOneRadio>
+                                </div>
+
+                                <!-- Filtro fecha -->
+                                <div class="lm-filter-bar">
+                                    <i class="pi pi-calendar" style="color:#1e3a6e; font-size:15px;"/>
+                                    <span style="font-size:12px; font-weight:700; color:#444;">FECHA:</span>
+                                    <p:selectBooleanCheckbox id="checkd"
+                                                             itemLabel="Por F. Presentación"
+                                                             value="#{vegetableBean.byDate}">
+                                        <p:ajax update=":mensajes dates" listener="#{vegetableBean.onCheckSelected}"/>
+                                    </p:selectBooleanCheckbox>
+                                    <h:panelGroup id="dates">
+                                        <h:panelGroup rendered="#{vegetableBean.byDate}"
+                                                      style="display:flex; align-items:center; gap:12px; background:white;
+                                                             padding:6px 14px; border-radius:30px; border:1px solid #cbd5e1;
+                                                             box-shadow:inset 0 1px 3px rgba(0,0,0,0.05);">
+                                            <div style="display:flex; align-items:center; gap:6px;">
+                                                <p:outputLabel value="Desde" style="font-weight:700; font-size:11px; margin:0; color:#475569; text-transform:uppercase;"/>
+                                                <p:calendar value="#{vegetableBean.startDate}" pattern="dd/MM/yyyy" showIcon="false"
+                                                            inputStyle="width:85px; text-align:center; padding:2px 4px; font-size:12px; border:none; border-bottom:1px solid #cbd5e1; background:transparent; box-shadow:none;"/>
+                                            </div>
+                                            <div style="display:flex; align-items:center; gap:6px;">
+                                                <p:outputLabel value="Hasta" style="font-weight:700; font-size:11px; margin:0; color:#475569; text-transform:uppercase;"/>
+                                                <p:calendar value="#{vegetableBean.endDate}" pattern="dd/MM/yyyy" showIcon="false"
+                                                            inputStyle="width:85px; text-align:center; padding:2px 4px; font-size:12px; border:none; border-bottom:1px solid #cbd5e1; background:transparent; box-shadow:none;"/>
+                                            </div>
+                                            <p:commandButton value="Buscar" styleClass="sn-btn-primary"
+                                                             actionListener="#{vegetableBean.searchVegetables}"
+                                                             update=":mensajes tablaDeObtenciones"
+                                                             icon="pi pi-search"
+                                                             style="padding:2px 12px; font-size:11px; border-radius:15px; height:auto;"/>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+                                </div>
+
+                                <!-- Zoom y scroll -->
+                                <div class="lm-zoom-bar">
+                                    <span class="lm-zoom-lbl">Zoom:</span>
+                                    <button type="button" class="lm-zoom-btn" onclick="snZoomOut()"><i class="pi pi-minus"/></button>
+                                    <span id="zoomLevel" style="font-size:11px; color:#555; min-width:36px; text-align:center;">100%</span>
+                                    <button type="button" class="lm-zoom-btn" onclick="snZoomIn()"><i class="pi pi-plus"/></button>
+                                    <div class="lm-zoom-sep"/>
+                                    <span class="lm-zoom-lbl">Scroll:</span>
+                                    <button type="button" class="lm-zoom-btn" onclick="snScrollLeft()"><i class="pi pi-chevron-left"/></button>
+                                    <button type="button" class="lm-zoom-btn" onclick="snScrollRight()"><i class="pi pi-chevron-right"/></button>
+                                </div>
+
+                                <!-- TABLA -->
+                                <div id="tableScrollContainer" class="lm-table-wrap">
+                                <p:dataTable id="tablaDeObtenciones"
+                                             var="vegetable"
+                                             value="#{vegetableBean.vegetables}"
+                                             widgetVar="tablaDeObtenciones"
+                                             binding="#{vegetableBean.vegetableTable}"
+                                             emptyMessage="No hay datos para mostrar"
+                                             paginator="true"
+                                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                             rows="20"
+                                             rowsPerPageTemplate="20,50,100,150,200,250,300"
+                                             rowKey="#{vegetable.id}"
+                                             rowIndexVar="index"
+                                             style="width:100%;">
+
+                                    <p:column headerText="#" style="text-align:center; width:40px;" exportable="false">
+                                        <span style="font-size:11px; color:#888;">#{index + 1}</span>
+                                    </p:column>
+
+                                    <p:column headerText="Casillero" style="text-align:center; width:100px;" filterBy="#{vegetable.locker}">
+                                        <h:outputText value="#{vegetable.locker}" style="font-size:11px;"/>
+                                    </p:column>
+
+                                    <p:column headerText="Trámite" style="text-align:center; width:90px;" filterBy="#{vegetable.applicationNumber}">
+                                        <span style="font-weight:700; color:var(--sn-dark); font-size:11px;">
+                                            <h:outputText value="#{vegetable.applicationNumber}"/>
+                                        </span>
+                                    </p:column>
+
+                                    <p:column headerText="F. Creación" style="text-align:center; width:85px;">
+                                        <h:outputText value="#{vegetable.createDate}" style="font-size:11px;">
+                                            <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Guayaquil"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Taxón Botánico" style="width:140px;" filterBy="#{vegetable.botanicalTaxon}">
+                                        <h:outputText value="#{vegetable.botanicalTaxon}" style="font-size:11px; font-style:italic;"/>
+                                    </p:column>
+
+                                    <p:column headerText="F. Presentación" style="text-align:center; width:85px;">
+                                        <h:outputText value="#{vegetable.applicationDate}" style="font-size:11px;">
+                                            <f:convertDateTime pattern="yyyy-MM-dd" timeZone="America/Guayaquil"/>
+                                        </h:outputText>
+                                    </p:column>
+
+                                    <p:column headerText="Grupo Varietal" style="width:120px;" filterBy="#{vegetable.varietalGroup}">
+                                        <h:outputText value="#{vegetable.varietalGroup}" style="font-size:11px;"/>
+                                    </p:column>
+
+                                    <p:column headerText="Estado Actual" style="text-align:center; width:105px; white-space:normal; word-break:break-word;">
+                                        <span class="sn-badge sn-badge-#{vegetable.status}">
+                                            <h:outputText value="#{vegetable.status eq 'DELIVERED' ? 'EN PROCESO' :
+                                                                  (vegetable.status eq 'ACCEPTED' ? 'ACEPTADO' :
+                                                                  (vegetable.status eq 'FINISHED' ? 'FINALIZADO' :
+                                                                  (vegetable.status eq 'PREVIEW'  ? 'VISTA PREV.' : 'GUARDADO')))}"/>
+                                        </span>
+                                    </p:column>
+
+                                    <p:column headerText="Expediente" headerStyle="white-space:normal; word-break:break-word; min-width:90px;" style="text-align:center; width:90px;">
+                                        <h:outputText value="#{vegetable.managementStatus}" style="font-size:11px; color:#555;"/>
+                                    </p:column>
+
+                                    <p:column headerText="Gestión" style="text-align:center; width:145px;">
+                                        <p:selectOneMenu value="#{vegetable.statusFlow}"
+                                                         style="width:130px; font-size:12px;">
+                                            <f:selectItems value="#{vegetableBean.statusFlows}" var="flow"
+                                                           itemValue="#{flow}"
+                                                           itemLabel="#{vegetableBean.getStatusFlowLabel(flow)}"/>
+                                            <p:ajax listener="#{vegetableBean.prepareStatusFlowChange}"
+                                                    process="@this"
+                                                    update=":mensajes :dlgStatusFlow tablaDeObtenciones"
+                                                    oncomplete="if(args.openStatusDialog){PF('dlgStatusFlow').show();}"/>
+                                        </p:selectOneMenu>
+                                    </p:column>
+
+                                    <!-- ACCIONES -->
+                                    <p:column headerText="Acciones" style="text-align:center; width:220px;" exportable="false">
+                                        <div class="acciones-grupo">
+
+                                            <h:link outcome="actualizar"
+                                                    styleClass="accion-btn btn-edit"
+                                                    title="Editar registro"
+                                                    rendered="#{vegetable.status eq 'DELIVERED' or vegetable.status eq 'ACCEPTED'}">
+                                                <f:param name="id" value="#{vegetable.id}"/>
+                                                <i class="pi pi-pencil"/>
+                                            </h:link>
+
+                                            <h:link outcome="actualizar"
+                                                    styleClass="accion-btn"
+                                                    title="Ver registro (solo lectura)"
+                                                    rendered="#{vegetable.status ne 'DELIVERED' and vegetable.status ne 'ACCEPTED'}"
+                                                    style="opacity:0.5; cursor:default; pointer-events:none;">
+                                                <f:param name="id" value="#{vegetable.id}"/>
+                                                <i class="pi pi-eye"/>
+                                            </h:link>
+
+
+                                            <p:commandButton styleClass="accion-btn btn-view-uploaded"
+                                                             title="Ver archivos subidos"
+                                                             icon="pi pi-eye"
+                                                             rendered="#{vegetableBean.hasUploadedFiles(vegetable.id)}"
+                                                             action="#{vegetableBean.prepareViewUploaded(null)}"
+                                                             process="@this"
+                                                             update=":mensajes :dlgArchivos"
+                                                             oncomplete="PF('dlgArchivos').show();">
+                                                <f:setPropertyActionListener value="#{vegetable}"
+                                                                             target="#{vegetableBean.vegetableForms}"/>
+                                            </p:commandButton>
+
+                                            <a href="historial/lista.xhtml?appNumber=#{vegetable.applicationNumber}"
+                                               class="accion-btn btn-history"
+                                               title="Ver historial"
+                                               style="display:inline-flex; align-items:center; justify-content:center;">
+                                                <i class="pi pi-history"/>
+                                            </a>
+
+
+                                        </div>
+                                    </p:column>
+
+                                    <f:facet name="footer">
+                                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                                            <p:outputLabel id="num_registros"
+                                                           value="#{vegetableBean.vegetables.size()} registros"
+                                                           style="font-size:12px; color:#6b7280; font-weight:600;"/>
+                                        </div>
+                                    </f:facet>
+                                </p:dataTable>
+                                </div><!-- tableScrollContainer -->
+
+                            </div><!-- lm-card-body -->
+                        </div><!-- lm-card -->
+
+                    </div><!-- /tab-solicitudes -->
+
+                    <!-- ══════════ PESTAÑA 3: IMPORTAR EXCEL ══════════ -->
+                    <div id="tab-importar" class="lm-tab-panel">
+
+                        <div class="lm-card">
+                            <div class="lm-card-head">
+                                <div class="lm-card-title">
+                                    <i class="pi pi-file-import"/> Registrar Trámites Faltantes desde Excel
+                                </div>
+                            </div>
+                            <div class="lm-card-body">
+
+                                <div style="font-size:12px; color:#5b21b6; margin-bottom:18px; font-weight:600; background:#f3e8ff; border:1px solid #c4b5fd; border-radius:8px; padding:12px 16px;">
+                                    Use este panel para registrar trámites que aparecen como
+                                    <strong>"no encontrado en la BD"</strong> al importar anualidades.
+                                    El Excel debe tener <strong>3 columnas</strong>:
+                                    <strong>A)</strong> N&#176; Trámite &#160;
+                                    <strong>B)</strong> Nombre Común (opcional) &#160;
+                                    <strong>C)</strong> Numeración Interna (opcional).
+                                    La primera fila es el encabezado.
+                                </div>
+
+                                <p:outputPanel id="panelImportTramites">
+                                    <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:18px;">
+                                        <p:fileUpload id="fileExcelTramites"
+                                                      value="#{anualidadBean.archivoExcelTramites}"
+                                                      mode="simple" skinSimple="true"
+                                                      accept=".xls,.xlsx"
+                                                      label="&#128194; Seleccionar Excel"
+                                                      style="font-size:13px;"/>
+                                        <p:commandButton value="Registrar trámites"
+                                                         icon="pi pi-upload"
+                                                         style="background:linear-gradient(135deg,#7c3aed,#6d28d9,#5b21b6)!important;
+                                                                border:1px solid #4c1d95!important; color:#fff!important;
+                                                                font-weight:800!important; font-size:13px!important;
+                                                                border-radius:8px!important; padding:10px 22px!important;"
+                                                         actionListener="#{anualidadBean.importarTramitesExcel}"
+                                                         update="panelImportTramites :mensajes"
+                                                         process="fileExcelTramites @this"
+                                                         onclick="if(!confirm('&#191;Registrar los trámites del archivo Excel?')) return false;"/>
+                                        <p:commandButton value="Limpiar resultados"
+                                                         icon="pi pi-times"
+                                                         styleClass="sn-btn-secondary"
+                                                         rendered="#{anualidadBean.mostrarResultadosTramites}"
+                                                         actionListener="#{anualidadBean.limpiarResultadosTramites}"
+                                                         update="panelImportTramites"
+                                                         ajax="true"/>
+                                    </div>
+
+                                    <p:outputPanel rendered="#{anualidadBean.mostrarResultadosTramites}">
+                                        <div style="background:rgba(255,255,255,.90); border:1px solid #c4b5fd;
+                                                    border-radius:10px; padding:16px 18px;">
+                                            <div style="font-size:13px; font-weight:800; color:#4c1d95;
+                                                        margin-bottom:10px; display:flex; align-items:center; gap:7px;">
+                                                <i class="pi pi-check-circle"/> Resultado del registro
+                                            </div>
+                                            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+                                                <span style="border-radius:8px; padding:7px 14px; font-size:12px; font-weight:800;
+                                                             background:#dbeafe; color:#1e3a6e; border:1px solid #bfdbfe;">
+                                                    &#10003; #{anualidadBean.insertadosTramites} nuevos
+                                                </span>
+                                                <span style="border-radius:8px; padding:7px 14px; font-size:12px; font-weight:800;
+                                                             background:#dbeafe; color:#1d4ed8; border:1px solid #93c5fd;">
+                                                    &#8594; #{anualidadBean.existentesTramites} ya existían
+                                                </span>
+                                                <span style="border-radius:8px; padding:7px 14px; font-size:12px; font-weight:800;
+                                                             background:#fff1f2; color:#be123c; border:1px solid #fca5a5;">
+                                                    &#9888; #{anualidadBean.erroresTramites} errores
+                                                </span>
+                                            </div>
+                                            <p:outputPanel rendered="#{not empty anualidadBean.resultadosTramites}">
+                                                <div style="max-height:160px; overflow-y:auto; font-size:11.5px;
+                                                            color:#7f1d1d; background:#fff5f5; border-radius:6px;
+                                                            padding:8px 12px; border:1px solid #fca5a5;">
+                                                    <ul style="margin:0; padding-left:18px;">
+                                                        <ui:repeat value="#{anualidadBean.resultadosTramites}" var="msg">
+                                                            <li>#{msg}</li>
+                                                        </ui:repeat>
+                                                    </ul>
+                                                </div>
+                                            </p:outputPanel>
+                                        </div>
+                                    </p:outputPanel>
+                                </p:outputPanel>
+
+                            </div>
+                        </div>
+
+                    </div><!-- /tab-importar -->
+
+                    <!-- ══════════ PESTAÑA 4: HERRAMIENTAS ══════════ -->
+                    <div id="tab-herramientas" class="lm-tab-panel">
+
+                        <div class="lm-stats-grid">
+                            <div class="lm-stat gold" style="cursor:pointer;" onclick="window.location='anualidades/lista.xhtml'">
+                                <div class="lm-stat-lbl">Módulo Anualidades</div>
+                                <div class="lm-stat-val" style="font-size:22px; padding-top:6px;">
+                                    <i class="pi pi-calendar-plus" style="font-size:28px; color:#c9a227;"/>
+                                </div>
+                                <div class="lm-stat-sub">Gestión de pagos anuales</div>
+                            </div>
+                            <div class="lm-stat teal">
+                                <div class="lm-stat-lbl">Exportar Datos</div>
+                                <div class="lm-stat-val" style="font-size:22px; padding-top:6px;">
+                                    <i class="pi pi-file-excel" style="font-size:28px; color:#0e7490;"/>
+                                </div>
+                                <div class="lm-stat-sub">Use la pestaña Solicitudes</div>
+                            </div>
+                            <div class="lm-stat blue">
+                                <div class="lm-stat-lbl">Importar Registros</div>
+                                <div class="lm-stat-val" style="font-size:22px; padding-top:6px;">
+                                    <i class="pi pi-file-import" style="font-size:28px; color:#1976d2;"/>
+                                </div>
+                                <div class="lm-stat-sub">Use la pestaña Importar Excel</div>
+                            </div>
+                            <div class="lm-stat">
+                                <div class="lm-stat-lbl">Total Solicitudes</div>
+                                <div class="lm-stat-val">#{vegetableBean.vegetables.size()}</div>
+                                <div class="lm-stat-sub">Según filtro activo</div>
+                            </div>
+                        </div>
+
+                        <div class="lm-card">
+                            <div class="lm-card-head">
+                                <div class="lm-card-title">
+                                    <i class="pi pi-question-circle"/> Ayuda Rápida
+                                </div>
+                            </div>
+                            <div class="lm-card-body">
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; font-size:13px;">
+                                    <div>
+                                        <p style="font-weight:800; color:#1e3a6e; margin:0 0 10px;">Navegación por pestañas:</p>
+                                        <ul style="margin:0 0 0 16px; line-height:2.2; color:#555; font-size:12px;">
+                                            <li><strong>Resumen</strong> — estadísticas y alertas de anualidades</li>
+                                            <li><strong>Solicitudes</strong> — tabla principal con filtros y búsqueda</li>
+                                            <li><strong>Importar Excel</strong> — registrar registros faltantes en masa</li>
+                                            <li><strong>Herramientas</strong> — accesos directos y ayuda</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <p style="font-weight:800; color:#1e3a6e; margin:0 0 10px;">Filtros de tabla (pestaña Solicitudes):</p>
+                                        <ul style="margin:0 0 0 16px; line-height:2.2; color:#555; font-size:12px;">
+                                            <li><strong>Entregados</strong> — solo solicitudes EN PROCESO</li>
+                                            <li><strong>Aceptados</strong> — solo solicitudes ACEPTADAS</li>
+                                            <li><strong>Todos</strong> — todos los estados</li>
+                                            <li>Filtrar por <strong>F. Presentación</strong> con rango de fechas</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- /tab-herramientas -->
+
+                </div><!-- lm-content -->
+            </div><!-- lm-main -->
+
+        </div><!-- lm-layout -->
+
+        <!-- ══ DIÁLOGO ALERTA ANUALIDADES ══ -->
+        <p:dialog id="dlgProxVencIndex" modal="true" resizable="false"
+                  header="Anualidades próximas a vencer"
+                  widgetVar="dlgProxVencIndex" style="width:600px; max-width:90vw;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:6px;">
+                <p:dataList value="#{anualidadBean.alertas}" var="al" paginator="false" type="none">
+                    <div style="background:rgba(255,255,255,.75); border-radius:6px;
+                                padding:6px 10px; font-size:12px; color:#78350f;
+                                border:1px solid #fde68a; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+                        <i class="pi pi-clock" style="color:#f59e0b; flex-shrink:0;"/>
+                        <span>
+                            <strong>#{anualidadBean.getVegetableForm(al.vegetableFormId) != null
+                                ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
+                                : al.vegetableFormId}</strong>
+                            — #{al.etiqueta} — vence:&#160;
+                            <h:outputText value="#{al.fechaVencimiento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                            </h:outputText>
+                        </span>
+                        <span style="margin-left:auto; font-size:10px; font-weight:800;
+                                   background:#fef3c7; color:#92400e; border:1px solid #fbbf24;
+                                   border-radius:20px; padding:2px 8px; white-space:nowrap;">
+                            #{al.estadoBadgeLabel}
+                        </span>
+                    </div>
+                </p:dataList>
+            </div>
+            <div style="text-align:right; margin-top:14px; display:flex; justify-content:space-between; align-items:center;">
+                <a href="anualidades/lista.xhtml"
+                   style="font-size:12px; color:#1e3a6e; text-decoration:underline; font-weight:700;">
+                    Ir al módulo de Anualidades →
+                </a>
+                <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                 onclick="PF('dlgProxVencIndex').hide();"/>
+            </div>
+        </p:dialog>
+
+        <!-- Spinner AJAX -->
+        <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage name="/images/ajax-loader.gif"/>
+        </p:dialog>
+
+        </h:form>
+
+        <!-- ══ DIÁLOGO: HISTORIAL ══ -->
+        <p:dialog id="dlgHistorial" modal="true" resizable="true"
+                  header="Historial — #{vegetableBean.vegetableForms != null ? vegetableBean.vegetableForms.applicationNumber : ''}"
+                  widgetVar="dlgHistorial" style="width:720px; min-width:420px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmHistory">
+                <h:panelGroup rendered="#{vegetableBean.historialList.isEmpty()}">
+                    <div style="text-align:center; padding:20px; color:#6b7280; font-size:13px;">
+                        <i class="pi pi-info-circle" style="font-size:20px; display:block; margin-bottom:8px;"/>
+                        No hay eventos registrados para este trámite.
+                    </div>
+                </h:panelGroup>
+                <p:dataTable value="#{vegetableBean.historialList}" var="hist"
+                             rendered="#{not vegetableBean.historialList.isEmpty()}"
+                             emptyMessage="Sin historial."
+                             style="font-size:12px; width:100%;">
+                    <p:column headerText="Fecha" style="width:22%; text-align:center; white-space:nowrap;">
+                        <h:outputText value="#{hist.fecha}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Descripción" style="width:58%;">
+                        <h:outputText value="#{hist.description}" style="font-size:11px;"/>
+                    </p:column>
+                    <p:column headerText="Usuario" style="width:20%; text-align:center;">
+                        <span style="font-weight:700; color:var(--sn-green); font-size:11px;">
+                            <h:outputText value="#{hist.historyUser}"/>
+                        </span>
+                    </p:column>
+                </p:dataTable>
+                <div style="text-align:right; margin-top:10px;">
+                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                     onclick="PF('dlgHistorial').hide();"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <!-- ══ DIÁLOGO: ARCHIVOS SUBIDOS ══ -->
+        <p:dialog id="dlgArchivos" modal="true" resizable="true"
+                  header="Archivos subidos — #{vegetableBean.vegetableForms.applicationNumber}"
+                  widgetVar="dlgArchivos" style="width:700px; min-width:400px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmArchivos">
+                <p:dataTable value="#{vegetableBean.archivosSubidos}" var="arch"
+                             emptyMessage="No hay archivos subidos."
+                             style="font-size:12px;">
+                    <p:column headerText="Archivo" style="width:55%">
+                        <h:outputText value="#{arch.nombreMostrar}"/>
+                    </p:column>
+                    <p:column headerText="Fecha" style="width:25%">
+                        <h:outputText value="#{arch.fechaCarga}">
+                            <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="Ver" style="width:20%; text-align:center;">
+                        <h:outputLink value="#{request.contextPath}/file-view?id=#{arch.id}"
+                                      target="_blank"
+                                      style="background:var(--sn-green); color:white; padding:4px 12px;
+                                             border-radius:5px; font-size:11px; text-decoration:none;
+                                             display:inline-block;">
+                            <i class="pi pi-external-link" style="margin-right:4px;"/>Abrir
+                        </h:outputLink>
+                    </p:column>
+                </p:dataTable>
+                <div style="text-align:right; margin-top:10px;">
+                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                     onclick="PF('dlgArchivos').hide();"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+
+        <!-- ══ DIÁLOGO: CAMBIO ESTADO GESTIÓN ══ -->
+        <p:dialog id="dlgStatusFlow" modal="true" resizable="false"
+                  header="Confirmar cambio de estado"
+                  widgetVar="dlgStatusFlow" style="width:500px;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmStatusFlow">
+                <div style="background:linear-gradient(135deg,#f0f9f0,#eaf5ea);
+                            border-radius:10px; padding:16px 18px; margin-bottom:16px;
+                            border:1px solid #c3dfc3; box-shadow:0 2px 8px rgba(30,58,110,.08);">
+                    <div style="font-size:11px; color:#4b6c4b; font-weight:800;
+                                text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px;
+                                display:flex; align-items:center; gap:6px;">
+                        <i class="pi pi-file-edit" style="color:var(--sn-green);"/>
+                        <span>Trámite:&#160;
+                            <span style="font-family:monospace; font-size:14px; color:#0d1b35; letter-spacing:.5px; font-weight:900;">
+                                #{vegetableBean.vegetableForms.applicationNumber}
+                            </span>
+                        </span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width:110px; text-align:center;">
+                            <div style="font-size:10px; color:#6b7b75; font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px;">Estado anterior</div>
+                            <span style="display:inline-block; background:#f3f4f6; color:#374151;
+                                         padding:5px 14px; border-radius:20px; font-size:11.5px;
+                                         font-weight:800; text-transform:uppercase; letter-spacing:.04em; border:1px solid #d1d5db;">
+                                #{vegetableBean.previousStatusFlowLabel}
+                            </span>
+                        </div>
+                        <div style="color:#9ca3af; font-size:22px; flex-shrink:0; padding-top:18px; line-height:1;">&#8594;</div>
+                        <div style="flex:1; min-width:110px; text-align:center;">
+                            <div style="font-size:10px; color:#6b7b75; font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px;">Nuevo estado</div>
+                            <span style="display:inline-block; background:#dbeafe; color:#1e3a6e;
+                                         padding:5px 14px; border-radius:20px; font-size:11.5px;
+                                         font-weight:800; text-transform:uppercase; letter-spacing:.04em; border:1px solid #6ee7b7;">
+                                #{vegetableBean.pendingStatusFlowLabel}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:11px; font-weight:700; color:#4b6c4b;
+                                  margin-bottom:6px; text-transform:uppercase; letter-spacing:.04em;">
+                        <i class="pi pi-comment" style="margin-right:4px; color:var(--sn-green);"/>
+                        Observación <span style="color:#ef4444;">*</span>
+                    </label>
+                    <p:inputTextarea value="#{vegetableBean.statusObservation}"
+                                     rows="4" autoResize="false" style="width:100%"
+                                     placeholder="Describa el motivo del cambio..."/>
+                </div>
+                <div style="display:flex; gap:10px; justify-content:flex-end; padding-top:2px;">
+                    <p:commandButton value="Guardar" styleClass="sn-btn-primary"
+                                     actionListener="#{vegetableBean.confirmStatusFlowChange}"
+                                     process="@form" icon="pi pi-check"
+                                     update=":mensajes :allform:tablaDeObtenciones frmStatusFlow"
+                                     oncomplete="if(!args.validationFailed) PF('dlgStatusFlow').hide()"/>
+                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                     icon="pi pi-times"
+                                     onclick="PF('dlgStatusFlow').hide();"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+        <!-- ══ DIÁLOGO: BUSCAR E IMPORTAR TRÁMITE DEL PORTAL ══ -->
+        <p:dialog id="dlgBuscarPortal" modal="true" resizable="false"
+                  header="Importar Trámite desde Portal"
+                  widgetVar="dlgBuscarPortal" style="width:560px; max-width:95vw;"
+                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
+            <h:form id="frmBuscarPortal">
+
+                <div style="margin-bottom:18px; font-size:13px; color:#1e3a5f;
+                            background:#e8f0fb; padding:10px 14px; border-radius:7px;
+                            border-left:4px solid #1565c0; display:flex; align-items:flex-start; gap:9px;">
+                    <i class="pi pi-info-circle" style="color:#1565c0; font-size:16px; flex-shrink:0; margin-top:1px;"/>
+                    <span>
+                        Ingrese el <strong>número de trámite</strong> del portal. Si está en estado
+                        <strong>DELIVERED</strong> y no ha sido importado, podrá cargarlo como trámite EN PROCESO.
+                    </span>
+                </div>
+
+                <!-- Barra de búsqueda -->
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:16px;">
+                    <p:inputText value="#{vegetableBean.numeroBusquedaPortal}"
+                                 placeholder="Ej: OV-2024-00123"
+                                 style="flex:1; font-size:14px; padding:9px 14px; border-radius:7px;
+                                        border:1.5px solid #b0bec5; font-family:'Nunito Sans',sans-serif;"
+                                 onkeydown="if(event.key==='Enter') document.getElementById('btnBuscarPortal').click();"/>
+                    <p:commandButton id="btnBuscarPortal"
+                                     value="Buscar"
+                                     icon="pi pi-search"
+                                     style="background:#1565c0 !important; color:#fff !important;
+                                            border:none !important; border-radius:7px !important;
+                                            padding:9px 20px !important; font-weight:700 !important;
+                                            font-size:13px !important; cursor:pointer !important;
+                                            font-family:'Nunito Sans',sans-serif !important;"
+                                     actionListener="#{vegetableBean.buscarEnPortal}"
+                                     process="@form"
+                                     update="panelResultadoPortal :mensajes"/>
+                </div>
+
+                <!-- Panel resultado -->
+                <p:outputPanel id="panelResultadoPortal">
+
+                    <!-- Mensaje de error / aviso -->
+                    <h:panelGroup rendered="#{vegetableBean.mensajeBusquedaPortal != null}"
+                                  style="display:block; margin-bottom:14px;">
+                        <div style="padding:11px 14px; border-radius:7px; font-size:13px; font-weight:600;
+                                    #{vegetableBean.tramiteYaImportado ?
+                                      'background:#fff3cd; color:#856404; border:1px solid #ffc107;' :
+                                      'background:#fff1f2; color:#be123c; border:1px solid #fca5a5;'}
+                                    display:flex; align-items:center; gap:9px;">
+                            <i class="#{vegetableBean.tramiteYaImportado ? 'pi pi-exclamation-triangle' : 'pi pi-times-circle'}"/>
+                            #{vegetableBean.mensajeBusquedaPortal}
+                        </div>
+                    </h:panelGroup>
+
+                    <!-- Resultado encontrado y listo para importar -->
+                    <h:panelGroup rendered="#{vegetableBean.tramitePortalEncontrado != null and !vegetableBean.tramiteYaImportado}"
+                                  style="display:block;">
+                        <div style="background:#eff4ff; border:1.5px solid #bfdbfe; border-radius:10px;
+                                    padding:16px 18px; margin-bottom:16px;">
+                            <div style="font-size:11px; font-weight:800; color:#0d2b6e; text-transform:uppercase;
+                                        letter-spacing:.07em; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                                <i class="pi pi-check-circle" style="font-size:14px;"/>
+                                Trámite encontrado — listo para importar
+                            </div>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
+                                <div>
+                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
+                                        N° Trámite
+                                    </span>
+                                    <div style="font-weight:800; color:#0d1b35; font-size:15px; margin-top:2px; font-family:monospace;">
+                                        <h:outputText value="#{vegetableBean.tramitePortalEncontrado.applicationNumber}"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
+                                        Estado Portal
+                                    </span>
+                                    <div style="margin-top:4px;">
+                                        <span style="background:#dbeafe; color:#1e3a6e; border-radius:20px;
+                                                     padding:3px 12px; font-size:11px; font-weight:800; border:1px solid #6ee7b7;">
+                                            EN PROCESO (DELIVERED)
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
+                                        Nombre Común
+                                    </span>
+                                    <div style="font-size:13px; color:#263238; margin-top:2px;">
+                                        <h:outputText value="#{vegetableBean.tramitePortalEncontrado.commonName != null ? vegetableBean.tramitePortalEncontrado.commonName : '—'}"/>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
+                                        F. Presentación
+                                    </span>
+                                    <div style="font-size:13px; color:#263238; margin-top:2px;">
+                                        <h:outputText value="#{vegetableBean.tramitePortalEncontrado.applicationDate}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                        </h:outputText>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex; gap:10px; justify-content:flex-end;">
+                            <p:commandButton value="Cancelar" type="button"
+                                             styleClass="sn-btn-secondary"
+                                             icon="pi pi-times"
+                                             onclick="PF('dlgBuscarPortal').hide();"/>
+                            <p:commandButton value="Importar como Trámite EN PROCESO"
+                                             icon="pi pi-download"
+                                             style="background:#1e3a6e !important; color:#fff !important;
+                                                    border:none !important; border-radius:7px !important;
+                                                    padding:9px 20px !important; font-weight:700 !important;
+                                                    font-size:13px !important; cursor:pointer !important;
+                                                    font-family:'Nunito Sans',sans-serif !important;"
+                                             onclick="if(!confirm('¿Importar este trámite como nuevo registro EN PROCESO?')) return false;"
+                                             actionListener="#{vegetableBean.importarTramitePortal}"
+                                             process="@form"
+                                             update="panelResultadoPortal :mensajes"
+                                             oncomplete="PF('dlgBuscarPortal').hide();"/>
+                        </div>
+                    </h:panelGroup>
+
+                    <!-- Si no hay nada buscado aún -->
+                    <h:panelGroup rendered="#{vegetableBean.tramitePortalEncontrado == null and vegetableBean.mensajeBusquedaPortal == null}"
+                                  style="display:block;">
+                        <div style="text-align:center; padding:24px; color:#9ca3af; font-size:13px;">
+                            <i class="pi pi-search" style="font-size:28px; display:block; margin-bottom:10px; color:#d1d5db;"/>
+                            Ingrese un número de trámite y presione <strong>Buscar</strong>
+                        </div>
+                    </h:panelGroup>
+
+                </p:outputPanel>
+
+                <!-- Botón cerrar cuando ya hay resultado de error -->
+                <h:panelGroup rendered="#{vegetableBean.mensajeBusquedaPortal != null and !vegetableBean.tramiteYaImportado}"
+                              style="display:block; text-align:right; margin-top:12px;">
+                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                     onclick="PF('dlgBuscarPortal').hide();"/>
+                </h:panelGroup>
+
+            </h:form>
+        </p:dialog>
+
+        <!-- Monitor sesión idle: 30 minutos -->
+        <p:idleMonitor timeout="#{1000*60*30}" id="idleSesion">
+            <p:ajax event="idle" listener="#{idleMonitorCtrl.idleListener}"
+                    oncomplete="PF('idleDialog').show()"/>
+        </p:idleMonitor>
+        <p:dialog header="Sesión Caducada" resizable="false"
+                  widgetVar="idleDialog" modal="true" closable="false"
+                  style="font-size:12px; min-width:280px;">
+            <h:form id="sesionCaducaForm">
+                <div style="text-align:center; padding:10px;">
+                    <p style="margin-bottom:14px; color:var(--sn-dark);">Su sesión ha expirado por inactividad.</p>
+                    <p:commandButton styleClass="sn-btn-primary"
+                                     actionListener="#{loginBean.logout}"
+                                     oncomplete="logout(xhr, status, args)"
+                                     value="ACEPTAR" immediate="true"
+                                     icon="pi pi-sign-in"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+    </h:body>
+
+    <script type="text/javascript">
+        //<![CDATA[
+        /* ── Cambio de pestañas ── */
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.lm-tab-btn').forEach(function(b) { b.classList.remove('active'); });
+            document.querySelectorAll('.lm-tab-panel').forEach(function(p) { p.classList.remove('active'); });
+            if (btn) btn.classList.add('active');
+            var panel = document.getElementById('tab-' + tabId);
+            if (panel) panel.classList.add('active');
+        }
+
+        /* ── Pill active state para radio filters ── */
+        function updateRadioPills() {
+            $('.ui-selectoneradio').each(function() {
+                $(this).find('.ui-radiobutton').each(function() {
+                    var $radioDiv = $(this);
+                    var $box = $radioDiv.find('.ui-radiobutton-box');
+                    var $input = $radioDiv.find('input[type="radio"]');
+                    var id = $input.attr('id');
+                    var $label = $('label[for="' + id + '"]');
+                    if ($label.length > 0) {
+                        if ($box.hasClass('ui-state-active') || $input.prop('checked')) {
+                            $label.addClass('pill-active');
+                        } else {
+                            $label.removeClass('pill-active');
+                        }
+                    }
+                });
+            });
+        }
+
+        /* ── Zoom de tabla ── */
+        var currentZoom = 100;
+        window.snZoomIn = function() { currentZoom = Math.min(currentZoom + 10, 200); applyZoom(); };
+        window.snZoomOut = function() { currentZoom = Math.max(currentZoom - 10, 70); applyZoom(); };
+        function applyZoom() {
+            var c = document.getElementById('tableScrollContainer');
+            if (c) {
+                var tbl = c.querySelector('.ui-datatable');
+                if (tbl) { tbl.style.transform = 'scale(' + (currentZoom / 100) + ')'; tbl.style.transformOrigin = 'top left'; tbl.style.display = 'inline-block'; }
+            }
+            var z = document.getElementById('zoomLevel');
+            if (z) z.innerText = currentZoom + '%';
+        }
+
+        /* ── Scroll horizontal ── */
+        window.snScrollLeft = function() { var c = document.getElementById('tableScrollContainer'); if (c) c.scrollLeft -= 150; };
+        window.snScrollRight = function() { var c = document.getElementById('tableScrollContainer'); if (c) c.scrollLeft += 150; };
+
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('body').addClass('loaded');
+                updateRadioPills();
+            }, 200);
+            $(document).on('click', '.ui-selectoneradio label', function() { setTimeout(updateRadioPills, 100); });
+            if (typeof PrimeFaces !== 'undefined') {
+                $(document).on('pfAjaxComplete', function() { setTimeout(updateRadioPills, 100); });
+            }
+        });
+
+        function otherpage(url) { setTimeout(function () { window.open(url, '_blank'); }, 0); }
+        function logout(xhr, status, args) { setTimeout(function () { window.location = 'login.xhtml'; }, 500); }
+        //]]>
+    </script>
+</html>

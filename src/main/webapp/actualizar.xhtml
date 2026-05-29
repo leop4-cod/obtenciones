@@ -1,0 +1,1066 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- RUTA: src/main/webapp/actualizar.xhtml -->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <f:metadata>
+        <f:viewParam name="id" value="#{registroBean.editId}"/>
+        <f:viewAction action="#{registroBean.cargarRegistro}" onPostback="false"/>
+    </f:metadata>
+
+    <h:head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>#{registroBean.editMode ? 'Editar Registro' : 'Nuevo Registro'} — SENADI</title>
+        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
+        <link rel="preconnect" href="https://fonts.googleapis.com"/>
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"/>
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/bootstrap.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/font-awesome.min.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}"/>
+        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}"/>
+        <f:facet name="last">
+        <style>
+            /* ══════════════════════════════════════════════════
+               LAYOUT PRINCIPAL
+            ══════════════════════════════════════════════════ */
+            html, body { margin: 0; padding: 0; background: #edf1f8; }
+            .lm-layout { display: flex; min-height: 100vh; }
+
+            /* ══════════════════════════════════════════════════
+               SIDEBAR
+            ══════════════════════════════════════════════════ */
+            .lm-sidebar {
+                width: 255px; min-width: 255px;
+                background: linear-gradient(180deg, #0d1b35 0%, #1a2d52 60%, #0d1b35 100%);
+                display: flex; flex-direction: column;
+                position: fixed; left: 0; top: 0; bottom: 0;
+                overflow-y: auto; z-index: 200;
+                box-shadow: 3px 0 18px rgba(0,0,0,.32);
+            }
+            .lm-sidebar::-webkit-scrollbar { width: 4px; }
+            .lm-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); border-radius: 2px; }
+
+            .lm-logo {
+                padding: 18px 16px 14px;
+                border-bottom: 1px solid rgba(255,255,255,.10);
+                display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+            }
+            .lm-logo img { width: 42px; height: 42px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 1px 4px rgba(0,0,0,.35)); }
+            .lm-logo-txt {
+                color: #fff; font-family: 'Playfair Display', serif;
+                font-size: 14px; font-weight: 700; line-height: 1.25;
+            }
+            .lm-logo-txt small {
+                display: block; font-family: 'Nunito Sans', sans-serif;
+                font-size: 9.5px; font-weight: 700;
+                color: rgba(255,255,255,.48); text-transform: uppercase; letter-spacing: .12em;
+            }
+
+            .lm-user-card {
+                padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.08);
+                display: flex; align-items: center; gap: 11px; flex-shrink: 0;
+            }
+            .lm-avatar {
+                width: 42px; height: 42px; border-radius: 50%;
+                background: rgba(201,162,39,.22); border: 2px solid rgba(201,162,39,.45);
+                display: flex; align-items: center; justify-content: center;
+                font-size: 19px; color: #c9a227; flex-shrink: 0;
+            }
+            .lm-user-name { color: #fff; font-size: 13px; font-weight: 700; line-height: 1.25; }
+            .lm-user-role { color: rgba(255,255,255,.48); font-size: 11px; font-weight: 600; }
+
+            .lm-nav-sec {
+                padding: 14px 16px 5px;
+                font-size: 9.5px; font-weight: 800;
+                color: rgba(255,255,255,.32); text-transform: uppercase; letter-spacing: .14em;
+            }
+
+            .lm-nav-item {
+                display: flex; align-items: center; gap: 10px;
+                padding: 10px 14px; margin: 2px 8px;
+                color: rgba(255,255,255,.72); font-size: 13px; font-weight: 600;
+                cursor: pointer; text-decoration: none !important;
+                border-radius: 8px; transition: background .18s, color .18s;
+            }
+            .lm-nav-item:hover { background: rgba(255,255,255,.12); color: #fff; text-decoration: none !important; }
+            .lm-nav-item.active { background: #c9a227; color: #fff !important; font-weight: 800; }
+            .lm-nav-item.active:hover { background: #a8841e; }
+            .lm-nav-item .pi { font-size: 15px; flex-shrink: 0; width: 18px; text-align: center; }
+
+            .lm-sidebar-spacer { flex: 1; min-height: 20px; }
+
+            .lm-logout-btn,
+            .lm-logout-btn.ui-button {
+                display: flex !important; align-items: center !important; gap: 10px !important;
+                padding: 11px 16px !important; margin: 8px !important;
+                width: calc(100% - 16px) !important;
+                background: rgba(214,69,69,.22) !important; border: 1px solid rgba(214,69,69,.40) !important;
+                color: #f87171 !important; font-size: 13px !important; font-weight: 700 !important;
+                border-radius: 8px !important; cursor: pointer !important;
+                justify-content: flex-start !important; transition: background .18s !important;
+                text-align: left !important;
+            }
+            .lm-logout-btn:hover, .lm-logout-btn.ui-button:hover { background: rgba(214,69,69,.42) !important; color: #fff !important; }
+            .lm-logout-btn .ui-button-text { color: #f87171 !important; }
+            .lm-logout-btn:hover .ui-button-text { color: #fff !important; }
+            .lm-logout-btn .pi { color: #f87171 !important; font-size: 15px !important; }
+
+            /* ══════════════════════════════════════════════════
+               ÁREA PRINCIPAL
+            ══════════════════════════════════════════════════ */
+            .lm-main {
+                margin-left: 255px; flex: 1;
+                background: #edf1f8; min-height: 100vh;
+                display: flex; flex-direction: column;
+            }
+
+            /* Topbar con breadcrumb */
+            .lm-topbar {
+                background: #fff; height: 58px; padding: 0 22px;
+                display: flex; align-items: center; justify-content: space-between;
+                box-shadow: 0 2px 8px rgba(0,0,0,.07);
+                position: sticky; top: 0; z-index: 100; flex-shrink: 0;
+                border-bottom: 3px solid #c9a227;
+            }
+            .lm-topbar-left { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #6b7280; }
+            .lm-topbar-left a { color: #1e3a6e; font-weight: 700; text-decoration: none; }
+            .lm-topbar-left a:hover { text-decoration: underline; }
+            .lm-topbar-left .sep { color: #d1d5db; margin: 0 4px; }
+            .lm-topbar-left .current { color: #1a1a2e; font-weight: 700; }
+            .lm-topbar-right { display: flex; align-items: center; gap: 10px; }
+
+            .lm-content { padding: 24px 28px 48px; flex: 1; }
+
+            /* ── Page header card ── */
+            .ac-header-card {
+                background: #fff; border-radius: 14px;
+                border: 1px solid #e5ecf5; border-left: 5px solid #1e3a6e;
+                box-shadow: 0 2px 12px rgba(0,0,0,.06);
+                padding: 20px 24px; margin-bottom: 20px;
+                display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+            }
+            .ac-header-icon {
+                width: 44px; height: 44px; border-radius: 11px;
+                background: linear-gradient(135deg, #1e3a6e, #0d1b35);
+                display: flex; align-items: center; justify-content: center;
+                color: #fff; font-size: 20px; flex-shrink: 0;
+            }
+            .ac-header-text h2 { font-size: 18px; font-weight: 800; color: #1a1a2e; margin: 0 0 2px; }
+            .ac-header-text p  { font-size: 12px; color: #6b7280; margin: 0; }
+
+            /* ── Status badges ── */
+            .ac-badge {
+                padding: 5px 16px; border-radius: 20px;
+                font-size: 11px; font-weight: 800; letter-spacing: .05em;
+                text-transform: uppercase;
+            }
+            .ac-badge-DELIVERED { background: #dbeafe; color: #1e3a6e; border: 1px solid #bfdbfe; }
+            .ac-badge-ACCEPTED  { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
+            .ac-badge-FINISHED  { background: #f3e8ff; color: #7c3aed; border: 1px solid #e9d5ff; }
+            .ac-badge-SAVED     { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+            .ac-badge-PREVIEW   { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+            /* ── Action banner ── */
+            .ac-action-bar {
+                background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px;
+                padding: 12px 18px; margin-bottom: 18px;
+                display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+            }
+            .ac-action-bar .hint { color: #1e3a6e; font-size: 13px; display: flex; align-items: center; gap: 7px; }
+            .ac-action-bar .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+
+            /* ── Tab wrapper card ── */
+            .ac-tab-card {
+                background: #fff; border-radius: 14px;
+                border: 1px solid #e5ecf5;
+                box-shadow: 0 2px 14px rgba(0,0,0,.06);
+                overflow: hidden;
+            }
+
+            /* ── PrimeFaces TabView overrides ── */
+            html body .ui-tabs .ui-tabs-nav,
+            html body .ui-tabview .ui-tabview-nav {
+                background: linear-gradient(135deg, #0d1b35 0%, #1e3a6e 100%) !important;
+                border-bottom: 3px solid #c9a227 !important;
+                padding: 0 8px !important;
+                display: flex !important;
+                align-items: flex-end !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-default,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-default {
+                background: rgba(255,255,255,.12) !important;
+                border: 1px solid rgba(255,255,255,.25) !important;
+                border-bottom: none !important;
+                margin: 0 2px 0 0 !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-default a,
+            html body .ui-tabs .ui-tabs-nav li.ui-state-default a span,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-default a,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-default a span {
+                color: rgba(255,255,255,.95) !important;
+                background: transparent !important;
+                text-shadow: none !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-default:hover,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-default:hover,
+            html body .ui-tabs .ui-tabs-nav li.ui-state-hover,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-hover {
+                background: rgba(255,255,255,.22) !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-active,
+            html body .ui-tabs .ui-tabs-nav li.ui-tabs-selected,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-active,
+            html body .ui-tabview .ui-tabview-nav li.ui-tabs-selected {
+                background: #ffffff !important;
+                border: 1px solid #dfe7e2 !important;
+                border-bottom: none !important;
+                border-top: 3px solid #c9a227 !important;
+            }
+            html body .ui-tabs .ui-tabs-nav li.ui-state-active a,
+            html body .ui-tabs .ui-tabs-nav li.ui-state-active a span,
+            html body .ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
+            html body .ui-tabs .ui-tabs-nav li.ui-tabs-selected a span,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-active a,
+            html body .ui-tabview .ui-tabview-nav li.ui-state-active a span,
+            html body .ui-tabview .ui-tabview-nav li.ui-tabs-selected a,
+            html body .ui-tabview .ui-tabview-nav li.ui-tabs-selected a span {
+                color: #1e3a6e !important;
+                background: #ffffff !important;
+                font-weight: 800 !important;
+                text-shadow: none !important;
+            }
+            html body .ui-tabs .ui-tabs-panels,
+            html body .ui-tabview .ui-tabview-panels {
+                background: #ffffff !important;
+                border: none !important;
+                padding: 24px !important;
+            }
+
+            /* ── Input fixes ── */
+            html body span.sn-lbl {
+                color: #4b6c4b !important; visibility: visible !important; opacity: 1 !important;
+            }
+            html body .ui-inputtext:focus,
+            html body input.ui-inputfield:focus,
+            html body .ui-inputtextarea:focus,
+            html body textarea.ui-inputfield:focus {
+                background: #ffffff !important; color: #263238 !important;
+            }
+            html body .ui-selectonemenu,
+            html body .ui-selectonemenu.ui-state-default,
+            html body .ui-selectonemenu.ui-state-hover,
+            html body .ui-selectonemenu.ui-state-focus,
+            html body .ui-selectonemenu.ui-state-active {
+                background: #ffffff !important; background-color: #ffffff !important; color: #263238 !important;
+            }
+            html body .ui-selectonemenu .ui-selectonemenu-label,
+            html body .ui-selectonemenu.ui-state-default .ui-selectonemenu-label,
+            html body .ui-selectonemenu.ui-state-hover .ui-selectonemenu-label,
+            html body .ui-selectonemenu.ui-state-focus .ui-selectonemenu-label,
+            html body .ui-selectonemenu.ui-state-active .ui-selectonemenu-label,
+            html body .ui-selectonemenu.ui-state-highlight .ui-selectonemenu-label {
+                color: #263238 !important; background-color: #ffffff !important;
+                background: #ffffff !important; visibility: visible !important;
+                opacity: 1 !important; text-shadow: none !important;
+                -webkit-text-fill-color: #263238 !important; position: relative !important;
+                z-index: 9999 !important; display: block !important;
+            }
+
+            /* ── Paginator ── */
+            .ui-paginator span.ui-icon-seek-first,
+            .ui-paginator span.ui-icon-seek-prev,
+            .ui-paginator span.ui-icon-seek-next,
+            .ui-paginator span.ui-icon-seek-end,
+            .ui-paginator span.ui-icon-carat-2-w,
+            .ui-paginator span.ui-icon-carat-2-e {
+                font-size: 0 !important; color: transparent !important;
+            }
+            .ui-paginator span.ui-icon-seek-first::before { font-size: 18px !important; color: #1e3a6e !important; }
+            .ui-paginator span.ui-icon-seek-prev::before,
+            .ui-paginator span.ui-icon-carat-2-w::before  { font-size: 18px !important; color: #1e3a6e !important; }
+            .ui-paginator span.ui-icon-seek-next::before,
+            .ui-paginator span.ui-icon-carat-2-e::before  { font-size: 18px !important; color: #1e3a6e !important; }
+            .ui-paginator span.ui-icon-seek-end::before   { font-size: 18px !important; color: #1e3a6e !important; }
+        </style>
+        </f:facet>
+    </h:head>
+
+    <h:body>
+
+        <p:growl id="mensajes" showDetail="true" life="6000" sticky="false"/>
+
+        <div class="lm-layout">
+
+            <!-- ════════════════════ SIDEBAR ════════════════════ -->
+            <div class="lm-sidebar">
+
+                <!-- Logo -->
+                <div class="lm-logo">
+                    <img src="#{resource['images/sena_2.png']}" alt="SENADI"/>
+                    <div class="lm-logo-txt">
+                        SENADI
+                        <small>Obtenciones Vegetales</small>
+                    </div>
+                </div>
+
+                <!-- Usuario -->
+                <div class="lm-user-card">
+                    <div class="lm-avatar"><i class="pi pi-user"/></div>
+                    <div>
+                        <div class="lm-user-name">
+                            #{registroBean.login != null ? registroBean.login.login : 'Usuario'}
+                        </div>
+                        <div class="lm-user-role">Administrador</div>
+                    </div>
+                </div>
+
+                <!-- Navegación -->
+                <div class="lm-nav-sec">Navegación</div>
+
+                <a href="index.xhtml" class="lm-nav-item">
+                    <i class="pi pi-home"/>
+                    Inicio
+                </a>
+                <a href="anualidades/lista.xhtml" class="lm-nav-item">
+                    <i class="pi pi-calendar"/>
+                    Anualidades
+                </a>
+
+                <div class="lm-sidebar-spacer"/>
+
+                <!-- Logout -->
+                <h:form id="frmLogoutSidebar">
+                    <p:commandLink styleClass="lm-logout-btn"
+                                   actionListener="#{loginBean.logout}"
+                                   oncomplete="window.location.href='login.xhtml';">
+                        <i class="pi pi-sign-out"/>
+                        <span>Cerrar Sesión</span>
+                    </p:commandLink>
+                </h:form>
+
+            </div>
+            <!-- ════════════════════ FIN SIDEBAR ════════════════════ -->
+
+            <!-- ════════════════════ ÁREA PRINCIPAL ════════════════════ -->
+            <div class="lm-main">
+
+                <!-- Topbar / Breadcrumb -->
+                <div class="lm-topbar">
+                    <div class="lm-topbar-left">
+                        <i class="pi pi-home" style="font-size:12px; color:#9ca3af;"/>
+                        <a href="index.xhtml">Registros</a>
+                        <span class="sep">/</span>
+                        <span class="current">
+                            #{registroBean.editMode ? 'Editar Registro' : 'Nuevo Registro'}
+                        </span>
+                        <h:panelGroup rendered="#{registroBean.editMode and not empty registroBean.form.applicationNumber}">
+                            <span class="sep">/</span>
+                            <strong style="color:#1e3a6e;">#{registroBean.form.applicationNumber}</strong>
+                        </h:panelGroup>
+                    </div>
+                    <div class="lm-topbar-right">
+                        <h:panelGroup rendered="#{registroBean.editMode and registroBean.form.status != null}">
+                            <span class="ac-badge ac-badge-#{registroBean.form.status}">
+                                #{registroBean.form.status eq 'DELIVERED' ? 'EN PROCESO' :
+                                  (registroBean.form.status eq 'ACCEPTED'  ? 'ACEPTADO' :
+                                  (registroBean.form.status eq 'FINISHED'  ? 'FINALIZADO' :
+                                  (registroBean.form.status eq 'PREVIEW'   ? 'VISTA PREV.' : 'GUARDADO')))}
+                            </span>
+                        </h:panelGroup>
+                    </div>
+                </div>
+
+                <!-- Contenido -->
+                <div class="lm-content">
+
+                    <!-- Header card de la página -->
+                    <div class="ac-header-card">
+                        <div style="display:flex; align-items:center; gap:14px;">
+                            <div class="ac-header-icon">
+                                <i class="pi #{registroBean.editMode ? 'pi-pencil' : 'pi-plus-circle'}"/>
+                            </div>
+                            <div class="ac-header-text">
+                                <h2>
+                                    #{registroBean.editMode
+                                        ? 'Editar Registro de Obtención Vegetal'
+                                        : 'Nuevo Registro de Obtención Vegetal'}
+                                </h2>
+                                <p>
+                                    #{registroBean.editMode
+                                        ? 'Modifique los campos y presione Guardar Cambios.'
+                                        : 'Complete los datos del nuevo trámite y presione Guardar.'}
+                                </p>
+                            </div>
+                        </div>
+                        <h:panelGroup rendered="#{registroBean.editMode and registroBean.form.status != null}">
+                            <span class="ac-badge ac-badge-#{registroBean.form.status}" style="font-size:13px; padding:7px 20px;">
+                                #{registroBean.form.status eq 'DELIVERED' ? 'EN PROCESO' :
+                                  (registroBean.form.status eq 'ACCEPTED'  ? 'ACEPTADO' :
+                                  (registroBean.form.status eq 'FINISHED'  ? 'FINALIZADO' :
+                                  (registroBean.form.status eq 'PREVIEW'   ? 'VISTA PREV.' : 'GUARDADO')))}
+                            </span>
+                        </h:panelGroup>
+                    </div>
+
+                    <h:form id="frmRegistro" enctype="multipart/form-data">
+
+                        <!-- ── Banner de acciones (solo en modo edición) ── -->
+                        <h:panelGroup rendered="#{registroBean.editMode}">
+                            <div class="ac-action-bar">
+                                <span class="hint">
+                                    <i class="pi pi-pencil"/>
+                                    Modifique los campos y presione <strong>Guardar Cambios</strong>
+                                </span>
+                                <div class="btns">
+                                    <p:commandButton id="btnEliminarTop"
+                                                     value="Eliminar"
+                                                     icon="pi pi-trash"
+                                                     action="#{registroBean.eliminarRegistro}"
+                                                     immediate="true"
+                                                     styleClass="ui-button-danger"
+                                                     style="min-width:110px;"
+                                                     onclick="if(!confirm('¿Eliminar permanentemente este registro?')) return false;"/>
+                                    <p:commandButton id="btnCancelarTop"
+                                                     value="Regresar"
+                                                     icon="pi pi-arrow-left"
+                                                     action="#{registroBean.cancelar}"
+                                                     immediate="true"
+                                                     styleClass="sn-btn-secondary"
+                                                     style="min-width:110px;"/>
+                                    <p:commandButton id="btnGuardarTop"
+                                                     value="Guardar Cambios"
+                                                     icon="pi pi-check"
+                                                     action="#{registroBean.updateRegistro}"
+                                                     process="@form"
+                                                     update=":mensajes"
+                                                     styleClass="sn-btn-primary"
+                                                     style="min-width:150px;"/>
+                                </div>
+                            </div>
+                        </h:panelGroup>
+
+                        <!-- ── TabView principal ── -->
+                        <div class="ac-tab-card">
+                            <p:tabView id="tabsRegistro"
+                                        widgetVar="tabsRegistro"
+                                        dynamic="false"
+                                        cache="false">
+
+                                <!-- ══ TAB 1: DATOS DE LA VARIEDAD ══ -->
+                                <p:tab title="Datos de la Variedad" id="tabDatos">
+                                    <div class="sn-sec-title">
+                                        <i class="pi pi-leaf"></i> Información General de la Variedad
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Nombre Común <span class="sn-req">*</span></span>
+                                                <p:inputText id="commonName"
+                                                             value="#{registroBean.form.commonName}"
+                                                             style="width:100%" maxlength="200"
+                                                             placeholder="Ej: Rosa, Tulipán, Chirimoya..."
+                                                             required="true"
+                                                             requiredMessage="El nombre común es obligatorio."/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Taxón Botánico <span class="sn-req">*</span></span>
+                                                <p:inputText id="botanicalTaxon"
+                                                             value="#{registroBean.form.botanicalTaxon}"
+                                                             style="width:100%" maxlength="300"
+                                                             placeholder="Ej: Rosa hybrida, Annona cherimola..."
+                                                             required="true"
+                                                             requiredMessage="El taxón botánico es obligatorio."/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Denominación Propuesta</span>
+                                                <p:inputText value="#{registroBean.form.genericDenomination}"
+                                                             style="width:100%" maxlength="200"
+                                                             placeholder="Nombre que identifica la variedad"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Designación Provisional</span>
+                                                <p:inputText value="#{registroBean.form.provitionalDesignation}"
+                                                             style="width:100%" maxlength="100"
+                                                             placeholder="Código o nombre de trabajo provisional"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Tipo de Denominación</span>
+                                                <p:selectOneMenu value="#{registroBean.form.denominationType}" style="width:100%">
+                                                    <f:selectItem itemLabel="— Seleccione —" itemValue="#{null}" noSelectionOption="true"/>
+                                                    <f:selectItem itemLabel="Nombre de Fantasía" itemValue="FANTASY_NAME"/>
+                                                    <f:selectItem itemLabel="Código"              itemValue="CODE"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Grupo Varietal</span>
+                                                <p:inputText value="#{registroBean.form.varietalGroup}"
+                                                             style="width:100%" maxlength="200"
+                                                             placeholder="Ej: Rosas de corte, Tomates cherry..."/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Número de Trámite</span>
+                                                <p:inputText value="#{registroBean.form.applicationNumber}"
+                                                             style="width:100%;" maxlength="50"
+                                                             placeholder="(se asigna al crear el expediente)"
+                                                             readonly="#{registroBean.editMode}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Número de trámite</span>
+                                                <p:inputText value="#{registroBean.form.numeroDeTramite}"
+                                                             style="width:100%;" maxlength="100"
+                                                             placeholder="Número de trámite interno"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr style="border:none; border-top:1px solid #e0ece0; margin:18px 0;"/>
+                                    <div class="sn-sec-title">
+                                        <i class="pi pi-map-marker"></i> Origen y Transferencia de la Variedad
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Origen Geográfico del Material</span>
+                                                <p:inputText value="#{registroBean.form.geographicalMaterialOrigin}"
+                                                             style="width:100%" maxlength="200"
+                                                             placeholder="País o región de origen del material genético"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Origen Geográfico de la Variedad</span>
+                                                <p:inputText value="#{registroBean.form.geographicalVarietyOrigin}"
+                                                             style="width:100%" maxlength="200"
+                                                             placeholder="País o región donde se desarrolló la variedad"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Tipo de Transferencia</span>
+                                                <p:selectOneMenu value="#{registroBean.form.varietyTransferType}" style="width:100%">
+                                                    <f:selectItem itemLabel="— Seleccione —"     itemValue="#{null}" noSelectionOption="true"/>
+                                                    <f:selectItem itemLabel="Sucesión"            itemValue="SUCCESSION"/>
+                                                    <f:selectItem itemLabel="Contrato"            itemValue="CONTRACT"/>
+                                                    <f:selectItem itemLabel="Contrato Laboral"    itemValue="EMPLOYMENT_CONTRACT"/>
+                                                    <f:selectItem itemLabel="Cesión de Derechos" itemValue="TRANSFER_RIGHTS"/>
+                                                    <f:selectItem itemLabel="Otro"                itemValue="OTHER"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Descripción de Transferencia</span>
+                                                <p:inputText value="#{registroBean.form.varietyTransferDescription}"
+                                                             style="width:100%" maxlength="500"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="check-row" style="display:flex; flex-wrap:wrap; gap:18px; margin-bottom:14px;">
+                                        <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                            <p:selectBooleanCheckbox value="#{registroBean.form.varietyTransfer}"/>
+                                            Variedad fue transferida
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                            <p:selectBooleanCheckbox value="#{registroBean.form.hasOtherApplications}"/>
+                                            Tiene otras solicitudes
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                            <p:selectBooleanCheckbox value="#{registroBean.form.priorityClaim}"/>
+                                            Reclamo de prioridad
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                            <p:selectBooleanCheckbox value="#{registroBean.form.inTerritory}"/>
+                                            En territorio
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                            <p:selectBooleanCheckbox value="#{registroBean.form.outTerritory}"/>
+                                            Fuera de territorio
+                                        </label>
+                                    </div>
+
+                                    <div class="sn-tab-nav">
+                                        <div></div>
+                                        <div>
+                                            <button type="button" class="sn-tab-btn"
+                                                    onclick="PF('tabsRegistro').select(1); return false;">
+                                                Información Técnica <i class="pi pi-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </p:tab>
+
+                                <!-- ══ TAB 2: INFORMACIÓN TÉCNICA ══ -->
+                                <p:tab title="Información Técnica" id="tabTecnica">
+                                    <div class="sn-sec-title">
+                                        <i class="pi pi-file-edit"></i> Descripción y Características de la Variedad
+                                    </div>
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Genealogía / Método de Obtención</span>
+                                        <p:inputTextarea value="#{registroBean.form.genealogy}"
+                                                         rows="3" autoResize="true" style="width:100%"
+                                                         placeholder="Cruzamiento, mutación, selección clonal, etc."/>
+                                    </div>
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Descripción de Características Distintivas</span>
+                                        <p:inputTextarea value="#{registroBean.form.featuresDescription}"
+                                                         rows="4" autoResize="true" style="width:100%"
+                                                         placeholder="Morfología, color, tamaño, resistencias, calidad..."/>
+                                    </div>
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Mecanismo de Reproducción</span>
+                                        <p:inputTextarea value="#{registroBean.form.reproductionMechanism}"
+                                                         rows="2" autoResize="true" style="width:100%"
+                                                         placeholder="Semilla, vegetativa, bulbos, esquejes..."/>
+                                    </div>
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Historial de la Variedad</span>
+                                        <p:inputTextarea value="#{registroBean.form.processHistory}"
+                                                         rows="3" autoResize="true" style="width:100%"
+                                                         placeholder="Breve historial del proceso de desarrollo"/>
+                                    </div>
+                                    <div class="sn-fld">
+                                        <span class="sn-lbl">Información Adicional</span>
+                                        <p:inputTextarea value="#{registroBean.form.additionalInformation}"
+                                                         rows="3" autoResize="true" style="width:100%"
+                                                         placeholder="Cualquier dato adicional relevante para la solicitud"/>
+                                    </div>
+
+                                    <hr style="border:none; border-top:1px solid #e0ece0; margin:18px 0;"/>
+                                    <div class="sn-sec-title">
+                                        <i class="pi pi-search"></i> Estado del Examen de la Variedad
+                                    </div>
+                                    <div class="check-row" style="display:flex; flex-wrap:wrap; gap:18px; margin-bottom:14px;">
+                                        <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                            <p:selectBooleanCheckbox value="#{registroBean.form.examPerformed}"/>
+                                            Examen ya realizado
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                            <p:selectBooleanCheckbox value="#{registroBean.form.examInProcess}"/>
+                                            Examen en proceso
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                            <p:selectBooleanCheckbox value="#{registroBean.form.noExamYet}"/>
+                                            Sin examen aún
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                            <p:selectBooleanCheckbox value="#{registroBean.form.livingSample}"/>
+                                            Muestra viva disponible
+                                        </label>
+                                        <label style="display:flex; align-items:center; gap:7px; font-size:12px; color:#444; cursor:pointer;">
+                                            <p:selectBooleanCheckbox value="#{registroBean.form.electronicCommunicationConsent}"/>
+                                            Acepta notificaciones electrónicas
+                                        </label>
+                                    </div>
+                                    <div class="row" style="margin-top:4px;">
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Lugar de la Muestra Viva</span>
+                                                <p:inputText value="#{registroBean.form.samplePlace}"
+                                                             style="width:100%" maxlength="300"
+                                                             placeholder="Institución o dirección donde está la muestra"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="sn-tab-nav">
+                                        <div>
+                                            <button type="button" class="sn-tab-btn"
+                                                    onclick="PF('tabsRegistro').select(0); return false;">
+                                                <i class="pi pi-chevron-left"></i> Datos de la Variedad
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="sn-tab-btn"
+                                                    onclick="PF('tabsRegistro').select(2); return false;">
+                                                Estado del Trámite <i class="pi pi-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </p:tab>
+
+                                <!-- ══ TAB 3: ESTADO DEL TRÁMITE ══ -->
+                                <p:tab title="Estado del Trámite" id="tabEstado">
+                                    <div class="sn-sec-title">
+                                        <i class="pi pi-cog"></i> Gestión y Estado del Proceso
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Estado del Registro <span class="sn-req">*</span></span>
+                                                <p:selectOneMenu value="#{registroBean.form.status}"
+                                                                 style="width:100%" required="true"
+                                                                 requiredMessage="El estado es obligatorio.">
+                                                    <f:selectItem itemLabel="Guardado"     itemValue="SAVED"/>
+                                                    <f:selectItem itemLabel="En Proceso"   itemValue="DELIVERED"/>
+                                                    <f:selectItem itemLabel="Aceptado"     itemValue="ACCEPTED"/>
+                                                    <f:selectItem itemLabel="Vista Previa" itemValue="PREVIEW"/>
+                                                    <f:selectItem itemLabel="Finalizado"   itemValue="FINISHED"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Estado de Gestión</span>
+                                                <p:selectOneMenu value="#{registroBean.form.statusFlow}" style="width:100%">
+                                                    <f:selectItem itemLabel="— Sin gestión —" itemValue="#{null}" noSelectionOption="true"/>
+                                                    <f:selectItem itemLabel="Pendiente"  itemValue="PENDING"/>
+                                                    <f:selectItem itemLabel="Atendido"   itemValue="ATTENDED"/>
+                                                    <f:selectItem itemLabel="Negado"     itemValue="DENIED"/>
+                                                    <f:selectItem itemLabel="Caducado"   itemValue="EXPIRED"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Fase del Flujo</span>
+                                                <p:selectOneMenu value="#{registroBean.form.flowPhase}" style="width:100%">
+                                                    <f:selectItem itemLabel="— Sin fase —"           itemValue="#{null}" noSelectionOption="true"/>
+                                                    <f:selectItem itemLabel="Inicial"                itemValue="INITIAL"/>
+                                                    <f:selectItem itemLabel="Asignado"               itemValue="ASSIGNED"/>
+                                                    <f:selectItem itemLabel="Revisión de Forma"      itemValue="FORM_REVIEW"/>
+                                                    <f:selectItem itemLabel="Admitido"               itemValue="ADMITTED"/>
+                                                    <f:selectItem itemLabel="Revisión de Fondo"      itemValue="SUBSTANCE_REVIEW"/>
+                                                    <f:selectItem itemLabel="Depósito de Muestra"    itemValue="LIVE_SAMPLE_DEPOSIT"/>
+                                                    <f:selectItem itemLabel="Cert. Depósito"         itemValue="DEPOSIT_CERTIFICATE"/>
+                                                    <f:selectItem itemLabel="Período Oposición"      itemValue="OPPOSITION_PERIOD"/>
+                                                    <f:selectItem itemLabel="Res. Oposición"         itemValue="OPPOSITION_RESOLUTION"/>
+                                                    <f:selectItem itemLabel="Examen DHE"             itemValue="DHE_EXAM"/>
+                                                    <f:selectItem itemLabel="Dictamen Técnico"       itemValue="TECHNICAL_OPINION"/>
+                                                    <f:selectItem itemLabel="Resolución"             itemValue="RESOLUTION"/>
+                                                    <f:selectItem itemLabel="Certificado Emitido"    itemValue="CERTIFICATE_ISSUED"/>
+                                                    <f:selectItem itemLabel="Archivado"              itemValue="ARCHIVED"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Auditoría</span>
+                                                <a href="historial/lista.xhtml?appNumber=#{registroBean.form.applicationNumber}"
+                                                   class="sn-btn-secondary" style="display:inline-block; padding:6px 12px; font-size:13px;">
+                                                    <i class="pi pi-history"/> Ver historial de cambios
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Fecha de Presentación</span>
+                                                <h:panelGroup rendered="#{empty param['subiendoDocs']}">
+                                                    <p:calendar value="#{registroBean.form.applicationDate}"
+                                                                pattern="dd/MM/yyyy HH:mm:ss"
+                                                                style="width:100%"
+                                                                showOn="button"
+                                                                showButtonPanel="true"
+                                                                showTime="true"
+                                                                timeFormat="HH:mm:ss"
+                                                                converter="timestampConverter"/>
+                                                </h:panelGroup>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h:panelGroup rendered="#{registroBean.editMode}">
+                                        <hr style="border:none; border-top:1px solid #e0ece0; margin:18px 0;"/>
+                                        <div class="sn-sec-title">
+                                            <i class="pi pi-info-circle"></i> Datos del Registro
+                                        </div>
+                                        <div class="row" style="font-size:13px;">
+                                            <div class="col-md-3">
+                                                <strong style="color:var(--sn-muted);">ID Interno:</strong><br/>
+                                                <span style="font-family:monospace; font-size:15px;">#{registroBean.form.id}</span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong style="color:var(--sn-muted);">N° de Trámite:</strong><br/>
+                                                <span style="font-family:monospace;">
+                                                    #{not empty registroBean.form.applicationNumber
+                                                        ? registroBean.form.applicationNumber : '(pendiente)'}
+                                                </span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <strong style="color:var(--sn-muted);">Fecha de Creación:</strong><br/>
+                                                <h:outputText value="#{registroBean.form.createDate}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
+                                                </h:outputText>
+                                            </div>
+                                        </div>
+                                    </h:panelGroup>
+
+                                    <div class="sn-tab-nav">
+                                        <div>
+                                            <button type="button" class="sn-tab-btn"
+                                                    onclick="PF('tabsRegistro').select(1); return false;">
+                                                <i class="pi pi-chevron-left"></i> Información Técnica
+                                            </button>
+                                        </div>
+                                        <div>
+                                            <button type="button" class="sn-tab-btn"
+                                                    onclick="PF('tabsRegistro').select(3); return false;">
+                                                Documentos <i class="pi pi-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </p:tab>
+
+                                <!-- ══ TAB 4: DOCUMENTOS ══ -->
+                                <p:tab title="Documentos y Archivos" id="tabDocs">
+
+                                    <div class="sn-card sn-upload-section">
+                                        <div class="sn-card-header">
+                                            <h3>
+                                                <i class="pi pi-cloud-upload" style="margin-right:8px;"></i>
+                                                Carga de Documentos
+                                            </h3>
+                                        </div>
+                                        <div class="sn-card-body">
+                                            <h:panelGroup id="seleccionInfo">
+                                                <h:panelGroup rendered="#{registroBean.editMode}">
+                                                    <div class="sn-info-green sn-active-case">
+                                                        <i class="pi pi-check-circle"></i>
+                                                        <span>
+                                                            TRÁMITE ACTIVO:
+                                                            <strong>#{registroBean.form.applicationNumber}</strong>
+                                                            — Seleccione uno o más documentos y presione "Subir Todos los Documentos".
+                                                        </span>
+                                                    </div>
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+
+                                            <h:panelGroup id="panelUpload">
+                                                <h:panelGroup rendered="#{!registroBean.editMode}">
+                                                    <div class="sn-info-amber sn-upload-hint">
+                                                        <i class="pi pi-info-circle"></i>
+                                                        <div>
+                                                            <strong>Paso 1:</strong>
+                                                            Primero guarde el registro para habilitar la carga de documentos.
+                                                        </div>
+                                                    </div>
+                                                </h:panelGroup>
+
+                                                <h:panelGroup rendered="#{registroBean.editMode}">
+                                                    <div class="row sn-upload-grid">
+                                                        <div class="col-md-4">
+                                                            <div class="sn-upload-card">
+                                                                <h5>
+                                                                    <i class="pi pi-file-pdf" style="color:#dc2626;"></i>
+                                                                    Formulario (PDF · máx 10 MB)
+                                                                </h5>
+                                                                <p:fileUpload value="#{registroBean.archivoFormulario}"
+                                                                              mode="simple" skinSimple="true"
+                                                                              label="Elegir" sizeLimit="10000000"
+                                                                              allowTypes="/(\.|\/)(pdf)$/i"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="sn-upload-card">
+                                                                <h5>
+                                                                    <i class="pi pi-image" style="color:#2563eb;"></i>
+                                                                    Fotografías (JPG/PNG · máx 5 MB)
+                                                                </h5>
+                                                                <p:fileUpload value="#{registroBean.archivosFotos}"
+                                                                              mode="simple" skinSimple="true"
+                                                                              multiple="true" label="Elegir"
+                                                                              sizeLimit="5000000"
+                                                                              allowTypes="/(\.|\/)(jpe?g|png)$/i"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="sn-upload-card">
+                                                                <h5>
+                                                                    <i class="pi pi-money-bill" style="color:#c9a227;"></i>
+                                                                    Comprobante de Pago (PDF · máx 5 MB)
+                                                                </h5>
+                                                                <p:fileUpload value="#{registroBean.archivoPago}"
+                                                                              mode="simple" skinSimple="true"
+                                                                              label="Elegir" sizeLimit="5000000"
+                                                                              allowTypes="/(\.|\/)(pdf)$/i"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-top:16px;">
+                                                        <div class="col-md-8">
+                                                            <div class="sn-fld">
+                                                                <span class="sn-lbl">
+                                                                    <i class="pi pi-tag" style="margin-right:4px;"></i>
+                                                                    Nombre personalizado del archivo (opcional)
+                                                                </span>
+                                                                <p:inputText value="#{registroBean.nombrePersonalizado}"
+                                                                             style="width:100%"
+                                                                             placeholder="Ej: Comprobante de Pago Enero 2025"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div style="text-align:center; margin-top:20px;">
+                                                        <input type="hidden" name="subiendoDocs" id="subiendoDocsFlag" value=""/>
+                                                        <p:commandButton id="btnSubirDocs"
+                                                                         value="Subir Todos los Documentos"
+                                                                         icon="pi pi-cloud-upload"
+                                                                         action="#{registroBean.subirTodosLosArchivos}"
+                                                                         ajax="false"
+                                                                         onclick="document.getElementById('subiendoDocsFlag').value='1';"
+                                                                         styleClass="sn-btn-primary"
+                                                                         style="min-width:250px; font-size:14px;"/>
+                                                    </div>
+                                                </h:panelGroup>
+                                            </h:panelGroup>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tabla archivos -->
+                                    <div style="margin-top:20px;">
+                                        <div class="sn-sec-title">
+                                            <i class="pi pi-folder-open"></i>
+                                            Archivos Cargados
+                                            <span style="background:#1e3a6e; color:white; border-radius:12px; padding:2px 9px; font-size:10px; margin-left:8px; font-weight:800;">
+                                                #{registroBean.archivosSubidos.size()}
+                                            </span>
+                                        </div>
+                                        <p:dataTable value="#{registroBean.archivosSubidos}"
+                                                    var="arch"
+                                                    emptyMessage="Aún no hay archivos cargados para este registro."
+                                                    style="font-size:12px;">
+                                            <p:column headerText="Archivo" style="width:45%">
+                                                <h:outputText value="#{arch.nombreMostrar}"
+                                                              title="Nombre original: #{arch.nombreArchivo}"/>
+                                            </p:column>
+                                            <p:column headerText="Fecha" style="width:22%; text-align:center;">
+                                                <h:outputText value="#{arch.fechaCarga}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="America/Guayaquil"/>
+                                                </h:outputText>
+                                            </p:column>
+                                            <p:column headerText="Subido por" style="width:15%; text-align:center;">
+                                                <h:outputText value="#{arch.cargadoPor}"/>
+                                            </p:column>
+                                            <p:column headerText="Tamaño" style="width:10%; text-align:center;">
+                                                <h:outputText value="#{arch.tamanoBytes / 1024} KB"/>
+                                            </p:column>
+                                            <p:column headerText="Ver" style="width:8%; text-align:center;">
+                                                <h:outputLink value="#{request.contextPath}/file-view?id=#{arch.id}"
+                                                              target="_blank"
+                                                              style="background:#1e3a6e; color:white; padding:3px 10px; border-radius:5px; font-size:11px; text-decoration:none;">
+                                                    <i class="pi pi-external-link"/>
+                                                </h:outputLink>
+                                            </p:column>
+                                            <p:column headerText="Eliminar" style="width:10%; text-align:center;">
+                                                <p:commandButton icon="pi pi-trash"
+                                                                title="Eliminar archivo"
+                                                                actionListener="#{registroBean.eliminarArchivo(arch)}"
+                                                                update=":frmRegistro :mensajes"
+                                                                process="@this"
+                                                                styleClass="ui-button-danger ui-button-sm">
+                                                    <p:confirm header="Confirmación"
+                                                               message="¿Eliminar este archivo?"
+                                                               icon="pi pi-trash"/>
+                                                </p:commandButton>
+                                            </p:column>
+                                        </p:dataTable>
+                                    </div>
+
+                                    <!-- Botones tab 4 -->
+                                    <div class="sn-tab-nav">
+                                        <div>
+                                            <button type="button" class="sn-tab-btn"
+                                                    onclick="PF('tabsRegistro').select(2); return false;">
+                                                <i class="pi pi-chevron-left"></i> Estado del Trámite
+                                            </button>
+                                        </div>
+                                        <div style="display:flex; gap:10px;">
+                                            <p:commandButton id="btnCancelarTab4"
+                                                            value="Regresar"
+                                                            icon="pi pi-arrow-left"
+                                                            action="#{registroBean.cancelar}"
+                                                            immediate="true"
+                                                            styleClass="sn-btn-secondary"
+                                                            style="min-width:110px;"/>
+                                            <p:commandButton id="btnGuardarTab4Nuevo"
+                                                            rendered="#{!registroBean.editMode}"
+                                                            value="Guardar Registro"
+                                                            icon="pi pi-save"
+                                                            action="#{registroBean.saveRegistro}"
+                                                            process="@form"
+                                                            update=":mensajes"
+                                                            styleClass="sn-btn-primary"
+                                                            style="min-width:150px;"/>
+                                            <p:commandButton id="btnGuardarTab4Edicion"
+                                                            rendered="#{registroBean.editMode}"
+                                                            value="Guardar Cambios"
+                                                            icon="pi pi-check"
+                                                            action="#{registroBean.updateRegistro}"
+                                                            process="@form"
+                                                            update=":mensajes"
+                                                            styleClass="sn-btn-primary"
+                                                            style="min-width:150px;"/>
+                                        </div>
+                                    </div>
+
+                                </p:tab>
+                            </p:tabView>
+                        </div><!-- ac-tab-card -->
+
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+                                         responsive="true" width="350">
+                            <p:commandButton value="Sí" type="button" styleClass="ui-confirmdialog-yes ui-button-danger"/>
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no ui-button-secondary"/>
+                        </p:confirmDialog>
+
+                    </h:form>
+
+                </div><!-- lm-content -->
+
+            </div><!-- lm-main -->
+
+        </div><!-- lm-layout -->
+
+        <!-- Spinner AJAX -->
+        <p:ajaxStatus onstart="PF('spinnerDlg').show()" onsuccess="PF('spinnerDlg').hide()"/>
+        <p:dialog widgetVar="spinnerDlg" modal="true" draggable="false"
+                  closable="false" resizable="false" showHeader="false">
+            <p:graphicImage library="images" name="ajax-loader.gif"/>
+        </p:dialog>
+
+        <!-- Idle monitor -->
+        <p:idleMonitor timeout="1800000" id="idleReg">
+            <p:ajax event="idle" oncomplete="PF('idleDlgReg').show()"/>
+        </p:idleMonitor>
+        <p:dialog id="idleDlgReg" widgetVar="idleDlgReg"
+                  header="Sesión Caducada" resizable="false"
+                  modal="true" closable="false" style="min-width:280px;">
+            <h:form id="frmIdle">
+                <div style="text-align:center; padding:10px;">
+                    <p style="margin-bottom:14px; color:var(--sn-dark);">Su sesión ha expirado por inactividad.</p>
+                    <p:commandButton value="Ir al Login" icon="pi pi-sign-in"
+                                     immediate="true"
+                                     actionListener="#{loginBean.logout}"
+                                     oncomplete="window.location='login.xhtml';"
+                                     styleClass="sn-btn-primary"/>
+                </div>
+            </h:form>
+        </p:dialog>
+
+    </h:body>
+</html>
