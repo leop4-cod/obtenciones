@@ -86,6 +86,10 @@ public class LoginFilter implements Filter {
         if (urlStr.indexOf("/javax.faces.resource/") != -1) {
             return true;
         }
+        // Permitir acceso a las imágenes del carrusel del login
+        if (urlStr.indexOf("/img/") != -1) {
+            return true;
+        }
         return false;
     }
 

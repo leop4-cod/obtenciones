@@ -181,6 +181,18 @@ public class VegetableForms implements Serializable {
     @Column(name = "flow_phase")
     private FlowPhase flowPhase;
 
+    @Column(name = "observacion_tecnica")
+    private String observacionTecnica;
+
+    @Column(name = "publicacion_gaceta")
+    private String publicacionGaceta;
+
+    @Column(name = "etapa_actual")
+    private String etapaActual;
+
+    @Column(name = "estado_expediente")
+    private String estadoExpediente;
+
     @Transient
     private String locker;
 
@@ -993,4 +1005,15 @@ public class VegetableForms implements Serializable {
         }
     }
 
+    public String getObservacionTecnica() { return observacionTecnica; }
+    public void setObservacionTecnica(String observacionTecnica) { this.observacionTecnica = observacionTecnica; }
+
+    public String getPublicacionGaceta() { return publicacionGaceta; }
+    public void setPublicacionGaceta(String publicacionGaceta) { this.publicacionGaceta = publicacionGaceta; }
+
+    public String getEtapaActual() { return etapaActual; }
+    public void setEtapaActual(String etapaActual) { this.etapaActual = etapaActual; }
+
+    public String getEstadoExpediente() { return estadoExpediente; }
+    public void setEstadoExpediente(String estadoExpediente) { this.estadoExpediente = estadoExpediente; }
 }

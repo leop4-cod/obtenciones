@@ -1,720 +1,339 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
-        <title>OBTENCIONES VEGETALES</title>
+        <title>OBTENCIONES VEGETALES - SENADI</title>
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <link rel="preconnect" href="https://fonts.googleapis.com"/>
-        <link rel="preconnect" href="https://cdnjs.cloudflare.com"/>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" media="print" onload="this.media='all'"/>
-        <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/></noscript>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css" media="print" onload="this.media='all'"/>
-        <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css"/></noscript>
-
-        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}" />
-        <link rel="stylesheet" type="text/css" href="#{resource['assets/css/main.css']}" />
-        <!--<link href="resources/assets/css/style.css" rel="stylesheet" />-->
-
-        <link rel="shortcut icon" type="image/png" href="#{resource['images/favicon.png']}"/>
-
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
         <style>
-            /* Estilo global del Body con split-screen */
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap');
+
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+
             body {
-                min-height: 100vh;
-                margin: 0;
-                padding: 0;
-                display: block !important;
-                background-color: #04080e !important;
-                overflow-x: hidden;
-                overflow-y: auto;
-                font-family: 'Nunito Sans', sans-serif;
-            }
-            @media (min-width: 993px) {
-                body {
-                    overflow: hidden !important;
-                }
-            }
-            
-            /* Estructura del Login con Fondo Continuo (Una sola imagen) */
-            .login-split-container {
-                display: flex;
-                width: 100%;
-                min-height: 100vh;
+                font-family: 'Poppins', sans-serif;
+                width: 100vw;
+                height: 100vh;
                 overflow: hidden;
+                background-color: #0a0a0a;
                 position: relative;
             }
-            
-            /* Overlay oscuro para mejorar legibilidad en todo el fondo */
-            .login-split-container::after {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(135deg, rgba(4, 8, 14, 0.45) 0%, rgba(6, 10, 18, 0.75) 100%);
-                z-index: 1;
-                pointer-events: none;
-            }
 
-            /* Imagen de fondo única en toda la pantalla */
-            .login-bg-image {
+            /* ========== CAROUSEL DE FONDO ========== */
+            .bg-carousel {
+                position: fixed;
+                top: 0; left: 0;
+                width: 100vw; height: 100vh;
+                z-index: 1;
+            }
+            .bg-slide {
                 position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-image: url("#{resource['images:vegetable_bg.png']}");
+                top: 0; left: 0;
+                width: 100%; height: 100%;
                 background-size: cover;
                 background-position: center;
-                filter: brightness(0.6) saturate(1.15);
-                z-index: 0;
-                transition: transform 10s ease;
-            }
-            .login-split-container:hover .login-bg-image {
-                transform: scale(1.04);
-            }
-            
-            .login-left-panel {
-                flex: 1.25;
-                position: relative;
-                display: flex;
-                align-items: flex-end;
-                padding: 60px;
-                overflow: hidden;
-                background-color: transparent !important;
-                z-index: 2;
-            }
-            
-            .left-content {
-                position: relative;
-                z-index: 2;
-                color: #ffffff;
-                max-width: 580px;
-                transform: translateY(0);
-                animation: fadeInUpLeft 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            }
-            
-            @keyframes fadeInUpLeft {
-                0% {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                100% {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            .left-brand {
-                display: inline-block;
-                padding: 6px 14px;
-                background: rgba(16, 185, 129, 0.18);
-                border: 1px solid rgba(16, 185, 129, 0.35);
-                border-radius: 20px;
-                font-size: 11px;
-                font-weight: 800;
-                color: #34d399;
-                letter-spacing: 2px;
-                margin-bottom: 20px;
-                text-transform: uppercase;
-                backdrop-filter: blur(4px);
-            }
-            
-            .left-title {
-                font-size: 42px;
-                font-weight: 800;
-                line-height: 1.15;
-                margin: 0 0 16px 0;
-                color: #ffffff !important;
-                text-shadow: 0 4px 15px rgba(0,0,0,0.5);
-                font-family: 'Nunito Sans', sans-serif;
-            }
-            
-            .left-subtitle {
-                font-size: 16px;
-                color: rgba(255, 255, 255, 0.8);
-                line-height: 1.6;
-                margin: 0;
-                text-shadow: 0 2px 6px rgba(0,0,0,0.4);
-            }
-            
-            .login-right-panel {
-                flex: 0.75;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                background-color: transparent !important;
-                padding: 40px;
-                position: relative;
-                z-index: 2;
-            }
-
-            /* Blobs brillantes de fondo (Tema SENADI - Verde esmeralda vegetal y colores de Ecuador) */
-            .bg-glow {
-                position: absolute;
-                border-radius: 50%;
-                filter: blur(130px);
-                opacity: 0.25;
-                z-index: 0;
-                pointer-events: none;
-            }
-            .bg-glow-1 {
-                width: 500px;
-                height: 500px;
-                background: radial-gradient(circle, #1e3a6e 0%, rgba(16,185,129,0) 70%);
-                top: -10%;
-                right: -10%;
-                animation: float-blob-1 28s infinite alternate ease-in-out;
-            }
-            .bg-glow-2 {
-                width: 550px;
-                height: 550px;
-                background: radial-gradient(circle, #eab308 0%, rgba(234,179,8,0) 70%);
-                bottom: -15%;
-                left: -10%;
-                animation: float-blob-2 32s infinite alternate ease-in-out;
-            }
-            .bg-glow-3 {
-                width: 400px;
-                height: 400px;
-                background: radial-gradient(circle, #0284c7 0%, rgba(2,132,199,0) 70%);
-                top: 30%;
-                left: 10%;
-                animation: float-blob-3 24s infinite alternate ease-in-out;
-            }
-            .bg-glow-4 {
-                width: 420px;
-                height: 420px;
-                background: radial-gradient(circle, #ef4444 0%, rgba(239,68,68,0) 70%);
-                bottom: 20%;
-                right: 5%;
-                animation: float-blob-4 26s infinite alternate ease-in-out;
-            }
-
-            @keyframes float-blob-1 {
-                0% { transform: translate(0, 0) scale(1); }
-                33% { transform: translate(50px, 40px) scale(1.08); }
-                66% { transform: translate(-20px, 70px) scale(0.95); }
-                100% { transform: translate(0, 0) scale(1); }
-            }
-            @keyframes float-blob-2 {
-                0% { transform: translate(0, 0) scale(1); }
-                33% { transform: translate(-50px, -60px) scale(0.92); }
-                66% { transform: translate(30px, -20px) scale(1.05); }
-                100% { transform: translate(0, 0) scale(1); }
-            }
-            @keyframes float-blob-3 {
-                0% { transform: translate(0, 0) scale(1); }
-                50% { transform: translate(-50px, 40px) scale(1.03); }
-                100% { transform: translate(0, 0) scale(1); }
-            }
-            @keyframes float-blob-4 {
-                0% { transform: translate(0, 0) scale(1); }
-                33% { transform: translate(40px, -50px) scale(0.95); }
-                66% { transform: translate(-30px, 30px) scale(1.05); }
-                100% { transform: translate(0, 0) scale(1); }
-            }
-
-            /* Grid tecnológica sutil de fondo */
-            .bg-grid {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-                background-size: 30px 30px;
-                z-index: 1;
-                pointer-events: none;
-            }
-
-            /* Hojas/Partículas orgánicas flotantes (Obtenciones Vegetales) */
-            .particles-container {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                overflow: hidden;
-                z-index: 2;
-                pointer-events: none;
-            }
-            .particle {
-                position: absolute;
-                bottom: -30px;
-                background: linear-gradient(135deg, rgba(30, 58, 110, 0.3) 0%, rgba(5, 150, 105, 0.05) 100%);
-                border-radius: 50% 0;
-                transform: rotate(-45deg);
-                animation: float-up 18s infinite linear;
-                pointer-events: none;
-                filter: drop-shadow(0 0 6px rgba(16, 185, 129, 0.15));
-            }
-            .p1 { left: 8%; width: 16px; height: 16px; animation-duration: 22s; animation-delay: 0s; }
-            .p2 { left: 22%; width: 12px; height: 12px; animation-duration: 28s; animation-delay: 3s; background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(234, 179, 8, 0.05) 100%); filter: drop-shadow(0 0 6px rgba(234, 179, 8, 0.1)); }
-            .p3 { left: 35%; width: 20px; height: 20px; animation-duration: 32s; animation-delay: 7s; }
-            .p4 { left: 50%; width: 14px; height: 14px; animation-duration: 26s; animation-delay: 1.5s; background: linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(2, 132, 199, 0.05) 100%); filter: drop-shadow(0 0 6px rgba(2, 132, 199, 0.1)); }
-            .p5 { left: 68%; width: 18px; height: 18px; animation-duration: 30s; animation-delay: 9s; }
-            .p6 { left: 82%; width: 12px; height: 12px; animation-duration: 24s; animation-delay: 4s; }
-            .p7 { left: 15%; width: 22px; height: 22px; animation-duration: 35s; animation-delay: 12s; background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.05) 100%); filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.1)); }
-            .p8 { left: 90%; width: 15px; height: 15px; animation-duration: 25s; animation-delay: 6s; }
-
-            @keyframes float-up {
-                0% {
-                    transform: translateY(0) translateX(0) rotate(-45deg) scale(0.7);
-                    opacity: 0;
-                }
-                25% {
-                    transform: translateY(-30vh) translateX(15px) rotate(-15deg) scale(0.85);
-                    opacity: 0.7;
-                }
-                50% {
-                    transform: translateY(-60vh) translateX(-15px) rotate(15deg) scale(1);
-                    opacity: 0.7;
-                }
-                75% {
-                    transform: translateY(-90vh) translateX(10px) rotate(45deg) scale(1.15);
-                    opacity: 0.7;
-                }
-                100% {
-                    transform: translateY(-120vh) translateX(-10px) rotate(90deg) scale(1.3);
-                    opacity: 0;
-                }
-            }
-
-            /* Contenedor del Formulario */
-            #formlog {
-                margin: 0 !important;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-                z-index: 10;
-            }
-
-            /* Panel de Login similar al diseño de referencia */
-            #formlog .ui-panel {
-                background: rgba(18, 24, 38, 0.93) !important;
-                border: 1px solid rgba(255, 255, 255, 0.08) !important;
-                border-radius: 16px !important;
-                backdrop-filter: blur(16px) saturate(120%) !important;
-                -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
-                width: 380px !important;
-                padding: 35px 35px 30px 35px !important;
-                text-align: left !important;
+                background-repeat: no-repeat;
                 opacity: 0;
-                transform: translateY(25px);
-                transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+                transition: opacity 1.5s ease-in-out;
             }
-            body.loaded #formlog .ui-panel {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            #formlog .ui-panel:hover {
-                border-color: rgba(16, 185, 129, 0.25) !important;
-            }
-            #formlog .ui-panel-content {
-                padding: 0 !important;
+            .bg-slide.active { opacity: 1; }
+
+            /* ========== CONTENEDOR CENTRADO ========== */
+            .login-container {
+                width: 100vw; height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding: 20px;
+                position: fixed;
+                top: 0; left: 0;
+                z-index: 2;
             }
 
-            /* Título del Login - Alineado a la izquierda */
-            #formlog p {
-                color: #ffffff !important;
-                font-weight: 700 !important;
-                font-size: 14px !important;
-                letter-spacing: 1px !important;
-                margin-top: 15px !important;
-                margin-bottom: 28px !important;
-                text-align: left !important;
-                text-transform: uppercase !important;
-                text-shadow: none !important;
-                font-family: 'Nunito Sans', sans-serif;
-            }
-
-            /* Input Fields - 100% de ancho con borde inferior */
-            #formlog .input-field {
-                position: relative !important;
-                width: 100% !important;
-                margin-top: 24px !important;
-                margin-bottom: 24px !important;
-                float: none !important;
-                display: block !important;
-            }
-            #formlog .input-field .prefix {
-                position: absolute !important;
-                left: 0 !important;
-                top: 10px !important;
-                color: rgba(255, 255, 255, 0.7) !important;
-                font-size: 24px !important;
-                transition: color 0.25s ease !important;
-                width: auto !important;
-                height: auto !important;
-            }
-            #formlog .input-field input[type="text"], 
-            #formlog .input-field input[type="password"] {
-                margin-left: 0 !important;
-                width: 100% !important;
-                padding-left: 36px !important;
-                box-sizing: border-box !important;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
-                background: transparent !important;
-                color: #ffffff !important;
-                height: 44px !important;
-                font-size: 15px !important;
-                font-weight: 600 !important;
-                box-shadow: none !important;
-                transition: border-color 0.2s ease !important;
-            }
-            #formlog .input-field input[type="text"]:focus, 
-            #formlog .input-field input[type="password"]:focus {
-                border-bottom: 1px solid #1e3a6e !important;
-                box-shadow: none !important;
-            }
-
-            /* Floating Labels */
-            #formlog .input-field label {
-                position: absolute !important;
-                left: 36px !important;
-                top: 10px !important;
-                color: rgba(255, 255, 255, 0.6) !important;
-                font-size: 15px !important;
-                font-weight: 600 !important;
-                transition: all 0.2s ease !important;
-                pointer-events: none !important;
-            }
-            #formlog .input-field label.active {
-                transform: translateY(-145%) scale(0.8) !important;
-                left: 0px !important;
-                color: #1e3a6e !important;
-            }
-            
-            /* Corrección para Autocompletado (Autofill) del Navegador */
-            #formlog input:-webkit-autofill,
-            #formlog input:-webkit-autofill:hover, 
-            #formlog input:-webkit-autofill:focus, 
-            #formlog input:-webkit-autofill:active {
-                -webkit-box-shadow: 0 0 0 30px #121826 inset !important;
-                -webkit-text-fill-color: #ffffff !important;
-                caret-color: #ffffff !important;
-                transition: background-color 5000s ease-in-out 0s !important;
-            }
-            
-            /* Botón Ingresar */
-            #formlog .btn_peque {
-                background: #1e3a6e !important;
-                border: none !important;
-                border-radius: 6px !important;
-                color: #ffffff !important;
-                font-weight: 800 !important;
-                font-size: 14px !important;
-                letter-spacing: 1.5px !important;
-                width: 100% !important;
-                height: 48px !important;
-                line-height: 48px !important;
-                padding: 0 !important;
-                margin-top: 20px !important;
-                margin-bottom: 5px !important;
-                box-shadow: 0 4px 15px rgba(30, 58, 110, 0.3) !important;
-                transition: all 0.2s ease !important;
-                text-transform: uppercase !important;
-                display: block !important;
-            }
-            #formlog .btn_peque:hover {
-                background: #0d1b35 !important;
-                box-shadow: 0 6px 20px rgba(30, 58, 110, 0.4) !important;
-                transform: translateY(-1px) !important;
-            }
-            #formlog .btn_peque:active {
-                transform: translateY(1px) !important;
-            }
-            #formlog .ui-button-text {
-                color: #ffffff !important;
-                font-weight: 800 !important;
-                font-size: 14px !important;
-                line-height: 48px !important;
-                padding: 0 !important;
-            }
-
-            /* Manual de Usuario */
-            .manual-link {
-                margin-top: 25px !important;
-                font-size: 13px !important;
-                color: rgba(255, 255, 255, 0.7) !important;
-                text-shadow: none !important;
-                position: relative;
-                z-index: 10;
-                text-align: center;
+            /* ========== TARJETA ESTILO LAGO (Glass puro) ========== */
+            .login-card {
                 width: 100%;
+                max-width: 420px;
+                background: rgba(255, 255, 255, 0.12);
+                backdrop-filter: blur(16px) saturate(140%);
+                -webkit-backdrop-filter: blur(16px) saturate(140%);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 20px;
+                padding: 38px 35px;
+                text-align: center;
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15),
+                            inset 0 0 80px rgba(255, 255, 255, 0.03);
+                animation: cardEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1);
             }
-            .manual-link a {
-                color: #1e3a6e !important;
-                font-weight: 700;
-                text-decoration: none !important;
-                transition: color 0.2s;
+            @keyframes cardEntrance {
+                from { opacity: 0; transform: translateY(30px) scale(0.97); }
+                to   { opacity: 1; transform: translateY(0) scale(1); }
             }
-            .manual-link a:hover {
-                color: #34d399 !important;
-                text-decoration: underline !important;
+
+            /* ========== LOGO ========== */
+            .logo-wrap {
+                margin-bottom: 20px;
             }
-            
-            /* Notificaciones (Growl) */
+            .logo {
+                max-width: 180px;
+                height: auto;
+                object-fit: contain;
+                filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+            }
+
+            /* ========== TÍTULO ========== */
+            .login-title {
+                color: #ffffff;
+                font-size: 1.4rem;
+                font-weight: 600;
+                margin-bottom: 25px;
+                letter-spacing: 0.5px;
+                text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+                line-height: 1.4;
+            }
+
+            /* ========== FORMULARIO ========== */
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            /* ========== INPUTS CÁPSULA (estilo lago) ========== */
+            .input-group {
+                position: relative;
+                display: flex;
+                align-items: center;
+            }
+
+            /* El ícono va a la DERECHA */
+            .input-group i {
+                position: absolute;
+                right: 18px;
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 1.3rem;
+                z-index: 3;
+                pointer-events: none;
+            }
+
+            .input-group input,
+            .input-group input[type="text"],
+            .input-group input[type="password"] {
+                width: 100% !important;
+                background: rgba(255, 255, 255, 0.08) !important;
+                border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+                border-radius: 30px !important;
+                padding: 11px 50px 11px 20px !important;
+                color: #ffffff !important;
+                font-size: 0.95rem !important;
+                font-family: 'Poppins', sans-serif !important;
+                font-weight: 400 !important;
+                box-shadow: none !important;
+                outline: none !important;
+                height: auto !important;
+                transition: all 0.3s ease !important;
+                letter-spacing: 0.3px;
+            }
+            .input-group input:focus {
+                border-color: rgba(255, 255, 255, 0.7) !important;
+                background: rgba(255, 255, 255, 0.14) !important;
+                box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08) !important;
+            }
+            .input-group input::placeholder {
+                color: rgba(255, 255, 255, 0.6);
+                font-weight: 400;
+            }
+
+            /* Fix autofill */
+            input:-webkit-autofill,
+            input:-webkit-autofill:hover,
+            input:-webkit-autofill:focus,
+            input:-webkit-autofill:active {
+                -webkit-box-shadow: 0 0 0 30px rgba(255, 255, 255, 0.1) inset !important;
+                -webkit-text-fill-color: white !important;
+                transition: background-color 5000s ease-in-out 0s;
+                border-radius: 30px !important;
+            }
+
+            /* ========== BOTÓN BLANCO (estilo lago) ========== */
+            .btn-login,
+            .btn-login.ui-button {
+                margin-top: 12px !important;
+                width: 100% !important;
+                background-color: #ffffff !important;
+                background-image: none !important;
+                color: #1a1a2e !important;
+                border: none !important;
+                padding: 12px !important;
+                font-size: 1rem !important;
+                font-weight: 600 !important;
+                font-family: 'Poppins', sans-serif !important;
+                border-radius: 30px !important;
+                cursor: pointer !important;
+                letter-spacing: 1px !important;
+                text-transform: uppercase;
+                text-shadow: none !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
+                transition: all 0.3s ease !important;
+            }
+            .btn-login:hover,
+            .btn-login.ui-button:hover {
+                background-color: rgba(255, 255, 255, 0.9) !important;
+                box-shadow: 0 6px 20px rgba(0,0,0,0.25) !important;
+                transform: translateY(-1px);
+            }
+            .btn-login:active { transform: translateY(1px) !important; }
+            .btn-login .ui-button-text {
+                color: #1a1a2e !important;
+                font-weight: 600 !important;
+                font-size: 1rem !important;
+                padding: 0 !important;
+                font-family: 'Poppins', sans-serif !important;
+            }
+
+            /* ========== GROWL ========== */
+            .ui-growl { z-index: 9999 !important; }
             .ui-growl-item-container {
                 background: rgba(15, 23, 42, 0.9) !important;
                 border: 1px solid rgba(255, 255, 255, 0.1) !important;
                 backdrop-filter: blur(8px) !important;
                 border-radius: 12px !important;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
             }
-            .ui-growl-title {
-                color: #ffffff !important;
-                font-weight: bold !important;
-                letter-spacing: 0.5px;
-            }
-            .ui-growl-message p {
-                color: #cbd5e1 !important;
-                font-size: 13px;
-            }
+            .ui-growl-title { color: #ffffff !important; font-weight: bold !important; }
+            .ui-growl-message p { color: #cbd5e1 !important; }
 
-            /* Estilos y efectos del Logotipo original en tarjeta blanca premium */
-            .logo-container {
-                padding: 5px 0 25px 0;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-            }
-            .logo-badge {
-                background: #ffffff !important;
+            /* Limpiar PrimeFaces */
+            .ui-panel, .ui-panel-content {
                 border: none !important;
-                border-radius: 6px !important;
-                padding: 14px 20px !important;
-                box-shadow: none !important;
-                display: flex !important;
-                justify-content: center !important;
-                align-items: center !important;
-                width: 100% !important;
-            }
-            .logo-badge:hover {
-                background: #ffffff !important;
-                box-shadow: none !important;
-                transform: none !important;
-            }
-            .logo-original {
-                width: 100%;
-                height: auto;
-                display: block;
+                background: transparent !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
 
-            /* Responsivo */
-            @media (max-width: 992px) {
-                .login-left-panel {
-                    display: none;
+            /* ========== RESPONSIVE ========== */
+            @media (max-width: 520px) {
+                .login-card {
+                    padding: 35px 25px;
+                    max-width: 95%;
                 }
-                .login-right-panel {
-                    flex: 1;
-                    width: 100%;
-                    background: transparent !important;
-                    padding: 30px 20px;
-                }
-                #formlog .ui-panel {
-                    width: 100% !important;
-                    max-width: 340px;
-                }
+                .login-title { font-size: 1.1rem; }
             }
         </style>
     </h:head>
     <h:body>
-        <!-- Start Page Loading -->
-        <div id="loader-wrapper">
-            <div id="loader"></div>
-            <div class="loader-section section-left"></div>
-            <div class="loader-section section-right"></div>
-        </div>
         <p:growl id="mensajes" showDetail="true" life="2000" />
 
-        <div class="login-split-container">
-            <!-- Background Image -->
-            <div class="login-bg-image"></div>
-            
-            <!-- Left panel (Visual / Hero) -->
-            <div class="login-left-panel">
-                <div class="left-content">
-                    <div class="left-brand">SENADI OBTENCIONES</div>
-                    <h1 class="left-title">Gestión de Obtenciones Vegetales</h1>
-                    <p class="left-subtitle">Sistema oficial para el registro, protección de derechos de obtentor y control de nuevas variedades fitogenéticas en el Ecuador.</p>
-                </div>
-            </div>
+        <!-- Carrusel de fondo -->
+        <div class="bg-carousel" id="bg-carousel"></div>
 
-            <!-- Right panel (Login Form) -->
-            <div class="login-right-panel">
-                <!-- Glowing background blobs -->
-                <div class="bg-glow bg-glow-1"></div>
-                <div class="bg-glow bg-glow-2"></div>
-                <div class="bg-glow bg-glow-3"></div>
-                <div class="bg-glow bg-glow-4"></div>
-                
-                <!-- Technology grid overlay -->
-                <div class="bg-grid"></div>
+        <!-- Login centrado -->
+        <main class="login-container">
+            <div class="login-card">
 
-                <!-- Floating organic particles (seeds/leaves of innovation) -->
-                <div class="particles-container">
-                    <div class="particle p1"></div>
-                    <div class="particle p2"></div>
-                    <div class="particle p3"></div>
-                    <div class="particle p4"></div>
-                    <div class="particle p5"></div>
-                    <div class="particle p6"></div>
-                    <div class="particle p7"></div>
-                    <div class="particle p8"></div>
+                <!-- Logo -->
+                <div class="logo-wrap">
+                    <h:graphicImage styleClass="logo" value="#{resource['images:iepi.png']}" />
                 </div>
 
+                <!-- Título -->
+                <h1 class="login-title">GESTIÓN DE OBTENCIONES VEGETALES</h1>
+
+                <!-- Formulario -->
                 <h:form id="formlog">
                     <p:panel id="panelin">
-
-                        <div class="logo-container">
-                            <div class="logo-badge">
-                                <h:graphicImage styleClass="logo-original" value="#{resource['images:iepi.png']}" />
+                        <div class="form-group">
+                            <div class="input-group">
+                                <h:inputText id="icon_usuario" value="#{loginBean.login}" required="true" pt:placeholder="Usuario" />
+                                <i class='bx bx-user'></i>
                             </div>
+
+                            <div class="input-group">
+                                <h:inputSecret id="icon_password" value="#{loginBean.clave}" required="true" pt:placeholder="Contraseña" />
+                                <i class='bx bx-lock-alt'></i>
+                            </div>
+
+                            <p:commandButton id="loginButton" value="INGRESAR"
+                                             actionListener="#{loginBean.logueo}" update=":mensajes"
+                                             oncomplete="manejarLogin(xhr, status, args)"
+                                             styleClass="btn-login" />
                         </div>
-
-                        <p>GESTIÓN DE OBTENCIONES VEGETALES</p>
-                        <div class="input-field col s6">
-                            <i class="material-icons prefix" id="account">account_circle</i>
-                            <h:inputText id="icon_usuario" class="validate"
-                                         onfocus="animaOnFocus('lbl_usuario', 'account')"
-                                         onblur="animaOnBlur(this, 'lbl_usuario', 'account')"
-                                         onchange="animaOnChange(this, 'lbl_usuario', 'account')"
-                                         value="#{loginBean.login}" required="true"
-                                         label="Usuario" />
-                            <label id="lbl_usuario" for="icon_usuario"
-                                   onclick="animaOnClick(this, 'icon_usuario', 'account')">Usuario</label>
-                        </div>
-
-                        <div class="input-field col s6">
-                            <i id="phoneicon" class="material-icons prefix">lock</i>
-                            <label id="lbl_password" class="" for="icon_password"
-                                   onclick="animaOnClick(this, 'icon_password', 'phoneicon')">Password</label>
-                            <h:inputSecret id="icon_password" class="validate"
-                                           onfocus="animaOnFocus('lbl_password', 'phoneicon')"
-                                           onblur="animaOnBlur(this, 'lbl_password', 'phoneicon')"
-                                           value="#{loginBean.clave}" required="true"
-                                           label="Password"/>
-                        </div>
-
-                        <p:commandButton id="loginButton" value="INGRESAR"
-                                         actionListener="#{loginBean.logueo}" update=":mensajes"
-                                         oncomplete="manejarLogin(xhr, status, args)"
-                                         class="btn_peque">
-                            <!--<p:effect rendered="{loginBean.shake}" for="panel" type="shake" event="click" /> -->
-                        </p:commandButton>
-
                     </p:panel>
-                    <div class="manual-link">Manual de Usuario. Click
-                        <a target="_blank" href="http://www.derechosintelectuales.gob.ec">Aquí</a>
-                    </div>
                 </h:form>
             </div>
-        </div>
+        </main>
+
+        <script>
+            //<![CDATA[
+            document.addEventListener('DOMContentLoaded', function() {
+                var bgCarousel = document.getElementById('bg-carousel');
+
+                var contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1));
+                if (!contextPath || contextPath === '') {
+                    contextPath = '/adminobtencion';
+                }
+
+                var images = [
+                    contextPath + '/img/bg1.jpg',
+                    contextPath + '/img/bg2.jpg',
+                    contextPath + '/img/bg3.jpg',
+                    contextPath + '/img/bg4.jpg'
+                ];
+
+                var loaded = 0;
+                images.forEach(function(imgSrc, index) {
+                    var img = new Image();
+                    img.onload = function() {
+                        loaded++;
+                        var div = document.createElement('div');
+                        div.classList.add('bg-slide');
+                        div.style.backgroundImage = "url('" + imgSrc + "')";
+                        div.setAttribute('data-index', index);
+                        if (index === 0) div.classList.add('active');
+                        bgCarousel.appendChild(div);
+                        if (loaded === images.length) iniciarCarrusel();
+                    };
+                    img.onerror = function() {
+                        console.warn('No se pudo cargar: ' + imgSrc);
+                        loaded++;
+                        if (loaded === images.length) iniciarCarrusel();
+                    };
+                    img.src = imgSrc;
+                });
+
+                function iniciarCarrusel() {
+                    var slides = document.querySelectorAll('.bg-slide');
+                    if (slides.length === 0) return;
+
+                    var sortedSlides = Array.from(slides).sort(function(a, b) {
+                        return parseInt(a.getAttribute('data-index')) - parseInt(b.getAttribute('data-index'));
+                    });
+
+                    sortedSlides.forEach(function(s, i) {
+                        if (i === 0) s.classList.add('active');
+                        else s.classList.remove('active');
+                    });
+
+                    var currentIndex = 0;
+                    setInterval(function() {
+                        sortedSlides[currentIndex].classList.remove('active');
+                        currentIndex = (currentIndex + 1) % sortedSlides.length;
+                        sortedSlides[currentIndex].classList.add('active');
+                    }, 5000);
+                }
+            });
+
+            function manejarLogin(xhr, status, args) {
+                if (!args.validationFailed && args.estaLogeado) {
+                    setTimeout(function() {
+                        window.location = args.view;
+                    }, 500);
+                }
+            }
+            //]]>
+        </script>
     </h:body>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            setTimeout(function () {
-                $('body').addClass('loaded');
-                var doc = document.forms['formlog'];
-                var indexUs = getIdIndex('icon_usuario');
-                if (doc[indexUs].value != '') {
-                    logu = document.getElementById('account');
-                    logu.style = 'color: rgb(16, 185, 129) !important;';
-                    us = document.getElementById('lbl_usuario');
-                    us.className = "active";
-                }
-
-                var indexPa = getIdIndex('icon_password');
-                if (doc[indexPa].value != '') {
-                    logu = document.getElementById('phoneicon');
-                    logu.style = 'color: rgb(16, 185, 129) !important;';
-                    us = document.getElementById('lbl_password');
-                    us.className = "active";
-                }
-            }, 1200);
-        });
-
-        function getIdIndex(idName) {
-            var doc = document.forms['formlog'];
-            var i;
-            var idResult = 0;
-            for (i = 0; doc.length > i; i++) {
-                if (doc[i].id.includes(idName)) {
-                    idResult = i;
-                    break;
-                }
-            }
-            return idResult;
-        }
-
-        function animaOnClick(label, input, ima) {
-            label.className = "active";
-            var doc = document.forms['formlog'];
-            var indexEspecificar = getIdIndex(input);
-            doc[indexEspecificar].focus();
-            user = document.getElementById(ima);
-            user.style = 'color: rgb(16, 185, 129) !important;';
-        }
-
-        function animaOnFocus(label, ima) {
-            iconLabel = document.getElementById(label);
-            iconLabel.className = "active";
-            user = document.getElementById(ima);
-            user.style = 'color: rgb(16, 185, 129) !important;';
-        }
-
-        function animaOnBlur(inputtext, label, ima) {
-            iconLabel = document.getElementById(label);
-            user = document.getElementById(ima);
-            if (inputtext.value == "") {
-                iconLabel.className = "";
-                user.style = 'color: rgb(203, 213, 225) !important;';
-            } else {
-                iconLabel.className = "active";
-                user.style = 'color: rgb(16, 185, 129) !important;';
-            }
-        }
-
-        function animaOnChange(inputtext, label, ima) {
-            iconLabel = document.getElementById(label);
-            user = document.getElementById(ima);
-            if (inputtext.value == "") {
-                iconLabel.className = "";
-                user.style = 'color: rgb(203, 213, 225) !important;';
-            } else {
-                iconLabel.className = "active";
-                user.style = 'color: rgb(16, 185, 129) !important;';
-            }
-        }
-
-        function validar(e) {
-            tecla = (document.all) ? e.keyCode : e.which;
-            if (tecla == 8)
-                return true;
-            patron = /[A-Za-z\s]/;
-            te = String.fromCharCode(tecla);
-            return patron.test(te);
-        }
-        //<![CDATA[
-        function manejarLogin(xhr, status, args) {
-            if (!args.validationFailed && args.estaLogeado) {
-                setTimeout(function () {
-                    window.location = args.view;
-                }, 500);
-            } else {
-                jQuery('#formlog').effect("shake", {times: 3}, 500);
-            }
-        }
-        //]]>
-    </script>
 </html>

@@ -153,6 +153,10 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
             m.setApplicationDate(src.getApplicationDate());
             m.setApplicationNumber(src.getApplicationNumber());
             m.setNumeroDeTramite(src.getNumeroDeTramite());
+            m.setObservacionTecnica(src.getObservacionTecnica());
+            m.setPublicacionGaceta(src.getPublicacionGaceta());
+            m.setEtapaActual(src.getEtapaActual());
+            m.setEstadoExpediente(src.getEstadoExpediente());
             // La entidad es managed → Hibernate dirty-check genera UPDATE automáticamente
             em.getTransaction().commit();
         } catch (Exception e) {

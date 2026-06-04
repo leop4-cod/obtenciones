@@ -24,7 +24,12 @@
             /* ══════════════════════════════════════════════════
                LAYOUT PRINCIPAL
             ══════════════════════════════════════════════════ */
-            html, body { margin: 0; padding: 0; }
+            html, body {
+                margin: 0; padding: 0;
+                background: linear-gradient(180deg, #f5fbff 0%, #eef4fb 55%, #edf1f8 100%);
+                color: #1f2937;
+                font-family: 'Nunito Sans', sans-serif;
+            }
             .lm-layout { display: flex; min-height: 100vh; }
 
             /* ══════════════════════════════════════════════════
@@ -32,11 +37,11 @@
             ══════════════════════════════════════════════════ */
             .lm-sidebar {
                 width: 255px; min-width: 255px;
-                background: linear-gradient(180deg, #0d1b35 0%, #1a2d52 60%, #0d1b35 100%);
+                background: linear-gradient(180deg, #143a6b 0%, #0c2a52 65%, #091f41 100%);
                 display: flex; flex-direction: column;
                 position: fixed; left: 0; top: 0; bottom: 0;
                 overflow-y: auto; z-index: 200;
-                box-shadow: 3px 0 18px rgba(0,0,0,.32);
+                box-shadow: 4px 0 26px rgba(15, 23, 42, .18);
             }
             .lm-sidebar::-webkit-scrollbar { width: 4px; }
             .lm-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); border-radius: 2px; }
@@ -116,44 +121,48 @@
             }
 
             .lm-topbar {
-                background: #fff; height: 58px; padding: 0 22px;
+                background: linear-gradient(90deg, #ffffff 0%, #f8fbff 100%);
+                height: 60px; padding: 0 24px;
                 display: flex; align-items: center; justify-content: space-between;
-                box-shadow: 0 2px 8px rgba(0,0,0,.07);
+                box-shadow: 0 12px 26px rgba(15, 23, 42, .06);
                 position: sticky; top: 0; z-index: 100; flex-shrink: 0;
             }
-            .lm-topbar-left { display: flex; align-items: center; gap: 10px; }
-            .lm-topbar-right { display: flex; align-items: center; gap: 10px; }
+            .lm-topbar-left { display: flex; align-items: center; gap: 12px; }
+            .lm-topbar-right { display: flex; align-items: center; gap: 12px; }
             .lm-page-badge {
-                background: #eff4ff; color: #0d2b6e; border: 1px solid #bfdbfe;
-                padding: 4px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+                background: #eef6ff; color: #0f4eb8; border: 1px solid #d9e8ff;
+                padding: 5px 16px; border-radius: 22px; font-size: 12px; font-weight: 700;
             }
             .lm-icon-btn {
-                width: 36px; height: 36px; border-radius: 50%;
+                width: 40px; height: 40px; border-radius: 50%;
                 display: flex; align-items: center; justify-content: center;
-                background: #f4f7fb; color: #6b7280; font-size: 15px;
-                border: 1.5px solid #dde3ef; text-decoration: none !important;
-                transition: background .18s, color .18s; cursor: pointer;
+                background: #e7f0ff; color: #1d4ed8; font-size: 16px;
+                border: none; text-decoration: none !important;
+                transition: background .18s, transform .18s;
+                cursor: pointer;
+                box-shadow: 0 8px 20px rgba(30, 64, 175, .12);
             }
-            .lm-icon-btn:hover { background: #dde8f8; color: #1e3a6e; text-decoration: none !important; }
+            .lm-icon-btn:hover { background: #dbe7ff; transform: translateY(-1px); color: #0f3d9c; }
             .lm-btn-add {
-                display: inline-flex; align-items: center; gap: 7px;
-                background: #1e3a6e; color: #fff !important; padding: 8px 18px;
-                border-radius: 8px; font-size: 13px; font-weight: 700;
+                display: inline-flex; align-items: center; gap: 8px;
+                background: linear-gradient(135deg, #2563eb, #4f46e5);
+                color: #fff !important; padding: 10px 20px;
+                border-radius: 999px; font-size: 13px; font-weight: 800;
                 text-decoration: none !important; border: none; cursor: pointer;
-                transition: background .18s, transform .14s;
-                box-shadow: 0 2px 8px rgba(30,58,110,.28);
+                transition: transform .18s, box-shadow .18s;
+                box-shadow: 0 12px 24px rgba(37, 99, 235, .22);
             }
-            .lm-btn-add:hover { background: #0d1b35; transform: translateY(-1px); color: #fff !important; }
+            .lm-btn-add:hover { transform: translateY(-1px); box-shadow: 0 14px 28px rgba(37, 99, 235, .26); }
 
-            .lm-content { padding: 20px 24px 40px; flex: 1; }
+            .lm-content { padding: 24px 28px 42px; flex: 1; }
 
             .lm-page-title {
                 display: flex; align-items: center; gap: 11px;
                 font-size: 18px; font-weight: 800; color: #1a1a2e; margin-bottom: 20px;
             }
             .lm-page-icon {
-                width: 38px; height: 38px; border-radius: 9px;
-                background: linear-gradient(135deg, #1e3a6e, #0d1b35);
+                width: 40px; height: 40px; border-radius: 12px;
+                background: linear-gradient(135deg, #2563eb, #0f172a);
                 display: flex; align-items: center; justify-content: center;
                 color: #fff; font-size: 17px; flex-shrink: 0;
             }
@@ -170,9 +179,9 @@
                 min-width: 150px; justify-content: center;
                 font-family: 'Nunito Sans', sans-serif; outline: none;
             }
-            .lm-tab-btn:not(.active) { background: #182d46; color: #fff; }
-            .lm-tab-btn:not(.active):hover { background: #1e3c5e; transform: translateY(-1px); }
-            .lm-tab-btn.active { background: #c9a227; color: #fff; box-shadow: 0 4px 14px rgba(201,162,39,.38); transform: translateY(-1px); }
+            .lm-tab-btn:not(.active) { background: #1d4e8b; color: #fff; }
+            .lm-tab-btn:not(.active):hover { background: #265aa9; transform: translateY(-1px); }
+            .lm-tab-btn.active { background: linear-gradient(135deg, #eab308, #facc15); color: #0f172a; box-shadow: 0 8px 22px rgba(234, 179, 8, .24); transform: translateY(-1px); }
             .lm-tab-btn .pi { font-size: 14px; }
 
             .lm-tab-panel { display: none; animation: tabIn .22s ease; }
@@ -183,28 +192,30 @@
                TARJETAS
             ══════════════════════════════════════════════════ */
             .lm-card {
-                background: #fff; border-radius: 12px;
-                box-shadow: 0 2px 14px rgba(0,0,0,.06);
-                border: 1px solid #e5ecf5; margin-bottom: 18px; overflow: hidden;
+                background: #ffffff; border-radius: 18px;
+                box-shadow: 0 16px 40px rgba(15, 23, 42, .08);
+                border: 1px solid rgba(59, 130, 246, .08); margin-bottom: 22px; overflow: hidden;
             }
             .lm-card-head {
-                padding: 14px 20px; border-bottom: 1px solid #f0f5fc;
-                display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+                padding: 18px 22px; border-bottom: 1px solid rgba(59, 130, 246, .10);
+                display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+                background: #f8fbff;
             }
-            .lm-card-title { font-size: 15px; font-weight: 800; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
-            .lm-card-title .pi { color: #1e3a6e; font-size: 16px; }
+            .lm-card-title { font-size: 15.5px; font-weight: 900; color: #0f1f47; display: flex; align-items: center; gap: 10px; }
+            .lm-card-title .pi { color: #2563eb; font-size: 18px; }
             .lm-card-body { padding: 18px 20px; }
             .lm-card-body-flush { padding: 0; }
 
             .lm-btn-export {
                 display: inline-flex !important; align-items: center !important; gap: 7px !important;
-                background: #1e3a6e !important; color: #fff !important;
-                padding: 8px 18px !important; border-radius: 8px !important;
+                background: linear-gradient(135deg, #10b981, #047857) !important; color: #fff !important;
+                padding: 10px 18px !important; border-radius: 999px !important;
                 font-size: 13px !important; font-weight: 700 !important;
                 text-decoration: none !important; border: none !important; cursor: pointer !important;
-                transition: background .18s !important; font-family: 'Nunito Sans', sans-serif !important;
+                transition: transform .18s, box-shadow .18s !important; font-family: 'Nunito Sans', sans-serif !important;
+                box-shadow: 0 14px 28px rgba(16, 185, 129, .20) !important;
             }
-            .lm-btn-export:hover { background: #0d1b35 !important; }
+            .lm-btn-export:hover { transform: translateY(-1px) !important; box-shadow: 0 18px 36px rgba(16, 185, 129, .22) !important; }
             .lm-btn-export .pi { color: #fff !important; }
             .lm-btn-export .ui-button-text { display: none !important; }
 
@@ -213,44 +224,70 @@
             ══════════════════════════════════════════════════ */
             .lm-stats-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
-                gap: 16px; margin-bottom: 22px;
+                grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+                gap: 18px; margin-bottom: 24px;
             }
             .lm-stat {
-                background: #fff; border-radius: 12px; padding: 18px 20px;
-                box-shadow: 0 2px 10px rgba(0,0,0,.06); border-left: 5px solid #1e3a6e;
+                background: linear-gradient(135deg, #ffffff, #eef6ff);
+                border-radius: 18px; padding: 20px 22px;
+                box-shadow: 0 18px 36px rgba(15, 23, 42, .08);
+                border-left: 5px solid #2563eb;
                 transition: transform .18s, box-shadow .18s;
             }
-            .lm-stat:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(0,0,0,.10); }
-            .lm-stat.gold  { border-left-color: #c9a227; }
-            .lm-stat.blue  { border-left-color: #1976d2; }
-            .lm-stat.teal  { border-left-color: #0e7490; }
-            .lm-stat-lbl  { font-size: 11px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .06em; }
-            .lm-stat-val  { font-size: 32px; font-weight: 800; color: #1a1a2e; margin: 4px 0 0; line-height: 1; }
-            .lm-stat-sub  { font-size: 11px; color: #9ca3af; margin-top: 5px; }
+            .lm-stat:hover { transform: translateY(-2px); box-shadow: 0 22px 44px rgba(15, 23, 42, .12); }
+            .lm-stat.gold  { border-left-color: #f59e0b; }
+            .lm-stat.blue  { border-left-color: #2563eb; }
+            .lm-stat.teal  { border-left-color: #0ea5e9; }
+            .lm-stat-lbl  { font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .08em; }
+            .lm-stat-val  { font-size: 34px; font-weight: 900; color: #0f172a; margin: 6px 0 0; line-height: 1; }
+            .lm-stat-sub  { font-size: 12px; color: #64748b; margin-top: 6px; }
 
             /* ══════════════════════════════════════════════════
-               FILTROS Y ZOOM (Pestaña Solicitudes)
+               FILTROS Y TABLA (Pestaña Solicitudes)
             ══════════════════════════════════════════════════ */
             .lm-filter-bar {
                 display: flex; align-items: center; gap: 14px;
-                background: #f8fafc; border: 1.5px solid #dde3ef;
-                border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; flex-wrap: wrap;
+                background: #ffffff; border: 1px solid rgba(37, 99, 235, .18);
+                border-radius: 16px; padding: 14px 18px; margin-bottom: 16px; flex-wrap: wrap;
+                box-shadow: 0 12px 28px rgba(37, 99, 235, .08);
             }
-            .lm-zoom-bar {
-                display: flex; align-items: center; gap: 10px;
-                background: #f5f7fb; border: 1px solid #dde3ef;
-                border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; flex-wrap: wrap;
+            .lm-table-wrap {
+                overflow-x: auto; overflow-y: hidden; border-radius: 20px;
+                box-shadow: inset 0 0 0 1px rgba(37, 99, 235, .06);
             }
-            .lm-zoom-lbl { font-size: 11px; font-weight: 700; color: #555; }
-            .lm-zoom-btn {
-                background: #fff; border: 1px solid #dde3ef; padding: 4px 10px;
-                border-radius: 4px; cursor: pointer; font-size: 13px; color: #555;
-                transition: background .15s;
+            html body .ui-datatable table {
+                table-layout: auto !important;
+                min-width: 1250px !important;
+                border-collapse: separate !important;
+                border-spacing: 0 10px !important;
             }
-            .lm-zoom-btn:hover { background: #e0edf8; }
-            .lm-zoom-sep { border-left: 1px solid #dde3ef; height: 18px; margin: 0 4px; }
-            .lm-table-wrap { overflow-x: auto; overflow-y: hidden; }
+            html body .ui-datatable thead tr th,
+            html body .ui-datatable thead tr th.ui-state-default {
+                background: linear-gradient(135deg, #1e40af, #2563eb) !important;
+                color: #ffffff !important;
+                border: none !important;
+                font-weight: 800 !important;
+                padding: 14px 16px !important;
+                text-transform: uppercase !important;
+                letter-spacing: .04em !important;
+                box-shadow: inset 0 -1px 0 rgba(255,255,255,.16);
+            }
+            html body .ui-datatable tbody tr {
+                background: #eef5ff !important;
+                transition: background .18s, transform .18s;
+            }
+            html body .ui-datatable tbody tr.ui-datatable-even {
+                background: #f8fbff !important;
+            }
+            html body .ui-datatable tbody tr:hover {
+                background: rgba(59, 130, 246, .16) !important;
+            }
+            html body .ui-datatable td {
+                padding: 14px 16px !important;
+                vertical-align: middle !important;
+                color: #1e293b !important;
+                border-top: 1px solid rgba(148, 163, 184, .15) !important;
+            }
 
             /* ══════════════════════════════════════════════════
                PAGINATOR OVERRIDES
@@ -719,18 +756,6 @@
                                     </h:panelGroup>
                                 </div>
 
-                                <!-- Zoom y scroll -->
-                                <div class="lm-zoom-bar">
-                                    <span class="lm-zoom-lbl">Zoom:</span>
-                                    <button type="button" class="lm-zoom-btn" onclick="snZoomOut()"><i class="pi pi-minus"/></button>
-                                    <span id="zoomLevel" style="font-size:11px; color:#555; min-width:36px; text-align:center;">100%</span>
-                                    <button type="button" class="lm-zoom-btn" onclick="snZoomIn()"><i class="pi pi-plus"/></button>
-                                    <div class="lm-zoom-sep"/>
-                                    <span class="lm-zoom-lbl">Scroll:</span>
-                                    <button type="button" class="lm-zoom-btn" onclick="snScrollLeft()"><i class="pi pi-chevron-left"/></button>
-                                    <button type="button" class="lm-zoom-btn" onclick="snScrollRight()"><i class="pi pi-chevron-right"/></button>
-                                </div>
-
                                 <!-- TABLA -->
                                 <div id="tableScrollContainer" class="lm-table-wrap">
                                 <p:dataTable id="tablaDeObtenciones"
@@ -790,21 +815,16 @@
                                         </span>
                                     </p:column>
 
-                                    <p:column headerText="Expediente" headerStyle="white-space:normal; word-break:break-word; min-width:90px;" style="text-align:center; width:90px;">
-                                        <h:outputText value="#{vegetable.managementStatus}" style="font-size:11px; color:#555;"/>
+                                    <p:column headerText="Etapa Actual" filterBy="#{vegetable.etapaActual}" style="text-align:center; width:120px;">
+                                        <h:outputText value="#{not empty vegetable.etapaActual ? vegetable.etapaActual : '—'}" style="font-size:11px; color:#555;"/>
                                     </p:column>
 
-                                    <p:column headerText="Gestión" style="text-align:center; width:145px;">
-                                        <p:selectOneMenu value="#{vegetable.statusFlow}"
-                                                         style="width:130px; font-size:12px;">
-                                            <f:selectItems value="#{vegetableBean.statusFlows}" var="flow"
-                                                           itemValue="#{flow}"
-                                                           itemLabel="#{vegetableBean.getStatusFlowLabel(flow)}"/>
-                                            <p:ajax listener="#{vegetableBean.prepareStatusFlowChange}"
-                                                    process="@this"
-                                                    update=":mensajes :dlgStatusFlow tablaDeObtenciones"
-                                                    oncomplete="if(args.openStatusDialog){PF('dlgStatusFlow').show();}"/>
-                                        </p:selectOneMenu>
+                                    <p:column headerText="Estado del Expediente" filterBy="#{vegetable.estadoExpediente}" style="text-align:center; width:130px;">
+                                        <h:outputText value="#{not empty vegetable.estadoExpediente ? vegetable.estadoExpediente : '—'}" style="font-size:11px; color:#555;"/>
+                                    </p:column>
+
+                                    <p:column headerText="Observación Técnica" filterBy="#{vegetable.observacionTecnica}" style="width:140px;">
+                                        <h:outputText value="#{not empty vegetable.observacionTecnica ? vegetable.observacionTecnica : '—'}" style="font-size:11px; color:#555;"/>
                                     </p:column>
 
                                     <!-- ACCIONES -->
@@ -1403,24 +1423,6 @@
                 });
             });
         }
-
-        /* ── Zoom de tabla ── */
-        var currentZoom = 100;
-        window.snZoomIn = function() { currentZoom = Math.min(currentZoom + 10, 200); applyZoom(); };
-        window.snZoomOut = function() { currentZoom = Math.max(currentZoom - 10, 70); applyZoom(); };
-        function applyZoom() {
-            var c = document.getElementById('tableScrollContainer');
-            if (c) {
-                var tbl = c.querySelector('.ui-datatable');
-                if (tbl) { tbl.style.transform = 'scale(' + (currentZoom / 100) + ')'; tbl.style.transformOrigin = 'top left'; tbl.style.display = 'inline-block'; }
-            }
-            var z = document.getElementById('zoomLevel');
-            if (z) z.innerText = currentZoom + '%';
-        }
-
-        /* ── Scroll horizontal ── */
-        window.snScrollLeft = function() { var c = document.getElementById('tableScrollContainer'); if (c) c.scrollLeft -= 150; };
-        window.snScrollRight = function() { var c = document.getElementById('tableScrollContainer'); if (c) c.scrollLeft += 150; };
 
         $(document).ready(function () {
             setTimeout(function () {

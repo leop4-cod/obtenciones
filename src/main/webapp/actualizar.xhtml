@@ -725,35 +725,52 @@
                                         </div>
                                         <div class="col-md-4">
                                             <div class="sn-fld">
-                                                <span class="sn-lbl">Estado de Gestión</span>
-                                                <p:selectOneMenu value="#{registroBean.form.statusFlow}" style="width:100%">
-                                                    <f:selectItem itemLabel="— Sin gestión —" itemValue="#{null}" noSelectionOption="true"/>
-                                                    <f:selectItem itemLabel="Pendiente"  itemValue="PENDING"/>
-                                                    <f:selectItem itemLabel="Atendido"   itemValue="ATTENDED"/>
-                                                    <f:selectItem itemLabel="Negado"     itemValue="DENIED"/>
-                                                    <f:selectItem itemLabel="Caducado"   itemValue="EXPIRED"/>
+                                                <span class="sn-lbl">Observación Técnica</span>
+                                                <p:selectOneMenu value="#{registroBean.form.observacionTecnica}" style="width:100%">
+                                                    <f:selectItem itemLabel="— Ninguna —" itemValue="#{null}" noSelectionOption="true"/>
+                                                    <f:selectItem itemLabel="Aceptada a trámite y revisión de requisitos de fondo" itemValue="Aceptada a trámite y revisión de requisitos de fondo"/>
+                                                    <f:selectItem itemLabel="Para publicar en gaceta" itemValue="Para publicar en gaceta"/>
+                                                    <f:selectItem itemLabel="Para consulta de resultados de examen DHE" itemValue="Para consulta de resultados de examen DHE"/>
+                                                    <f:selectItem itemLabel="Para realización de examen DHE" itemValue="Para realización de examen DHE"/>
+                                                    <f:selectItem itemLabel="En espera de resultados de examen DHE" itemValue="En espera de resultados de examen DHE"/>
+                                                    <f:selectItem itemLabel="Para dictamen técnico" itemValue="Para dictamen técnico"/>
+                                                    <f:selectItem itemLabel="Para resolución" itemValue="Para resolución"/>
                                                 </p:selectOneMenu>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="sn-fld">
-                                                <span class="sn-lbl">Fase del Flujo</span>
-                                                <p:selectOneMenu value="#{registroBean.form.flowPhase}" style="width:100%">
-                                                    <f:selectItem itemLabel="— Sin fase —"           itemValue="#{null}" noSelectionOption="true"/>
-                                                    <f:selectItem itemLabel="Inicial"                itemValue="INITIAL"/>
-                                                    <f:selectItem itemLabel="Asignado"               itemValue="ASSIGNED"/>
-                                                    <f:selectItem itemLabel="Revisión de Forma"      itemValue="FORM_REVIEW"/>
-                                                    <f:selectItem itemLabel="Admitido"               itemValue="ADMITTED"/>
-                                                    <f:selectItem itemLabel="Revisión de Fondo"      itemValue="SUBSTANCE_REVIEW"/>
-                                                    <f:selectItem itemLabel="Depósito de Muestra"    itemValue="LIVE_SAMPLE_DEPOSIT"/>
-                                                    <f:selectItem itemLabel="Cert. Depósito"         itemValue="DEPOSIT_CERTIFICATE"/>
-                                                    <f:selectItem itemLabel="Período Oposición"      itemValue="OPPOSITION_PERIOD"/>
-                                                    <f:selectItem itemLabel="Res. Oposición"         itemValue="OPPOSITION_RESOLUTION"/>
-                                                    <f:selectItem itemLabel="Examen DHE"             itemValue="DHE_EXAM"/>
-                                                    <f:selectItem itemLabel="Dictamen Técnico"       itemValue="TECHNICAL_OPINION"/>
-                                                    <f:selectItem itemLabel="Resolución"             itemValue="RESOLUTION"/>
-                                                    <f:selectItem itemLabel="Certificado Emitido"    itemValue="CERTIFICATE_ISSUED"/>
-                                                    <f:selectItem itemLabel="Archivado"              itemValue="ARCHIVED"/>
+                                                <span class="sn-lbl">Publicación en Gaceta</span>
+                                                <p:inputText value="#{registroBean.form.publicacionGaceta}" style="width:100%" placeholder="Escriba los datos de publicación"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="margin-top: 15px;">
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Etapa Actual</span>
+                                                <p:selectOneMenu value="#{registroBean.form.etapaActual}" style="width:100%">
+                                                    <f:selectItem itemLabel="— Seleccione —" itemValue="#{null}" noSelectionOption="true"/>
+                                                    <f:selectItem itemLabel="Derecho concedido" itemValue="Derecho concedido"/>
+                                                    <f:selectItem itemLabel="Dominio público" itemValue="Dominio público"/>
+                                                    <f:selectItem itemLabel="Desistimiento" itemValue="Desistimiento"/>
+                                                    <f:selectItem itemLabel="Abandono" itemValue="Abandono"/>
+                                                </p:selectOneMenu>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Estado del Expediente</span>
+                                                <p:selectOneMenu value="#{registroBean.form.estadoExpediente}" style="width:100%">
+                                                    <f:selectItem itemLabel="— Seleccione —" itemValue="#{null}" noSelectionOption="true"/>
+                                                    <f:selectItem itemLabel="Protección vigente" itemValue="Protección vigente"/>
+                                                    <f:selectItem itemLabel="Vencimiento de la protección" itemValue="Vencimiento de la protección"/>
+                                                    <f:selectItem itemLabel="Renuncia" itemValue="Renuncia"/>
+                                                    <f:selectItem itemLabel="Caducidad" itemValue="Caducidad"/>
+                                                    <f:selectItem itemLabel="Cancelación" itemValue="Cancelación"/>
+                                                    <f:selectItem itemLabel="Nulidad del derecho" itemValue="Nulidad del derecho"/>
+                                                    <f:selectItem itemLabel="Desistimiento posterior a la publicación en gaceta" itemValue="Desistimiento posterior a la publicación en gaceta"/>
+                                                    <f:selectItem itemLabel="Abandono posterior a la publicación en gaceta" itemValue="Abandono posterior a la publicación en gaceta"/>
                                                 </p:selectOneMenu>
                                             </div>
                                         </div>
