@@ -79,6 +79,7 @@ public class RegistroBean implements Serializable {
     }
 
     public String saveRegistro() {
+        if (!validarPublicacionGaceta()) return null;
         try {
             if (form.getStatus() == null) form.setStatus(Status.SAVED);
             if (form.getFlowPhase() == null) form.setFlowPhase(FlowPhase.INITIAL);
@@ -103,6 +104,7 @@ public class RegistroBean implements Serializable {
     }
 
     public String saveRegistroAndStay() {
+        if (!validarPublicacionGaceta()) return null;
         try {
             if (form.getStatus() == null) form.setStatus(Status.SAVED);
             if (form.getFlowPhase() == null) form.setFlowPhase(FlowPhase.INITIAL);
@@ -133,6 +135,7 @@ public class RegistroBean implements Serializable {
     public String updateRegistro() {
 
         System.out.println("ENTRO A UPDATE");
+        if (!validarPublicacionGaceta()) return null;
 
         try {
             VegetableForms anterior = new VegetableFormsDAO(null).getVegetableFormsById(form.getId());
@@ -374,6 +377,16 @@ public class RegistroBean implements Serializable {
     private void addError(String msg) {
         FacesContext.getCurrentInstance().addMessage(null,
             new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
+    }
+
+    private boolean validarPublicacionGaceta() {
+        if (form != null && form.getPublicacionGaceta() != null && !form.getPublicacionGaceta().trim().isEmpty()) {
+            if (!form.getPublicacionGaceta().trim().matches("^[0-9]+$")) {
+                addError("La publicación en gaceta debe contener únicamente dígitos numéricos (se rechazan letras, símbolos y espacios).");
+                return false;
+            }
+        }
+        return true;
     }
 
     public Integer getEditId() { return editId; }

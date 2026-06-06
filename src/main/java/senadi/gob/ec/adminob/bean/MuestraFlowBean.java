@@ -128,8 +128,16 @@ public class MuestraFlowBean implements Serializable {
 
     public void publicarEnGaceta() {
         if (selectedForm == null) { addError("Seleccione un trámite."); return; }
+        if (numGaceta == null || numGaceta.trim().isEmpty()) {
+            addError("El número de gaceta es obligatorio.");
+            return;
+        }
+        if (!numGaceta.trim().matches("^[0-9]+$")) {
+            addError("El número de gaceta debe contener únicamente dígitos numéricos (se rechazan letras, símbolos y espacios).");
+            return;
+        }
         boolean ok = service.publicarEnGaceta(selectedForm, denominacionGenerica,
-            denominacionValida, numGaceta, observaciones, getUsuario());
+            denominacionValida, numGaceta.trim(), observaciones, getUsuario());
         if (ok) {
             publicacionGaceta = service.getPublicacionGacetaByFormId(selectedForm.getId());
             selectedForm = controller.getVegetableFormsById(selectedForm.getId());

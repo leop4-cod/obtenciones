@@ -503,6 +503,147 @@
                     <i class="pi pi-calendar-plus"/> <span>Anualidades</span>
                 </a>
 
+                <!-- Sección de Alertas Clasificadas -->
+                <div class="lm-sidebar-alerts">
+                    <div class="lm-sidebar-alerts-title" style="display: flex; align-items: center; justify-content: space-between;">
+                        <p:commandLink onclick="PF('dlgProxVencIndex').show(); return false;" style="display: flex; align-items: center; gap: 6px; color: inherit; text-decoration: none;" title="Ver todas las notificaciones">
+                            <i class="pi pi-bell" style="font-size: 13px; color: #fbbf24;"/>
+                            <span>Alertas Anualidades</span>
+                        </p:commandLink>
+                        <p:commandLink onclick="PF('dlgProxVencIndex').show(); return false;" style="text-decoration: none;">
+                            <span class="lm-sidebar-alerts-badge danger" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #ef4444; color: #fff;">
+                                #{anualidadBean.totalNotificaciones}
+                            </span>
+                        </p:commandLink>
+                    </div>
+
+                    <!-- 1. Expiradas (Peligro) -->
+                    <div class="lm-sidebar-alerts-cat">
+                        <div class="lm-sidebar-alerts-cat-hdr">
+                            <span class="lm-sidebar-alerts-cat-title danger">
+                                <span class="lm-pulse-dot" style="background-color: #ef4444;"/>
+                                Expiradas
+                            </span>
+                            <span class="lm-sidebar-alerts-badge danger">
+                                #{anualidadBean.totalAlertasExpiradas}
+                            </span>
+                        </div>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasExpiradas == 0}">
+                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasExpiradas &gt; 0}">
+                            <div class="lm-sidebar-alerts-list">
+                                <ui:repeat value="#{anualidadBean.alertasExpiradas}" var="al">
+                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" 
+                                       title="Ver Trámite"
+                                       class="lm-sidebar-alert-item danger">
+                                        <div class="lm-sidebar-alert-item-hdr">
+                                            <span class="lm-sidebar-alert-item-title danger">
+                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
+                                            </span>
+                                            <span class="lm-sidebar-alert-item-lbl danger">
+                                                #{al.etiqueta}
+                                            </span>
+                                        </div>
+                                        <div class="lm-sidebar-alert-item-date danger">
+                                            Expiró:&#160;
+                                            <h:outputText value="#{al.fechaLimiteGracia}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                            </h:outputText>
+                                        </div>
+                                    </a>
+                                </ui:repeat>
+                            </div>
+                        </ui:fragment>
+                    </div>
+
+                    <!-- 2. Próximas a Vencer (Advertencia) -->
+                    <div class="lm-sidebar-alerts-cat">
+                        <div class="lm-sidebar-alerts-cat-hdr">
+                            <span class="lm-sidebar-alerts-cat-title warning">
+                                <span class="lm-pulse-dot" style="background-color: #fbbf24;"/>
+                                Próximas a Vencer
+                            </span>
+                            <span class="lm-sidebar-alerts-badge warning">
+                                #{anualidadBean.totalAlertasProximasVencer}
+                            </span>
+                        </div>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasProximasVencer == 0}">
+                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasProximasVencer &gt; 0}">
+                            <div class="lm-sidebar-alerts-list">
+                                <ui:repeat value="#{anualidadBean.alertasProximasVencer}" var="al">
+                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
+                                       title="Ver Trámite"
+                                       class="lm-sidebar-alert-item warning">
+                                        <div class="lm-sidebar-alert-item-hdr">
+                                            <span class="lm-sidebar-alert-item-title warning">
+                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
+                                            </span>
+                                            <span class="lm-sidebar-alert-item-lbl warning">
+                                                #{al.etiqueta}
+                                            </span>
+                                        </div>
+                                        <div class="lm-sidebar-alert-item-date warning">
+                                            Vence:&#160;
+                                            <h:outputText value="#{al.fechaLimitePago}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                            </h:outputText>
+                                        </div>
+                                    </a>
+                                </ui:repeat>
+                            </div>
+                        </ui:fragment>
+                    </div>
+
+                    <!-- 3. Pendientes (Información / Normal) -->
+                    <div class="lm-sidebar-alerts-cat">
+                        <div class="lm-sidebar-alerts-cat-hdr">
+                            <span class="lm-sidebar-alerts-cat-title pending">
+                                <span class="lm-pulse-dot" style="background-color: #38bdf8;"/>
+                                Pendientes
+                            </span>
+                            <span class="lm-sidebar-alerts-badge pending">
+                                #{anualidadBean.totalAlertasPendientes}
+                            </span>
+                        </div>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasPendientes == 0}">
+                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasPendientes &gt; 0}">
+                            <div class="lm-sidebar-alerts-list">
+                                <ui:repeat value="#{anualidadBean.alertasPendientes}" var="al">
+                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
+                                       title="Ver Trámite"
+                                       class="lm-sidebar-alert-item pending">
+                                        <div class="lm-sidebar-alert-item-hdr">
+                                            <span class="lm-sidebar-alert-item-title pending">
+                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
+                                            </span>
+                                            <span class="lm-sidebar-alert-item-lbl pending">
+                                                #{al.etiqueta}
+                                            </span>
+                                        </div>
+                                        <div class="lm-sidebar-alert-item-date pending">
+                                            Límite:&#160;
+                                            <h:outputText value="#{al.fechaLimitePago}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                            </h:outputText>
+                                        </div>
+                                    </a>
+                                </ui:repeat>
+                            </div>
+                        </ui:fragment>
+                    </div>
+                </div>
+
                 <div class="lm-sidebar-spacer"/>
 
                 <p:commandLink actionListener="#{loginBean.logout}"
@@ -520,6 +661,32 @@
                 </p:commandLink>
             </div>
 
+            <script type="text/javascript">
+            //<![CDATA[
+                document.addEventListener("DOMContentLoaded", function() {
+                    var currentUrl = window.location.href.split('?')[0];
+                    var navItems = document.querySelectorAll(".lm-sidebar .lm-nav-item");
+                    var matched = false;
+                    navItems.forEach(function(item) {
+                        item.classList.remove("active");
+                        var itemUrl = item.href ? item.href.split('?')[0] : "";
+                        if (itemUrl && currentUrl === itemUrl) {
+                            item.classList.add("active");
+                            matched = true;
+                        }
+                    });
+                    if (!matched) {
+                        navItems.forEach(function(item) {
+                            var itemUrl = item.href ? item.href.split('?')[0] : "";
+                            if (itemUrl && itemUrl.indexOf("index.xhtml") === -1 && currentUrl.indexOf(itemUrl.substring(0, itemUrl.lastIndexOf('/'))) !== -1) {
+                                item.classList.add("active");
+                            }
+                        });
+                    }
+                });
+            //]]>
+            </script>
+
             <!-- ══════════════ ÁREA PRINCIPAL ══════════════ -->
             <div class="lm-main">
 
@@ -532,24 +699,11 @@
                         </span>
                     </div>
                     <div class="lm-topbar-right">
+                        <!-- Campana de alertas movida a la barra lateral izquierda -->
+
                         <a href="anualidades/lista.xhtml" class="lm-icon-btn" title="Módulo de Anualidades">
                             <i class="pi pi-calendar-plus"/>
                         </a>
-                        <p:commandButton title="Buscar e importar trámite del portal"
-                                         icon="pi pi-cloud-download"
-                                         style="display:inline-flex !important; align-items:center !important; gap:7px !important;
-                                                background:#1565c0 !important; color:#fff !important;
-                                                padding:8px 16px !important; border-radius:8px !important;
-                                                font-size:13px !important; font-weight:700 !important;
-                                                border:none !important; cursor:pointer !important;
-                                                box-shadow:0 2px 8px rgba(21,101,192,.32) !important;
-                                                font-family:'Nunito Sans',sans-serif !important;"
-                                         actionListener="#{vegetableBean.limpiarBusquedaPortal}"
-                                         process="@this"
-                                         update=":dlgBuscarPortal"
-                                         oncomplete="PF('dlgBuscarPortal').show();">
-                            <span style="color:#fff; font-weight:700; font-size:13px; margin-left:4px;">Importar Portal</span>
-                        </p:commandButton>
                     </div>
                 </div>
 
@@ -585,7 +739,7 @@
                     <!-- ══════════ PESTAÑA 1: RESUMEN ══════════ -->
                     <div id="tab-resumen" class="lm-tab-panel">
 
-                        <div class="lm-stats-grid">
+                        <p:outputPanel id="statsGrid" layout="block" styleClass="lm-stats-grid">
                             <div class="lm-stat">
                                 <div class="lm-stat-lbl">Total Solicitudes</div>
                                 <div class="lm-stat-val">#{vegetableBean.vegetables.size()}</div>
@@ -611,7 +765,7 @@
                                 </div>
                                 <div class="lm-stat-sub">Gestión de pagos anuales</div>
                             </div>
-                        </div>
+                        </p:outputPanel>
 
                         <!-- Alerta anualidades (condicional) -->
                         <h:panelGroup rendered="#{anualidadBean.totalAlertas gt 0}" style="display:block;">
@@ -696,6 +850,135 @@
 
                     <!-- ══════════ PESTAÑA 2: SOLICITUDES (activa) ══════════ -->
                     <div id="tab-solicitudes" class="lm-tab-panel active">
+
+                        <!-- Panel de Búsqueda e Importación desde el Portal -->
+                        <div class="lm-card" style="border-left: 5px solid #1565c0; background: linear-gradient(135deg, #ffffff, #f0f7ff);">
+                            <div class="lm-card-head" style="background: rgba(21, 101, 192, 0.03); border-bottom: 1px solid rgba(21, 101, 192, 0.08);">
+                                <div class="lm-card-title" style="color: #0d2b6e; font-size: 15px; font-weight: 800;">
+                                    <i class="pi pi-cloud-download" style="color:#1565c0; font-size: 17px;"/>
+                                    Buscar e Importar Trámite desde el Portal SENADI
+                                </div>
+                            </div>
+                            <div class="lm-card-body">
+                                <div style="margin-bottom:15px; font-size:12px; color:#1e3a5f;
+                                            background:#e8f0fb; padding:10px 14px; border-radius:7px;
+                                            border-left:4px solid #1565c0; display:flex; align-items:flex-start; gap:9px; line-height: 1.4;">
+                                    <i class="pi pi-info-circle" style="color:#1565c0; font-size:15px; flex-shrink:0; margin-top:1px;"/>
+                                    <span>
+                                        Ingrese el <strong>número de trámite</strong> del portal. Si está en estado
+                                        <strong>DELIVERED</strong> y no ha sido importado, podrá cargarlo como trámite EN PROCESO.
+                                    </span>
+                                </div>
+
+                                <!-- Barra de búsqueda -->
+                                <div style="display:flex; gap:10px; align-items:center; margin-bottom:16px; flex-wrap:wrap;">
+                                    <p:inputText id="numeroBusquedaPortalPage" value="#{vegetableBean.numeroBusquedaPortal}"
+                                                 placeholder="Ej: OV-2024-00123"
+                                                 style="flex:1; min-width:200px; font-size:14px; padding:8px 12px; border-radius:6px;
+                                                        border:1.5px solid #cbd5e1; font-family:'Nunito Sans',sans-serif;"
+                                                 onkeydown="if(event.key==='Enter') { document.getElementById('allform:btnBuscarPortalPage').click(); return false; }"/>
+                                    <p:commandButton id="btnBuscarPortalPage"
+                                                     value="Buscar en Portal"
+                                                     icon="pi pi-search"
+                                                     style="background:#1565c0 !important; color:#fff !important;
+                                                            border:none !important; border-radius:6px !important;
+                                                            padding:9px 20px !important; font-weight:700 !important;
+                                                            font-size:13px !important; cursor:pointer !important;
+                                                            font-family:'Nunito Sans',sans-serif !important;"
+                                                     actionListener="#{vegetableBean.buscarEnPortal}"
+                                                     process="numeroBusquedaPortalPage @this"
+                                                     update="panelResultadoPortalPage :mensajes"/>
+                                </div>
+
+                                <!-- Panel resultado -->
+                                <p:outputPanel id="panelResultadoPortalPage">
+                                    <!-- Mensaje de error / aviso -->
+                                    <h:panelGroup rendered="#{vegetableBean.mensajeBusquedaPortal != null}"
+                                                  style="display:block; margin-bottom:14px;">
+                                        <h:panelGroup rendered="#{vegetableBean.tramiteYaImportado}" layout="block"
+                                                      style="padding:11px 14px; border-radius:7px; font-size:13px; font-weight:600;
+                                                             background:#fff3cd; color:#856404; border:1px solid #ffc107;
+                                                             display:flex; align-items:center; gap:9px;">
+                                            <i class="pi pi-exclamation-triangle" style="color:#d97706;"/>
+                                            #{vegetableBean.mensajeBusquedaPortal}
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{!vegetableBean.tramiteYaImportado}" layout="block"
+                                                      style="padding:11px 14px; border-radius:7px; font-size:13px; font-weight:600;
+                                                             background:#fff1f2; color:#be123c; border:1px solid #fca5a5;
+                                                             display:flex; align-items:center; gap:9px;">
+                                            <i class="pi pi-times-circle" style="color:#e11d48;"/>
+                                            #{vegetableBean.mensajeBusquedaPortal}
+                                        </h:panelGroup>
+                                    </h:panelGroup>
+
+                                    <!-- Resultado encontrado y listo para importar -->
+                                    <h:panelGroup rendered="#{vegetableBean.tramitePortalEncontrado != null and !vegetableBean.tramiteYaImportado}"
+                                                  style="display:block;">
+                                        <div style="background:#eff4ff; border:1.5px solid #bfdbfe; border-radius:8px;
+                                                    padding:14px 16px; margin-bottom:14px;">
+                                            <div style="font-size:11px; font-weight:800; color:#0d2b6e; text-transform:uppercase;
+                                                        letter-spacing:.07em; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+                                                <i class="pi pi-check-circle" style="font-size:14px; color:#1d4ed8;"/>
+                                                Trámite encontrado — listo para importar
+                                            </div>
+                                            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; font-size:13px;">
+                                                <div>
+                                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
+                                                        N° Trámite
+                                                    </span>
+                                                    <div style="font-weight:800; color:#0d1b35; font-size:14px; margin-top:2px; font-family:monospace;">
+                                                        <h:outputText value="#{vegetableBean.tramitePortalEncontrado.applicationNumber}"/>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
+                                                        Estado Portal
+                                                    </span>
+                                                    <div style="margin-top:4px;">
+                                                        <span style="background:#dbeafe; color:#1e3a6e; border-radius:20px;
+                                                                     padding:2px 10px; font-size:10px; font-weight:800; border:1px solid #bfdbfe;">
+                                                            EN PROCESO
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
+                                                        Nombre Común
+                                                    </span>
+                                                    <div style="font-size:13px; color:#263238; margin-top:2px; font-weight:600;">
+                                                        <h:outputText value="#{vegetableBean.tramitePortalEncontrado.commonName != null ? vegetableBean.tramitePortalEncontrado.commonName : '—'}"/>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
+                                                        F. Presentación
+                                                    </span>
+                                                    <div style="font-size:13px; color:#263238; margin-top:2px;">
+                                                        <h:outputText value="#{vegetableBean.tramitePortalEncontrado.applicationDate}">
+                                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                                        </h:outputText>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div style="display:flex; gap:10px; justify-content:flex-end;">
+                                            <p:commandButton value="Importar como Trámite EN PROCESO"
+                                                             icon="pi pi-download"
+                                                             style="background:#1e3a6e !important; color:#fff !important;
+                                                                    border:none !important; border-radius:6px !important;
+                                                                    padding:9px 20px !important; font-weight:700 !important;
+                                                                    font-size:13px !important; cursor:pointer !important;
+                                                                    font-family:'Nunito Sans',sans-serif !important;"
+                                                             onclick="if(!confirm('¿Importar este trámite como nuevo registro EN PROCESO?')) return false;"
+                                                             actionListener="#{vegetableBean.importarTramitePortal}"
+                                                             process="@this"
+                                                             update="panelResultadoPortalPage :allform:tablaDeObtenciones :allform:statsGrid :mensajes"/>
+                                        </div>
+                                    </h:panelGroup>
+                                </p:outputPanel>
+                            </div>
+                        </div>
 
                         <div class="lm-card">
                             <div class="lm-card-head">
@@ -1046,34 +1329,46 @@
         </div><!-- lm-layout -->
 
         <!-- ══ DIÁLOGO ALERTA ANUALIDADES ══ -->
+        <!-- ══ DIÁLOGO ALERTA ANUALIDADES ══ -->
         <p:dialog id="dlgProxVencIndex" modal="true" resizable="false"
-                  header="Anualidades próximas a vencer"
+                  header="Alertas y Notificaciones de Anualidades"
                   widgetVar="dlgProxVencIndex" style="width:600px; max-width:90vw;"
-                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
-            <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:6px;">
-                <p:dataList value="#{anualidadBean.alertas}" var="al" paginator="false" type="none">
-                    <div style="background:rgba(255,255,255,.75); border-radius:6px;
-                                padding:6px 10px; font-size:12px; color:#78350f;
-                                border:1px solid #fde68a; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                        <i class="pi pi-clock" style="color:#f59e0b; flex-shrink:0;"/>
+                  showEffect="fade" hideEffect="fade" closeOnEscape="true">
+            <div style="max-height:400px; overflow-y:auto; padding-right:5px;">
+                <p:dataList value="#{anualidadBean.todasLasNotificaciones}" var="al" paginator="false" type="none" emptyMessage="No hay alertas o notificaciones pendientes.">
+                    <div style="background:#{al.estado eq 'PENDIENTE' ? 'rgba(254,243,199,.75)' : 'rgba(254,226,226,.75)'};
+                                border-radius:6px; padding:8px 12px; font-size:12px;
+                                color:#{al.estado eq 'PENDIENTE' ? '#78350f' : '#991b1b'};
+                                border:1px solid #{al.estado eq 'PENDIENTE' ? '#fde68a' : '#fca5a5'};
+                                display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <i class="pi #{al.estado eq 'PENDIENTE' ? 'pi-clock' : 'pi-exclamation-triangle'}"
+                           style="color:#{al.estado eq 'PENDIENTE' ? '#f59e0b' : '#ef4444'}; flex-shrink:0; font-size:14px;"/>
                         <span>
                             <strong>#{anualidadBean.getVegetableForm(al.vegetableFormId) != null
                                 ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
                                 : al.vegetableFormId}</strong>
-                            — #{al.etiqueta} — vence:&#160;
+                            — #{al.etiqueta} —
+                            #{al.estado eq 'PENDIENTE' ? 'vence en:' : 'vencido el:'}&#160;
                             <h:outputText value="#{al.fechaVencimiento}">
                                 <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
                             </h:outputText>
                         </span>
                         <span style="margin-left:auto; font-size:10px; font-weight:800;
-                                   background:#fef3c7; color:#92400e; border:1px solid #fbbf24;
+                                   background:#{al.estado eq 'PENDIENTE' ? '#fef3c7' : '#fee2e2'};
+                                   color:#{al.estado eq 'PENDIENTE' ? '#92400e' : '#991b1b'};
+                                   border:1px solid #{al.estado eq 'PENDIENTE' ? '#fbbf24' : '#f87171'};
                                    border-radius:20px; padding:2px 8px; white-space:nowrap;">
                             #{al.estadoBadgeLabel}
                         </span>
+                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
+                           style="margin-left:8px; font-weight:bold; color:#1e3a6e; text-decoration:none;"
+                           title="Ver Trámite">
+                            <i class="pi pi-external-link" style="font-size:13px;"/>
+                        </a>
                     </div>
                 </p:dataList>
             </div>
-            <div style="text-align:right; margin-top:14px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="text-align:right; margin-top:14px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e5e7eb; padding-top:10px;">
                 <a href="anualidades/lista.xhtml"
                    style="font-size:12px; color:#1e3a6e; text-decoration:underline; font-weight:700;">
                     Ir al módulo de Anualidades →
@@ -1226,150 +1521,7 @@
             </h:form>
         </p:dialog>
 
-        <!-- ══ DIÁLOGO: BUSCAR E IMPORTAR TRÁMITE DEL PORTAL ══ -->
-        <p:dialog id="dlgBuscarPortal" modal="true" resizable="false"
-                  header="Importar Trámite desde Portal"
-                  widgetVar="dlgBuscarPortal" style="width:560px; max-width:95vw;"
-                  showEffect="explode" hideEffect="explode" closeOnEscape="true">
-            <h:form id="frmBuscarPortal">
 
-                <div style="margin-bottom:18px; font-size:13px; color:#1e3a5f;
-                            background:#e8f0fb; padding:10px 14px; border-radius:7px;
-                            border-left:4px solid #1565c0; display:flex; align-items:flex-start; gap:9px;">
-                    <i class="pi pi-info-circle" style="color:#1565c0; font-size:16px; flex-shrink:0; margin-top:1px;"/>
-                    <span>
-                        Ingrese el <strong>número de trámite</strong> del portal. Si está en estado
-                        <strong>DELIVERED</strong> y no ha sido importado, podrá cargarlo como trámite EN PROCESO.
-                    </span>
-                </div>
-
-                <!-- Barra de búsqueda -->
-                <div style="display:flex; gap:10px; align-items:center; margin-bottom:16px;">
-                    <p:inputText value="#{vegetableBean.numeroBusquedaPortal}"
-                                 placeholder="Ej: OV-2024-00123"
-                                 style="flex:1; font-size:14px; padding:9px 14px; border-radius:7px;
-                                        border:1.5px solid #b0bec5; font-family:'Nunito Sans',sans-serif;"
-                                 onkeydown="if(event.key==='Enter') document.getElementById('btnBuscarPortal').click();"/>
-                    <p:commandButton id="btnBuscarPortal"
-                                     value="Buscar"
-                                     icon="pi pi-search"
-                                     style="background:#1565c0 !important; color:#fff !important;
-                                            border:none !important; border-radius:7px !important;
-                                            padding:9px 20px !important; font-weight:700 !important;
-                                            font-size:13px !important; cursor:pointer !important;
-                                            font-family:'Nunito Sans',sans-serif !important;"
-                                     actionListener="#{vegetableBean.buscarEnPortal}"
-                                     process="@form"
-                                     update="panelResultadoPortal :mensajes"/>
-                </div>
-
-                <!-- Panel resultado -->
-                <p:outputPanel id="panelResultadoPortal">
-
-                    <!-- Mensaje de error / aviso -->
-                    <h:panelGroup rendered="#{vegetableBean.mensajeBusquedaPortal != null}"
-                                  style="display:block; margin-bottom:14px;">
-                        <div style="padding:11px 14px; border-radius:7px; font-size:13px; font-weight:600;
-                                    #{vegetableBean.tramiteYaImportado ?
-                                      'background:#fff3cd; color:#856404; border:1px solid #ffc107;' :
-                                      'background:#fff1f2; color:#be123c; border:1px solid #fca5a5;'}
-                                    display:flex; align-items:center; gap:9px;">
-                            <i class="#{vegetableBean.tramiteYaImportado ? 'pi pi-exclamation-triangle' : 'pi pi-times-circle'}"/>
-                            #{vegetableBean.mensajeBusquedaPortal}
-                        </div>
-                    </h:panelGroup>
-
-                    <!-- Resultado encontrado y listo para importar -->
-                    <h:panelGroup rendered="#{vegetableBean.tramitePortalEncontrado != null and !vegetableBean.tramiteYaImportado}"
-                                  style="display:block;">
-                        <div style="background:#eff4ff; border:1.5px solid #bfdbfe; border-radius:10px;
-                                    padding:16px 18px; margin-bottom:16px;">
-                            <div style="font-size:11px; font-weight:800; color:#0d2b6e; text-transform:uppercase;
-                                        letter-spacing:.07em; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
-                                <i class="pi pi-check-circle" style="font-size:14px;"/>
-                                Trámite encontrado — listo para importar
-                            </div>
-                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:13px;">
-                                <div>
-                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
-                                        N° Trámite
-                                    </span>
-                                    <div style="font-weight:800; color:#0d1b35; font-size:15px; margin-top:2px; font-family:monospace;">
-                                        <h:outputText value="#{vegetableBean.tramitePortalEncontrado.applicationNumber}"/>
-                                    </div>
-                                </div>
-                                <div>
-                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
-                                        Estado Portal
-                                    </span>
-                                    <div style="margin-top:4px;">
-                                        <span style="background:#dbeafe; color:#1e3a6e; border-radius:20px;
-                                                     padding:3px 12px; font-size:11px; font-weight:800; border:1px solid #6ee7b7;">
-                                            EN PROCESO (DELIVERED)
-                                        </span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
-                                        Nombre Común
-                                    </span>
-                                    <div style="font-size:13px; color:#263238; margin-top:2px;">
-                                        <h:outputText value="#{vegetableBean.tramitePortalEncontrado.commonName != null ? vegetableBean.tramitePortalEncontrado.commonName : '—'}"/>
-                                    </div>
-                                </div>
-                                <div>
-                                    <span style="font-size:10px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:.05em;">
-                                        F. Presentación
-                                    </span>
-                                    <div style="font-size:13px; color:#263238; margin-top:2px;">
-                                        <h:outputText value="#{vegetableBean.tramitePortalEncontrado.applicationDate}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                        </h:outputText>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="display:flex; gap:10px; justify-content:flex-end;">
-                            <p:commandButton value="Cancelar" type="button"
-                                             styleClass="sn-btn-secondary"
-                                             icon="pi pi-times"
-                                             onclick="PF('dlgBuscarPortal').hide();"/>
-                            <p:commandButton value="Importar como Trámite EN PROCESO"
-                                             icon="pi pi-download"
-                                             style="background:#1e3a6e !important; color:#fff !important;
-                                                    border:none !important; border-radius:7px !important;
-                                                    padding:9px 20px !important; font-weight:700 !important;
-                                                    font-size:13px !important; cursor:pointer !important;
-                                                    font-family:'Nunito Sans',sans-serif !important;"
-                                             onclick="if(!confirm('¿Importar este trámite como nuevo registro EN PROCESO?')) return false;"
-                                             actionListener="#{vegetableBean.importarTramitePortal}"
-                                             process="@form"
-                                             update="panelResultadoPortal :mensajes"
-                                             oncomplete="PF('dlgBuscarPortal').hide();"/>
-                        </div>
-                    </h:panelGroup>
-
-                    <!-- Si no hay nada buscado aún -->
-                    <h:panelGroup rendered="#{vegetableBean.tramitePortalEncontrado == null and vegetableBean.mensajeBusquedaPortal == null}"
-                                  style="display:block;">
-                        <div style="text-align:center; padding:24px; color:#9ca3af; font-size:13px;">
-                            <i class="pi pi-search" style="font-size:28px; display:block; margin-bottom:10px; color:#d1d5db;"/>
-                            Ingrese un número de trámite y presione <strong>Buscar</strong>
-                        </div>
-                    </h:panelGroup>
-
-                </p:outputPanel>
-
-                <!-- Botón cerrar cuando ya hay resultado de error -->
-                <h:panelGroup rendered="#{vegetableBean.mensajeBusquedaPortal != null and !vegetableBean.tramiteYaImportado}"
-                              style="display:block; text-align:right; margin-top:12px;">
-                    <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
-                                     onclick="PF('dlgBuscarPortal').hide();"/>
-                </h:panelGroup>
-
-            </h:form>
-        </p:dialog>
 
         <!-- Monitor sesión idle: 30 minutos -->
         <p:idleMonitor timeout="#{1000*60*30}" id="idleSesion">

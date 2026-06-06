@@ -102,8 +102,16 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="sn-fl">N° de Gaceta <span style="color:var(--sn-danger);">*</span></div>
-                                <p:inputText value="#{muestraFlowBean.numGaceta}" style="width:100%;"
-                                             required="true" requiredMessage="El número de gaceta es obligatorio."/>
+                                <p:inputText id="numGaceta" value="#{muestraFlowBean.numGaceta}" style="width:100%;"
+                                             required="true" requiredMessage="El número de gaceta es obligatorio."
+                                             validatorMessage="El número de gaceta debe contener únicamente dígitos numéricos."
+                                             onkeypress="if (event.key &lt; '0' || event.key &gt; '9') event.preventDefault();"
+                                             oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                             onchange="this.value = this.value.replace(/[^0-9]/g, '')"
+                                             onpaste="var self=this; setTimeout(function(){self.value=self.value.replace(/[^0-9]/g,'')},0)">
+                                    <f:validateRegex pattern="^[0-9]+$" />
+                                    <p:keyFilter regEx="/[0-9]/" />
+                                </p:inputText>
                             </div>
                         </div>
                         <div class="row" style="margin-top:10px;">

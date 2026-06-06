@@ -231,6 +231,25 @@ public class AnualidadDAO extends DAOAbstractM<Anualidad> {
         }
     }
 
+    public List<Anualidad> buscarVencidas() {
+        EntityManager em = EntityManagerM.getEntityManager();
+        try {
+            java.sql.Date hoy = new java.sql.Date(System.currentTimeMillis());
+            return em.createQuery(
+                "SELECT a FROM Anualidad a " +
+                "WHERE a.fechaVencimiento IS NOT NULL " +
+                "AND a.fechaVencimiento < :hoy " +
+                "AND a.estado <> :pagado " +
+                "ORDER BY a.fechaVencimiento DESC, a.vegetableFormId",
+                Anualidad.class)
+                .setParameter("hoy",    hoy)
+                .setParameter("pagado", EstadoAnualidad.PAGADO)
+                .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
     /**
      * Al registrar un pago, asigna al año siguiente:
      * - fechaVencimiento

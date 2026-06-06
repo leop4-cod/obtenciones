@@ -4,7 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
 
     <f:metadata>
         <f:viewParam name="id" value="#{registroBean.editId}"/>
@@ -331,6 +332,147 @@
                     Anualidades
                 </a>
 
+                <!-- Sección de Alertas Clasificadas -->
+                <div class="lm-sidebar-alerts">
+                    <div class="lm-sidebar-alerts-title" style="display: flex; align-items: center; justify-content: space-between;">
+                        <p:commandLink onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml'; return false;" style="display: flex; align-items: center; gap: 6px; color: inherit; text-decoration: none;" title="Ir a Anualidades">
+                            <i class="pi pi-bell" style="font-size: 13px; color: #fbbf24;"/>
+                            <span>Alertas Anualidades</span>
+                        </p:commandLink>
+                        <p:commandLink onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml'; return false;" style="text-decoration: none;">
+                            <span class="lm-sidebar-alerts-badge danger" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #ef4444; color: #fff;">
+                                #{anualidadBean.totalNotificaciones}
+                            </span>
+                        </p:commandLink>
+                    </div>
+
+                    <!-- 1. Expiradas (Peligro) -->
+                    <div class="lm-sidebar-alerts-cat">
+                        <div class="lm-sidebar-alerts-cat-hdr">
+                            <span class="lm-sidebar-alerts-cat-title danger">
+                                <span class="lm-pulse-dot" style="background-color: #ef4444;"/>
+                                Expiradas
+                            </span>
+                            <span class="lm-sidebar-alerts-badge danger">
+                                #{anualidadBean.totalAlertasExpiradas}
+                            </span>
+                        </div>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasExpiradas == 0}">
+                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasExpiradas &gt; 0}">
+                            <div class="lm-sidebar-alerts-list">
+                                <ui:repeat value="#{anualidadBean.alertasExpiradas}" var="al">
+                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" 
+                                       title="Ver Trámite"
+                                       class="lm-sidebar-alert-item danger">
+                                        <div class="lm-sidebar-alert-item-hdr">
+                                            <span class="lm-sidebar-alert-item-title danger">
+                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
+                                            </span>
+                                            <span class="lm-sidebar-alert-item-lbl danger">
+                                                #{al.etiqueta}
+                                            </span>
+                                        </div>
+                                        <div class="lm-sidebar-alert-item-date danger">
+                                            Expiró:&#160;
+                                            <h:outputText value="#{al.fechaLimiteGracia}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                            </h:outputText>
+                                        </div>
+                                    </a>
+                                </ui:repeat>
+                            </div>
+                        </ui:fragment>
+                    </div>
+
+                    <!-- 2. Próximas a Vencer (Advertencia) -->
+                    <div class="lm-sidebar-alerts-cat">
+                        <div class="lm-sidebar-alerts-cat-hdr">
+                            <span class="lm-sidebar-alerts-cat-title warning">
+                                <span class="lm-pulse-dot" style="background-color: #fbbf24;"/>
+                                Próximas a Vencer
+                            </span>
+                            <span class="lm-sidebar-alerts-badge warning">
+                                #{anualidadBean.totalAlertasProximasVencer}
+                            </span>
+                        </div>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasProximasVencer == 0}">
+                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasProximasVencer &gt; 0}">
+                            <div class="lm-sidebar-alerts-list">
+                                <ui:repeat value="#{anualidadBean.alertasProximasVencer}" var="al">
+                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
+                                       title="Ver Trámite"
+                                       class="lm-sidebar-alert-item warning">
+                                        <div class="lm-sidebar-alert-item-hdr">
+                                            <span class="lm-sidebar-alert-item-title warning">
+                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
+                                            </span>
+                                            <span class="lm-sidebar-alert-item-lbl warning">
+                                                #{al.etiqueta}
+                                            </span>
+                                        </div>
+                                        <div class="lm-sidebar-alert-item-date warning">
+                                            Vence:&#160;
+                                            <h:outputText value="#{al.fechaLimitePago}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                            </h:outputText>
+                                        </div>
+                                    </a>
+                                </ui:repeat>
+                            </div>
+                        </ui:fragment>
+                    </div>
+
+                    <!-- 3. Pendientes (Información / Normal) -->
+                    <div class="lm-sidebar-alerts-cat">
+                        <div class="lm-sidebar-alerts-cat-hdr">
+                            <span class="lm-sidebar-alerts-cat-title pending">
+                                <span class="lm-pulse-dot" style="background-color: #38bdf8;"/>
+                                Pendientes
+                            </span>
+                            <span class="lm-sidebar-alerts-badge pending">
+                                #{anualidadBean.totalAlertasPendientes}
+                            </span>
+                        </div>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasPendientes == 0}">
+                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasPendientes &gt; 0}">
+                            <div class="lm-sidebar-alerts-list">
+                                <ui:repeat value="#{anualidadBean.alertasPendientes}" var="al">
+                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
+                                       title="Ver Trámite"
+                                       class="lm-sidebar-alert-item pending">
+                                        <div class="lm-sidebar-alert-item-hdr">
+                                            <span class="lm-sidebar-alert-item-title pending">
+                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
+                                            </span>
+                                            <span class="lm-sidebar-alert-item-lbl pending">
+                                                #{al.etiqueta}
+                                            </span>
+                                        </div>
+                                        <div class="lm-sidebar-alert-item-date pending">
+                                            Límite:&#160;
+                                            <h:outputText value="#{al.fechaLimitePago}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                            </h:outputText>
+                                        </div>
+                                    </a>
+                                </ui:repeat>
+                            </div>
+                        </ui:fragment>
+                    </div>
+                </div>
+
                 <div class="lm-sidebar-spacer"/>
 
                 <!-- Logout -->
@@ -344,6 +486,32 @@
                 </h:form>
 
             </div>
+
+            <script type="text/javascript">
+            //<![CDATA[
+                document.addEventListener("DOMContentLoaded", function() {
+                    var currentUrl = window.location.href.split('?')[0];
+                    var navItems = document.querySelectorAll(".lm-sidebar .lm-nav-item");
+                    var matched = false;
+                    navItems.forEach(function(item) {
+                        item.classList.remove("active");
+                        var itemUrl = item.href ? item.href.split('?')[0] : "";
+                        if (itemUrl && currentUrl === itemUrl) {
+                            item.classList.add("active");
+                            matched = true;
+                        }
+                    });
+                    if (!matched) {
+                        navItems.forEach(function(item) {
+                            var itemUrl = item.href ? item.href.split('?')[0] : "";
+                            if (itemUrl && itemUrl.indexOf("index.xhtml") === -1 && currentUrl.indexOf(itemUrl.substring(0, itemUrl.lastIndexOf('/'))) !== -1) {
+                                item.classList.add("active");
+                            }
+                        });
+                    }
+                });
+            //]]>
+            </script>
             <!-- ════════════════════ FIN SIDEBAR ════════════════════ -->
 
             <!-- ════════════════════ ÁREA PRINCIPAL ════════════════════ -->
@@ -459,6 +627,25 @@
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="sn-fld">
+                                                <span class="sn-lbl">Número de Trámite</span>
+                                                <p:inputText value="#{registroBean.form.applicationNumber}"
+                                                             style="width:100%;" maxlength="50"
+                                                             placeholder="(se asigna al crear el expediente)"
+                                                             readonly="#{registroBean.editMode}"/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
+                                                <span class="sn-lbl">Numeración Interna</span>
+                                                <p:inputText value="#{registroBean.form.numeroDeTramite}"
+                                                             style="width:100%;" maxlength="100"
+                                                             placeholder="Número de trámite interno"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="sn-fld">
                                                 <span class="sn-lbl">Nombre Común <span class="sn-req">*</span></span>
                                                 <p:inputText id="commonName"
                                                              value="#{registroBean.form.commonName}"
@@ -499,7 +686,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="sn-fld">
                                                 <span class="sn-lbl">Tipo de Denominación</span>
                                                 <p:selectOneMenu value="#{registroBean.form.denominationType}" style="width:100%">
@@ -509,29 +696,12 @@
                                                 </p:selectOneMenu>
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
+                                        <div class="col-md-6">
                                             <div class="sn-fld">
                                                 <span class="sn-lbl">Grupo Varietal</span>
                                                 <p:inputText value="#{registroBean.form.varietalGroup}"
                                                              style="width:100%" maxlength="200"
                                                              placeholder="Ej: Rosas de corte, Tomates cherry..."/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="sn-fld">
-                                                <span class="sn-lbl">Número de Trámite</span>
-                                                <p:inputText value="#{registroBean.form.applicationNumber}"
-                                                             style="width:100%;" maxlength="50"
-                                                             placeholder="(se asigna al crear el expediente)"
-                                                             readonly="#{registroBean.editMode}"/>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="sn-fld">
-                                                <span class="sn-lbl">Número de trámite</span>
-                                                <p:inputText value="#{registroBean.form.numeroDeTramite}"
-                                                             style="width:100%;" maxlength="100"
-                                                             placeholder="Número de trámite interno"/>
                                             </div>
                                         </div>
                                     </div>
@@ -741,7 +911,15 @@
                                         <div class="col-md-4">
                                             <div class="sn-fld">
                                                 <span class="sn-lbl">Publicación en Gaceta</span>
-                                                <p:inputText value="#{registroBean.form.publicacionGaceta}" style="width:100%" placeholder="Escriba los datos de publicación"/>
+                                                <p:inputText id="publicacionGaceta" value="#{registroBean.form.publicacionGaceta}" style="width:100%" placeholder="Escriba los datos de publicación"
+                                                             validatorMessage="La publicación en gaceta debe contener únicamente dígitos numéricos."
+                                                             onkeypress="if (event.key &lt; '0' || event.key &gt; '9') event.preventDefault();"
+                                                             oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                             onchange="this.value = this.value.replace(/[^0-9]/g, '')"
+                                                             onpaste="var self=this; setTimeout(function(){self.value=self.value.replace(/[^0-9]/g,'')},0)">
+                                                    <f:validateRegex pattern="^[0-9]*$" />
+                                                    <p:keyFilter regEx="/[0-9]/" />
+                                                </p:inputText>
                                             </div>
                                         </div>
                                     </div>

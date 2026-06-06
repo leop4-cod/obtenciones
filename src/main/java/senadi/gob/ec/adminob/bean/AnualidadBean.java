@@ -26,6 +26,7 @@ public class AnualidadBean implements Serializable {
 
     private List<Anualidad>      todasLasAnualidades    = new ArrayList<>();
     private List<Anualidad>      alertas                = new ArrayList<>();
+    private List<Anualidad>      alertasVencidas        = new ArrayList<>();
     private List<VegetableForms> tramites               = new ArrayList<>();
     private Set<Integer>         tramitesConAnualidades = new HashSet<>();
 
@@ -76,9 +77,18 @@ public class AnualidadBean implements Serializable {
             porcentajeIncremento5Anios = pDao.getValorDecimal("PORCENTAJE_INCREMENTO",
                 new BigDecimal("5.00"));
             int diasAlerta = pDao.getValorEntero("DIAS_ALERTA_ANUALIDAD", 15);
-            alertas = new AnualidadDAO(null).buscarConAlerta(diasAlerta);
+            AnualidadDAO aDao = new AnualidadDAO(null);
+            
+            // Forzar transiciones de estado automáticas
+            try { aDao.marcarEstadosAutomaticos(); } catch (Exception ignored) {}
+            
+            todasLasAnualidades = aDao.buscarTodos();
+            alertas = aDao.buscarConAlerta(diasAlerta);
+            alertasVencidas = aDao.buscarVencidas();
         } catch (Exception e) {
             alertas = new ArrayList<>();
+            alertasVencidas = new ArrayList<>();
+            todasLasAnualidades = new ArrayList<>();
         }
     }
 
@@ -89,10 +99,12 @@ public class AnualidadBean implements Serializable {
             dao.marcarEstadosAutomaticos();
             todasLasAnualidades    = dao.buscarTodos();
             alertas                = dao.buscarConAlerta(15);
+            alertasVencidas        = dao.buscarVencidas();
             tramitesConAnualidades = new HashSet<>(dao.idsConAnualidades());
         } catch (Exception e) {
             todasLasAnualidades = new ArrayList<>();
             alertas             = new ArrayList<>();
+            alertasVencidas     = new ArrayList<>();
             System.err.println("[AnualidadBean] Error al cargar: " + e.getMessage());
         }
         try {
@@ -407,6 +419,71 @@ public class AnualidadBean implements Serializable {
     // ── Getters / setters ──
 
     public int getTotalAlertas()     { return alertas == null ? 0 : alertas.size(); }
+    public int getTotalAlertasVencidas() { return alertasVencidas == null ? 0 : alertasVencidas.size(); }
+    public int getTotalNotificaciones() { return getTotalAlertas() + getTotalAlertasVencidas(); }
+
+    public List<Anualidad> getAlertasExpiradas() {
+        List<Anualidad> list = new ArrayList<>();
+        if (todasLasAnualidades != null) {
+            for (Anualidad a : todasLasAnualidades) {
+                if (a.getEstado() == EstadoAnualidad.PROCESO_EXPIRADO) {
+                    list.add(a);
+                }
+            }
+        }
+        return list;
+    }
+
+    public List<Anualidad> getAlertasProximasVencer() {
+        List<Anualidad> list = new ArrayList<>();
+        if (todasLasAnualidades != null) {
+            for (Anualidad a : todasLasAnualidades) {
+                if (a.getEstado() == EstadoAnualidad.EN_GRACIA || a.isProximaAVencer(15)) {
+                    list.add(a);
+                }
+            }
+        }
+        return list;
+    }
+
+    public List<Anualidad> getAlertasPendientes() {
+        List<Anualidad> list = new ArrayList<>();
+        if (todasLasAnualidades != null) {
+            for (Anualidad a : todasLasAnualidades) {
+                if (a.getEstado() == EstadoAnualidad.PENDIENTE && !a.isProximaAVencer(15)) {
+                    list.add(a);
+                }
+            }
+        }
+        return list;
+    }
+
+    public int getTotalAlertasExpiradas() {
+        return getAlertasExpiradas().size();
+    }
+
+    public int getTotalAlertasProximasVencer() {
+        return getAlertasProximasVencer().size();
+    }
+
+    public int getTotalAlertasPendientes() {
+        return getAlertasPendientes().size();
+    }
+
+    public List<Anualidad> getAlertasVencidas() { return alertasVencidas; }
+
+    public List<Anualidad> getTodasLasNotificaciones() {
+        List<Anualidad> list = new ArrayList<>();
+        if (alertas != null) list.addAll(alertas);
+        if (alertasVencidas != null) list.addAll(alertasVencidas);
+        list.sort((a, b) -> {
+            if (a.getFechaVencimiento() == null) return 1;
+            if (b.getFechaVencimiento() == null) return -1;
+            return a.getFechaVencimiento().compareTo(b.getFechaVencimiento());
+        });
+        return list;
+    }
+
     public int getTotalAnualidades() { return todasLasAnualidades == null ? 0 : todasLasAnualidades.size(); }
 
     public int getTotalCompletadas() {
@@ -414,6 +491,15 @@ public class AnualidadBean implements Serializable {
         int count = 0;
         for (Anualidad a : todasLasAnualidades) {
             if (a.getEstado() == EstadoAnualidad.PAGADO) count++;
+        }
+        return count;
+    }
+
+    public int getTotalPendientes() {
+        if (todasLasAnualidades == null) return 0;
+        int count = 0;
+        for (Anualidad a : todasLasAnualidades) {
+            if (a.getEstado() == EstadoAnualidad.PENDIENTE) count++;
         }
         return count;
     }
@@ -477,10 +563,16 @@ public class AnualidadBean implements Serializable {
     public void setCantidadAnualidades(int v) { this.cantidadAnualidades = (v < 1 ? 1 : (v > 20 ? 20 : v)); }
 
     public BigDecimal getPorcentajeRecargoDefecto()            { return porcentajeRecargoDefecto; }
-    public void       setPorcentajeRecargoDefecto(BigDecimal v){ this.porcentajeRecargoDefecto = v; }
+    public void       setPorcentajeRecargoDefecto(BigDecimal v){
+        this.porcentajeRecargoDefecto = v;
+        this.porcentajeIncremento5Anios = v;
+    }
 
     public BigDecimal getPorcentajeIncremento5Anios()            { return porcentajeIncremento5Anios; }
-    public void       setPorcentajeIncremento5Anios(BigDecimal v){ this.porcentajeIncremento5Anios = v; }
+    public void       setPorcentajeIncremento5Anios(BigDecimal v){
+        this.porcentajeIncremento5Anios = v;
+        this.porcentajeRecargoDefecto = v;
+    }
 
     public BigDecimal getMontoBaseCreacion()            { return montoBaseCreacion; }
     public void       setMontoBaseCreacion(BigDecimal v){ this.montoBaseCreacion = v; }

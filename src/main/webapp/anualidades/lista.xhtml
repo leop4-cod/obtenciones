@@ -398,6 +398,147 @@
                     <i class="pi pi-calendar-plus"/> <span>Anualidades</span>
                 </a>
 
+                <!-- Sección de Alertas Clasificadas -->
+                <div class="lm-sidebar-alerts">
+                    <div class="lm-sidebar-alerts-title" style="display: flex; align-items: center; justify-content: space-between;">
+                        <p:commandLink onclick="PF('dlgProxVenc').show(); return false;" style="display: flex; align-items: center; gap: 6px; color: inherit; text-decoration: none;" title="Ver todas las notificaciones">
+                            <i class="pi pi-bell" style="font-size: 13px; color: #fbbf24;"/>
+                            <span>Alertas Anualidades</span>
+                        </p:commandLink>
+                        <p:commandLink onclick="PF('dlgProxVenc').show(); return false;" style="text-decoration: none;">
+                            <span class="lm-sidebar-alerts-badge danger" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #ef4444; color: #fff;">
+                                #{anualidadBean.totalNotificaciones}
+                            </span>
+                        </p:commandLink>
+                    </div>
+
+                    <!-- 1. Expiradas (Peligro) -->
+                    <div class="lm-sidebar-alerts-cat">
+                        <div class="lm-sidebar-alerts-cat-hdr">
+                            <span class="lm-sidebar-alerts-cat-title danger">
+                                <span class="lm-pulse-dot" style="background-color: #ef4444;"/>
+                                Expiradas
+                            </span>
+                            <span class="lm-sidebar-alerts-badge danger">
+                                #{anualidadBean.totalAlertasExpiradas}
+                            </span>
+                        </div>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasExpiradas == 0}">
+                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasExpiradas &gt; 0}">
+                            <div class="lm-sidebar-alerts-list">
+                                <ui:repeat value="#{anualidadBean.alertasExpiradas}" var="al">
+                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" 
+                                       title="Ver Trámite"
+                                       class="lm-sidebar-alert-item danger">
+                                        <div class="lm-sidebar-alert-item-hdr">
+                                            <span class="lm-sidebar-alert-item-title danger">
+                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
+                                            </span>
+                                            <span class="lm-sidebar-alert-item-lbl danger">
+                                                #{al.etiqueta}
+                                            </span>
+                                        </div>
+                                        <div class="lm-sidebar-alert-item-date danger">
+                                            Expiró:&#160;
+                                            <h:outputText value="#{al.fechaLimiteGracia}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                            </h:outputText>
+                                        </div>
+                                    </a>
+                                </ui:repeat>
+                            </div>
+                        </ui:fragment>
+                    </div>
+
+                    <!-- 2. Próximas a Vencer (Advertencia) -->
+                    <div class="lm-sidebar-alerts-cat">
+                        <div class="lm-sidebar-alerts-cat-hdr">
+                            <span class="lm-sidebar-alerts-cat-title warning">
+                                <span class="lm-pulse-dot" style="background-color: #fbbf24;"/>
+                                Próximas a Vencer
+                            </span>
+                            <span class="lm-sidebar-alerts-badge warning">
+                                #{anualidadBean.totalAlertasProximasVencer}
+                            </span>
+                        </div>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasProximasVencer == 0}">
+                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasProximasVencer &gt; 0}">
+                            <div class="lm-sidebar-alerts-list">
+                                <ui:repeat value="#{anualidadBean.alertasProximasVencer}" var="al">
+                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
+                                       title="Ver Trámite"
+                                       class="lm-sidebar-alert-item warning">
+                                        <div class="lm-sidebar-alert-item-hdr">
+                                            <span class="lm-sidebar-alert-item-title warning">
+                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
+                                            </span>
+                                            <span class="lm-sidebar-alert-item-lbl warning">
+                                                #{al.etiqueta}
+                                            </span>
+                                        </div>
+                                        <div class="lm-sidebar-alert-item-date warning">
+                                            Vence:&#160;
+                                            <h:outputText value="#{al.fechaLimitePago}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                            </h:outputText>
+                                        </div>
+                                    </a>
+                                </ui:repeat>
+                            </div>
+                        </ui:fragment>
+                    </div>
+
+                    <!-- 3. Pendientes (Información / Normal) -->
+                    <div class="lm-sidebar-alerts-cat">
+                        <div class="lm-sidebar-alerts-cat-hdr">
+                            <span class="lm-sidebar-alerts-cat-title pending">
+                                <span class="lm-pulse-dot" style="background-color: #38bdf8;"/>
+                                Pendientes
+                            </span>
+                            <span class="lm-sidebar-alerts-badge pending">
+                                #{anualidadBean.totalAlertasPendientes}
+                            </span>
+                        </div>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasPendientes == 0}">
+                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
+                        </ui:fragment>
+                        
+                        <ui:fragment rendered="#{anualidadBean.totalAlertasPendientes &gt; 0}">
+                            <div class="lm-sidebar-alerts-list">
+                                <ui:repeat value="#{anualidadBean.alertasPendientes}" var="al">
+                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
+                                       title="Ver Trámite"
+                                       class="lm-sidebar-alert-item pending">
+                                        <div class="lm-sidebar-alert-item-hdr">
+                                            <span class="lm-sidebar-alert-item-title pending">
+                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
+                                            </span>
+                                            <span class="lm-sidebar-alert-item-lbl pending">
+                                                #{al.etiqueta}
+                                            </span>
+                                        </div>
+                                        <div class="lm-sidebar-alert-item-date pending">
+                                            Límite:&#160;
+                                            <h:outputText value="#{al.fechaLimitePago}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                            </h:outputText>
+                                        </div>
+                                    </a>
+                                </ui:repeat>
+                            </div>
+                        </ui:fragment>
+                    </div>
+                </div>
+
                 <div class="lm-sidebar-spacer"/>
 
                 <a href="../index.xhtml" class="lm-logout-link">
@@ -405,6 +546,32 @@
                     <span>Volver al Inicio</span>
                 </a>
             </div>
+
+            <script type="text/javascript">
+            //<![CDATA[
+                document.addEventListener("DOMContentLoaded", function() {
+                    var currentUrl = window.location.href.split('?')[0];
+                    var navItems = document.querySelectorAll(".lm-sidebar .lm-nav-item");
+                    var matched = false;
+                    navItems.forEach(function(item) {
+                        item.classList.remove("active");
+                        var itemUrl = item.href ? item.href.split('?')[0] : "";
+                        if (itemUrl && currentUrl === itemUrl) {
+                            item.classList.add("active");
+                            matched = true;
+                        }
+                    });
+                    if (!matched) {
+                        navItems.forEach(function(item) {
+                            var itemUrl = item.href ? item.href.split('?')[0] : "";
+                            if (itemUrl && itemUrl.indexOf("index.xhtml") === -1 && currentUrl.indexOf(itemUrl.substring(0, itemUrl.lastIndexOf('/'))) !== -1) {
+                                item.classList.add("active");
+                            }
+                        });
+                    }
+                });
+            //]]>
+            </script>
 
             <!-- ══════════════ ÁREA PRINCIPAL ══════════════ -->
             <div class="lm-main">
@@ -418,6 +585,8 @@
                         </span>
                     </div>
                     <div class="lm-topbar-right">
+                        <!-- Campana de alertas movida a la barra lateral izquierda -->
+
                         <a href="../index.xhtml" class="lm-icon-btn" title="Inicio">
                             <i class="pi pi-home"/>
                         </a>
@@ -491,13 +660,12 @@
                                     <i class="pi pi-external-link" style="font-size:9px;color:#c9a227;"/>
                                 </div>
                             </div>
-                            <div class="lm-stat blue">
-                                <div class="lm-stat-lbl">Registros Visibles</div>
-                                <p:outputPanel id="conteoFiltro">
-                                    <div class="lm-stat-val">#{anualidadBean.anualidadesFiltradas.size()}</div>
-                                </p:outputPanel>
-                                <div class="lm-stat-sub">Según filtro activo</div>
+                            <div class="lm-stat" style="border-left-color:#eab308;">
+                                <div class="lm-stat-lbl">Pendientes</div>
+                                <div class="lm-stat-val" style="color:#854d0e;">#{anualidadBean.totalPendientes}</div>
+                                <div class="lm-stat-sub">Dentro del plazo normal</div>
                             </div>
+                            <p:outputPanel id="conteoFiltro" style="display:none;"/>
                         </div>
                         </p:outputPanel>
 
@@ -550,7 +718,7 @@
                                 <div class="lm-card-title"><i class="pi pi-info-circle"/> Guía Rápida</div>
                             </div>
                             <div class="lm-card-body">
-                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; font-size:13px;">
+                                <div style="font-size:13px;">
                                     <div>
                                         <p style="font-weight:800; color:#1e3a6e; margin:0 0 10px;">Estados de anualidad:</p>
                                         <div style="display:flex; flex-direction:column; gap:8px;">
@@ -575,29 +743,6 @@
                                                 <span style="color:#555; font-size:12px;">Próximo a vencer (15 días)</span>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div>
-                                        <p style="font-weight:800; color:#1e3a6e; margin:0 0 10px;">Plazos de pago:</p>
-                                        <div style="background:#f8fafc; border-radius:8px; padding:12px 14px; font-size:12px; border:1px solid #e2e8f0;">
-                                            <div style="display:flex; gap:8px; margin-bottom:8px;">
-                                                <span style="background:#dbeafe; color:#1e3a6e; border-radius:4px; padding:2px 8px; font-size:11px; font-weight:800;">0 - 4 meses</span>
-                                                <span style="color:#555;">Pago normal sin recargo</span>
-                                            </div>
-                                            <div style="display:flex; gap:8px; margin-bottom:8px;">
-                                                <span style="background:#ffedd5; color:#9a3412; border-radius:4px; padding:2px 8px; font-size:11px; font-weight:800;">4 - 10 meses</span>
-                                                <span style="color:#555;">Período de gracia — aplica recargo</span>
-                                            </div>
-                                            <div style="display:flex; gap:8px;">
-                                                <span style="background:#f5f3f2; color:#57534e; border-radius:4px; padding:2px 8px; font-size:11px; font-weight:800;">+ 10 meses</span>
-                                                <span style="color:#555;">Proceso Expirado (sin posibilidad de pago)</span>
-                                            </div>
-                                        </div>
-                                        <p style="font-weight:800; color:#1e3a6e; margin:14px 0 6px;">Flujo de trabajo:</p>
-                                        <ul style="margin:0 0 0 16px; line-height:2.2; color:#555; font-size:12px;">
-                                            <li><strong>Crear Anualidades</strong> — generar años con monto e incremento quinquenal</li>
-                                            <li><strong>Tabla</strong> — registrar pagos parciales/completos y ver totales</li>
-                                            <li><strong>Importar Excel</strong> — carga masiva desde el archivo SENADI</li>
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -870,13 +1015,6 @@
                                 </div>
                             </div>
                             <div class="lm-card-body">
-                                <p style="font-size:12px; color:#3d6b50; font-weight:600; margin:0 0 18px;
-                                          background:#eff4ff; border:1px solid #bfdbfe; border-radius:8px; padding:12px 16px;">
-                                    Seleccione un trámite <strong>ACEPTADO</strong>, configure los parámetros y presione
-                                    <strong>"Crear anualidades"</strong>. Solo se crean <strong>una vez por trámite</strong>.
-                                    El sistema calculará automáticamente los plazos (4 meses normal + 6 meses gracia)
-                                    e incrementará el monto cada 5 años según el porcentaje indicado.
-                                </p>
                                 <p:outputPanel id="panelCrear">
                                 <div style="display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; margin-bottom:16px;">
                                     <div>
@@ -912,8 +1050,7 @@
                                     <div style="display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end;">
                                         <div>
                                             <label style="font-size:11px; font-weight:700; color:#374151; display:block; margin-bottom:5px;">
-                                                Monto Base Año 1 ($)
-                                                <span style="font-weight:400; color:#9ca3af;">(opcional)</span>
+                                                Monto Base Año 1 ($) <span style="font-weight:400; color:#9ca3af;">(opcional)</span>
                                             </label>
                                             <p:inputNumber id="inMontoBase"
                                                            value="#{anualidadBean.montoBaseCreacion}"
@@ -930,7 +1067,9 @@
                                                            symbol="%" symbolPosition="s"
                                                            decimalSeparator="." thousandSeparator=","
                                                            minValue="0" maxValue="100"
-                                                           style="width:110px;"/>
+                                                           style="width:110px;">
+                                                <p:ajax event="change" process="@this" update="inIncremento" />
+                                            </p:inputNumber>
                                         </div>
                                         <div>
                                             <label style="font-size:11px; font-weight:700; color:#374151; display:block; margin-bottom:5px;">
@@ -941,11 +1080,9 @@
                                                            symbol="%" symbolPosition="s"
                                                            decimalSeparator="." thousandSeparator=","
                                                            minValue="0" maxValue="100"
-                                                           style="width:110px;"/>
-                                        </div>
-                                        <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:7px; padding:8px 12px; font-size:11px; color:#1d4ed8; max-width:260px;">
-                                            <i class="pi pi-info-circle" style="margin-right:4px;"/>
-                                            Los años 1-5 usan el monto base. Años 6-10 se incrementan un % adicional, y así cada grupo de 5 años.
+                                                           style="width:110px;">
+                                                <p:ajax event="change" process="@this" update="inRecargoDefecto" />
+                                            </p:inputNumber>
                                         </div>
                                     </div>
                                 </div>
@@ -1037,16 +1174,16 @@
 
         <!-- ══ DIÁLOGO: PRÓXIMOS VENCIMIENTOS ══ -->
         <p:dialog id="dlgProxVenc"
-                  header="Trámites con vencimiento en los próximos 15 días"
+                  header="Alertas y Notificaciones de Anualidades"
                   widgetVar="dlgProxVenc"
-                  modal="true" resizable="true" width="680" dynamic="true">
-            <h:panelGroup rendered="#{anualidadBean.totalAlertas == 0}">
+                  modal="true" resizable="true" width="740" dynamic="true">
+            <h:panelGroup rendered="#{anualidadBean.totalNotificaciones == 0}">
                 <div style="text-align:center; padding:30px; color:#6b7280; font-size:13px;">
                     <i class="pi pi-check-circle" style="font-size:28px; color:#2a5aad; display:block; margin-bottom:10px;"/>
-                    No hay anualidades próximas a vencer en los próximos 15 días.
+                    No hay alertas o notificaciones de anualidades pendientes.
                 </div>
             </h:panelGroup>
-            <h:panelGroup rendered="#{anualidadBean.totalAlertas gt 0}">
+            <h:panelGroup rendered="#{anualidadBean.totalNotificaciones gt 0}">
                 <div style="overflow-x:auto;">
                     <table style="width:100%; border-collapse:collapse; font-size:12px;">
                         <thead>
@@ -1056,10 +1193,11 @@
                                 <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Vencimiento</th>
                                 <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Estado</th>
                                 <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:left; font-size:11px; text-transform:uppercase;">Nombre Común</th>
+                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase; width:80px;">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <ui:repeat value="#{anualidadBean.alertas}" var="al">
+                            <ui:repeat value="#{anualidadBean.todasLasNotificaciones}" var="al">
                                 <tr style="border-bottom:1px solid #f0f4f0;">
                                     <td style="padding:9px 12px; font-weight:700; color:#0d1b35;">
                                         #{anualidadBean.getVegetableForm(al.vegetableFormId) != null
@@ -1069,7 +1207,7 @@
                                     <td style="padding:9px 12px; text-align:center;">
                                         <span class="anu-anio-chip">#{al.etiqueta}</span>
                                     </td>
-                                    <td style="padding:9px 12px; text-align:center; font-weight:700; color:#b45309;">
+                                    <td style="padding:9px 12px; text-align:center; font-weight:700; color:#{al.estado eq 'PENDIENTE' ? '#b45309' : '#b91c1c'};">
                                         <h:outputText value="#{al.fechaVencimiento}">
                                             <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
                                         </h:outputText>
@@ -1080,6 +1218,14 @@
                                     <td style="padding:9px 12px; font-size:11px; color:#374151;">
                                         #{anualidadBean.getVegetableForm(al.vegetableFormId) != null
                                             ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : '—'}
+                                    </td>
+                                    <td style="padding:9px 12px; text-align:center;">
+                                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
+                                           style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px;
+                                                  background:#f0f5fc; border-radius:50%; border:1px solid #c9dcf8; color:#1e3a6e; text-decoration:none;"
+                                           title="Ver Trámite">
+                                            <i class="pi pi-external-link" style="font-size:12px;"/>
+                                        </a>
                                     </td>
                                 </tr>
                             </ui:repeat>
