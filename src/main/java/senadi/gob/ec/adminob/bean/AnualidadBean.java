@@ -249,7 +249,7 @@ public class AnualidadBean implements Serializable {
 
         if (completado) {
             anualidadEnEdicion.setEstado(EstadoAnualidad.PAGADO);
-            if (esPagoNuevo) {
+            if (anualidadEnEdicion.getFechaPago() == null) {
                 anualidadEnEdicion.setFechaPago(new java.sql.Date(System.currentTimeMillis()));
             }
         } else {
@@ -315,7 +315,19 @@ public class AnualidadBean implements Serializable {
     }
 
     public void limpiarFiltros() {
-        filtroTramite         = "";
+        String filtroUrl = null;
+        try {
+            javax.faces.context.FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
+            if (fc != null) {
+                filtroUrl = fc.getExternalContext().getRequestParameterMap().get("filtro");
+            }
+        } catch (Exception ignored) {}
+
+        if (filtroUrl != null && !filtroUrl.trim().isEmpty()) {
+            filtroTramite = filtroUrl.trim();
+        } else {
+            filtroTramite = "";
+        }
         filtroEstado          = "";
         anualidadEnEdicion    = null;
         estadoOriginal        = null;
@@ -426,11 +438,16 @@ public class AnualidadBean implements Serializable {
         List<Anualidad> list = new ArrayList<>();
         if (todasLasAnualidades != null) {
             for (Anualidad a : todasLasAnualidades) {
-                if (a.getEstado() == EstadoAnualidad.PROCESO_EXPIRADO) {
+                if (a.getEstado() == EstadoAnualidad.PROCESO_EXPIRADO || a.getEstado() == EstadoAnualidad.VENCIDO || a.isVencida()) {
                     list.add(a);
                 }
             }
         }
+        list.sort((a, b) -> {
+            if (a.getFechaVencimiento() == null) return 1;
+            if (b.getFechaVencimiento() == null) return -1;
+            return a.getFechaVencimiento().compareTo(b.getFechaVencimiento());
+        });
         return list;
     }
 
@@ -443,6 +460,11 @@ public class AnualidadBean implements Serializable {
                 }
             }
         }
+        list.sort((a, b) -> {
+            if (a.getFechaVencimiento() == null) return 1;
+            if (b.getFechaVencimiento() == null) return -1;
+            return a.getFechaVencimiento().compareTo(b.getFechaVencimiento());
+        });
         return list;
     }
 
@@ -455,6 +477,11 @@ public class AnualidadBean implements Serializable {
                 }
             }
         }
+        list.sort((a, b) -> {
+            if (a.getFechaVencimiento() == null) return 1;
+            if (b.getFechaVencimiento() == null) return -1;
+            return a.getFechaVencimiento().compareTo(b.getFechaVencimiento());
+        });
         return list;
     }
 

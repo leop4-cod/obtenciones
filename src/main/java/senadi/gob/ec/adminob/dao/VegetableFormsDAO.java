@@ -61,7 +61,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id DESC",
                         VegetableForms.class);
-                    query.setParameter("st", Status.DELIVERED);
+                    query.setParameter("st", Status.EN_PROCESO);
                     break;
 
                 case "Pagados":
@@ -157,6 +157,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
             m.setPublicacionGaceta(src.getPublicacionGaceta());
             m.setEtapaActual(src.getEtapaActual());
             m.setEstadoExpediente(src.getEstadoExpediente());
+            m.setFechaResolucion(src.getFechaResolucion());
             // La entidad es managed → Hibernate dirty-check genera UPDATE automáticamente
             em.getTransaction().commit();
         } catch (Exception e) {
@@ -191,7 +192,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                         "WHERE v.status = :st AND v.applicationDate BETWEEN :start AND :end " +
                         "ORDER BY v.id DESC",
                         VegetableForms.class);
-                    query.setParameter("st", Status.DELIVERED);
+                    query.setParameter("st", Status.EN_PROCESO);
                     break;
 
                 case "Pagados":
@@ -251,7 +252,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
         try {
             int updated = em.createQuery(
                 "UPDATE VegetableForms v SET v.status = :delivered WHERE v.status = :saved")
-                .setParameter("delivered", Status.DELIVERED)
+                .setParameter("delivered", Status.EN_PROCESO)
                 .setParameter("saved", Status.SAVED)
                 .executeUpdate();
             em.getTransaction().commit();
@@ -333,7 +334,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                 "AND NOT EXISTS (SELECT t FROM Tramite t WHERE t.vegetableFormId = v.id) " +
                 "ORDER BY v.createDate DESC",
                 VegetableForms.class)
-                .setParameter("delivered", Status.DELIVERED)
+                .setParameter("delivered", Status.EN_PROCESO)
                 .getResultList();
         } finally {
             em.close();

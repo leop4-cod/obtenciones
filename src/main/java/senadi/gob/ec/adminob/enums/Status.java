@@ -9,7 +9,7 @@ package senadi.gob.ec.adminob.enums;
  * @author michael
  */
 public enum Status {
-    DELIVERED,
+    EN_PROCESO,
     ACCEPTED,
     FINISHED,
     PREVIEW,

@@ -369,6 +369,65 @@ public class AnualidadDAO extends DAOAbstractM<Anualidad> {
         }
     }
 
+    public List<Anualidad> buscarPorVegetableFormId(Integer vegetableFormId) {
+        EntityManager em = EntityManagerM.getEntityManager();
+        try {
+            return em.createQuery(
+                "SELECT a FROM Anualidad a WHERE a.vegetableFormId = :vid ORDER BY a.anio",
+                Anualidad.class)
+                .setParameter("vid", vegetableFormId)
+                .getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public void generarAnualidadesAutomaticas(Integer vegetableFormId, java.util.Date fechaResolucion, String usuarioRegistro) throws Exception {
+        if (existenAnualidades(vegetableFormId)) return;
+
+        BigDecimal recargo = new BigDecimal("10.00");
+        try {
+            ParametroSistemaDAO pDao = new ParametroSistemaDAO(null);
+            recargo = pDao.getValorDecimal("PORCENTAJE_RECARGO", new BigDecimal("10.00"));
+        } catch (Exception ignored) {}
+
+        EntityManager em = EntityManagerM.getEntityManager();
+        em.getTransaction().begin();
+        try {
+            Timestamp ahora = new Timestamp(System.currentTimeMillis());
+            for (int i = 1; i <= 20; i++) {
+                Anualidad a = new Anualidad();
+                a.setVegetableFormId(vegetableFormId);
+                a.setAnio(i);
+                a.setEtiqueta("Año " + i);
+                a.setEstado(EstadoAnualidad.PENDIENTE);
+                a.setPorcentajeRecargo(recargo);
+                a.setUsuarioRegistro(usuarioRegistro);
+                a.setFechaCreacion(ahora);
+                a.setFechaModificacion(ahora);
+
+                // Calcular fechaVencimiento = fechaResolucion + i años
+                java.util.Calendar cal = java.util.Calendar.getInstance();
+                cal.setTime(fechaResolucion);
+                cal.add(java.util.Calendar.YEAR, i);
+                java.sql.Date fechaVenc = new java.sql.Date(cal.getTimeInMillis());
+                a.setFechaVencimiento(fechaVenc);
+
+                // Calcular límites
+                a.setFechaLimitePago(calcularFechaLimitePago(fechaVenc));
+                a.setFechaLimiteGracia(calcularFechaLimiteGracia(fechaVenc));
+
+                em.persist(a);
+            }
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+
     // ══════════════════════════════════════════════════════════════════════
     // Importación masiva desde Excel (Apache POI)
     // ══════════════════════════════════════════════════════════════════════

@@ -20,6 +20,7 @@ import senadi.gob.ec.adminob.dao.OposicionDAO;
 import senadi.gob.ec.adminob.dao.PublicacionGacetaDAO;
 import senadi.gob.ec.adminob.dao.ResolucionDAO;
 import senadi.gob.ec.adminob.dao.VegetableFormsDAO;
+import senadi.gob.ec.adminob.dao.AnualidadDAO;
 import senadi.gob.ec.adminob.enums.EstadoOposicion;
 import senadi.gob.ec.adminob.enums.FlowPhase;
 import senadi.gob.ec.adminob.enums.ResultadoDHE;
@@ -490,10 +491,15 @@ public class TramiteFlowService {
             res.setVegetableFormId(form.getId());
             res.setNumResolucion(numRes);
             res.setFechaResolucion(new Timestamp(System.currentTimeMillis()));
+            res.setFechaCreacion(new Timestamp(System.currentTimeMillis()));
             res.setTipo(tipo);
             res.setFundamento(fundamento);
             res.setEmitidoPor(emitidoPor);
             new ResolucionDAO(res).persist();
+
+            if (tipo == TipoResolucion.CONCESION) {
+                new AnualidadDAO(null).generarAnualidadesAutomaticas(form.getId(), res.getFechaResolucion(), usuarioSesion);
+            }
 
             form.setFlowPhase(FlowPhase.RESOLUTION);
             form.setStatusFlow(tipo == TipoResolucion.CONCESION

@@ -193,6 +193,9 @@ public class VegetableForms implements Serializable {
     @Column(name = "estado_expediente")
     private String estadoExpediente;
 
+    @Column(name = "fecha_resolucion")
+    private java.util.Date fechaResolucion;
+
     @Transient
     private String locker;
 
@@ -1016,4 +1019,7 @@ public class VegetableForms implements Serializable {
 
     public String getEstadoExpediente() { return estadoExpediente; }
     public void setEstadoExpediente(String estadoExpediente) { this.estadoExpediente = estadoExpediente; }
+
+    public java.util.Date getFechaResolucion() { return fechaResolucion; }
+    public void setFechaResolucion(java.util.Date fechaResolucion) { this.fechaResolucion = fechaResolucion; }
 }

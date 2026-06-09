@@ -161,6 +161,7 @@
                 text-transform: uppercase;
             }
             .ac-badge-DELIVERED { background: #dbeafe; color: #1e3a6e; border: 1px solid #bfdbfe; }
+            .ac-badge-EN_PROCESO { background: #dbeafe; color: #1e3a6e; border: 1px solid #bfdbfe; }
             .ac-badge-ACCEPTED  { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; }
             .ac-badge-FINISHED  { background: #f3e8ff; color: #7c3aed; border: 1px solid #e9d5ff; }
             .ac-badge-SAVED     { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
@@ -333,145 +334,35 @@
                 </a>
 
                 <!-- Sección de Alertas Clasificadas -->
-                <div class="lm-sidebar-alerts">
-                    <div class="lm-sidebar-alerts-title" style="display: flex; align-items: center; justify-content: space-between;">
-                        <p:commandLink onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml'; return false;" style="display: flex; align-items: center; gap: 6px; color: inherit; text-decoration: none;" title="Ir a Anualidades">
-                            <i class="pi pi-bell" style="font-size: 13px; color: #fbbf24;"/>
-                            <span>Alertas Anualidades</span>
-                        </p:commandLink>
-                        <p:commandLink onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml'; return false;" style="text-decoration: none;">
-                            <span class="lm-sidebar-alerts-badge danger" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #ef4444; color: #fff;">
-                                #{anualidadBean.totalNotificaciones}
-                            </span>
-                        </p:commandLink>
+                <p:commandLink onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml?mostrarAlerta=expirada'; return false;" class="lm-nav-item" style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 16px); margin: 2px 8px; box-sizing: border-box;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="pi pi-exclamation-triangle" style="color: #ef4444;"/>
+                        <span>Alertas Expiradas</span>
                     </div>
+                    <span class="lm-sidebar-alerts-badge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #ef4444; color: #fff; line-height: 1;">
+                        #{anualidadBean.totalAlertasExpiradas}
+                    </span>
+                </p:commandLink>
 
-                    <!-- 1. Expiradas (Peligro) -->
-                    <div class="lm-sidebar-alerts-cat">
-                        <div class="lm-sidebar-alerts-cat-hdr">
-                            <span class="lm-sidebar-alerts-cat-title danger">
-                                <span class="lm-pulse-dot" style="background-color: #ef4444;"/>
-                                Expiradas
-                            </span>
-                            <span class="lm-sidebar-alerts-badge danger">
-                                #{anualidadBean.totalAlertasExpiradas}
-                            </span>
-                        </div>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasExpiradas == 0}">
-                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
-                        </ui:fragment>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasExpiradas &gt; 0}">
-                            <div class="lm-sidebar-alerts-list">
-                                <ui:repeat value="#{anualidadBean.alertasExpiradas}" var="al">
-                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" 
-                                       title="Ver Trámite"
-                                       class="lm-sidebar-alert-item danger">
-                                        <div class="lm-sidebar-alert-item-hdr">
-                                            <span class="lm-sidebar-alert-item-title danger">
-                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
-                                            </span>
-                                            <span class="lm-sidebar-alert-item-lbl danger">
-                                                #{al.etiqueta}
-                                            </span>
-                                        </div>
-                                        <div class="lm-sidebar-alert-item-date danger">
-                                            Expiró:&#160;
-                                            <h:outputText value="#{al.fechaLimiteGracia}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                            </h:outputText>
-                                        </div>
-                                    </a>
-                                </ui:repeat>
-                            </div>
-                        </ui:fragment>
+                <p:commandLink onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml?mostrarAlerta=prox_vencer'; return false;" class="lm-nav-item" style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 16px); margin: 2px 8px; box-sizing: border-box;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="pi pi-clock" style="color: #f59e0b;"/>
+                        <span>Próx. a Vencer</span>
                     </div>
+                    <span class="lm-sidebar-alerts-badge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #f59e0b; color: #fff; line-height: 1;">
+                        #{anualidadBean.totalAlertasProximasVencer}
+                    </span>
+                </p:commandLink>
 
-                    <!-- 2. Próximas a Vencer (Advertencia) -->
-                    <div class="lm-sidebar-alerts-cat">
-                        <div class="lm-sidebar-alerts-cat-hdr">
-                            <span class="lm-sidebar-alerts-cat-title warning">
-                                <span class="lm-pulse-dot" style="background-color: #fbbf24;"/>
-                                Próximas a Vencer
-                            </span>
-                            <span class="lm-sidebar-alerts-badge warning">
-                                #{anualidadBean.totalAlertasProximasVencer}
-                            </span>
-                        </div>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasProximasVencer == 0}">
-                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
-                        </ui:fragment>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasProximasVencer &gt; 0}">
-                            <div class="lm-sidebar-alerts-list">
-                                <ui:repeat value="#{anualidadBean.alertasProximasVencer}" var="al">
-                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
-                                       title="Ver Trámite"
-                                       class="lm-sidebar-alert-item warning">
-                                        <div class="lm-sidebar-alert-item-hdr">
-                                            <span class="lm-sidebar-alert-item-title warning">
-                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
-                                            </span>
-                                            <span class="lm-sidebar-alert-item-lbl warning">
-                                                #{al.etiqueta}
-                                            </span>
-                                        </div>
-                                        <div class="lm-sidebar-alert-item-date warning">
-                                            Vence:&#160;
-                                            <h:outputText value="#{al.fechaLimitePago}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                            </h:outputText>
-                                        </div>
-                                    </a>
-                                </ui:repeat>
-                            </div>
-                        </ui:fragment>
+                <p:commandLink onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml?mostrarAlerta=pendiente'; return false;" class="lm-nav-item" style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 16px); margin: 2px 8px; box-sizing: border-box;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="pi pi-info-circle" style="color: #3b82f6;"/>
+                        <span>Alertas Pendientes</span>
                     </div>
-
-                    <!-- 3. Pendientes (Información / Normal) -->
-                    <div class="lm-sidebar-alerts-cat">
-                        <div class="lm-sidebar-alerts-cat-hdr">
-                            <span class="lm-sidebar-alerts-cat-title pending">
-                                <span class="lm-pulse-dot" style="background-color: #38bdf8;"/>
-                                Pendientes
-                            </span>
-                            <span class="lm-sidebar-alerts-badge pending">
-                                #{anualidadBean.totalAlertasPendientes}
-                            </span>
-                        </div>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasPendientes == 0}">
-                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
-                        </ui:fragment>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasPendientes &gt; 0}">
-                            <div class="lm-sidebar-alerts-list">
-                                <ui:repeat value="#{anualidadBean.alertasPendientes}" var="al">
-                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
-                                       title="Ver Trámite"
-                                       class="lm-sidebar-alert-item pending">
-                                        <div class="lm-sidebar-alert-item-hdr">
-                                            <span class="lm-sidebar-alert-item-title pending">
-                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
-                                            </span>
-                                            <span class="lm-sidebar-alert-item-lbl pending">
-                                                #{al.etiqueta}
-                                            </span>
-                                        </div>
-                                        <div class="lm-sidebar-alert-item-date pending">
-                                            Límite:&#160;
-                                            <h:outputText value="#{al.fechaLimitePago}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                            </h:outputText>
-                                        </div>
-                                    </a>
-                                </ui:repeat>
-                            </div>
-                        </ui:fragment>
-                    </div>
-                </div>
+                    <span class="lm-sidebar-alerts-badge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #3b82f6; color: #fff; line-height: 1;">
+                        #{anualidadBean.totalAlertasPendientes}
+                    </span>
+                </p:commandLink>
 
                 <div class="lm-sidebar-spacer"/>
 
@@ -495,17 +386,23 @@
                     var matched = false;
                     navItems.forEach(function(item) {
                         item.classList.remove("active");
-                        var itemUrl = item.href ? item.href.split('?')[0] : "";
-                        if (itemUrl && currentUrl === itemUrl) {
-                            item.classList.add("active");
-                            matched = true;
+                        var hrefAttr = item.getAttribute("href");
+                        if (hrefAttr && hrefAttr !== "#" && !hrefAttr.startsWith("javascript:")) {
+                            var itemUrl = item.href ? item.href.split('?')[0] : "";
+                            if (itemUrl && currentUrl === itemUrl) {
+                                item.classList.add("active");
+                                matched = true;
+                            }
                         }
                     });
                     if (!matched) {
                         navItems.forEach(function(item) {
-                            var itemUrl = item.href ? item.href.split('?')[0] : "";
-                            if (itemUrl && itemUrl.indexOf("index.xhtml") === -1 && currentUrl.indexOf(itemUrl.substring(0, itemUrl.lastIndexOf('/'))) !== -1) {
-                                item.classList.add("active");
+                            var hrefAttr = item.getAttribute("href");
+                            if (hrefAttr && hrefAttr !== "#" && !hrefAttr.startsWith("javascript:")) {
+                                var itemUrl = item.href ? item.href.split('?')[0] : "";
+                                if (itemUrl && itemUrl.indexOf("index.xhtml") === -1 && currentUrl.indexOf(itemUrl.substring(0, itemUrl.lastIndexOf('/'))) !== -1) {
+                                    item.classList.add("active");
+                                }
                             }
                         });
                     }
@@ -534,7 +431,7 @@
                     <div class="lm-topbar-right">
                         <h:panelGroup rendered="#{registroBean.editMode and registroBean.form.status != null}">
                             <span class="ac-badge ac-badge-#{registroBean.form.status}">
-                                #{registroBean.form.status eq 'DELIVERED' ? 'EN PROCESO' :
+                                #{registroBean.form.status eq 'EN_PROCESO' ? 'EN PROCESO' :
                                   (registroBean.form.status eq 'ACCEPTED'  ? 'ACEPTADO' :
                                   (registroBean.form.status eq 'FINISHED'  ? 'FINALIZADO' :
                                   (registroBean.form.status eq 'PREVIEW'   ? 'VISTA PREV.' : 'GUARDADO')))}
@@ -567,7 +464,7 @@
                         </div>
                         <h:panelGroup rendered="#{registroBean.editMode and registroBean.form.status != null}">
                             <span class="ac-badge ac-badge-#{registroBean.form.status}" style="font-size:13px; padding:7px 20px;">
-                                #{registroBean.form.status eq 'DELIVERED' ? 'EN PROCESO' :
+                                #{registroBean.form.status eq 'EN_PROCESO' ? 'EN PROCESO' :
                                   (registroBean.form.status eq 'ACCEPTED'  ? 'ACEPTADO' :
                                   (registroBean.form.status eq 'FINISHED'  ? 'FINALIZADO' :
                                   (registroBean.form.status eq 'PREVIEW'   ? 'VISTA PREV.' : 'GUARDADO')))}
@@ -590,6 +487,7 @@
                                                      icon="pi pi-trash"
                                                      action="#{registroBean.eliminarRegistro}"
                                                      immediate="true"
+                                                     rendered="#{registroBean.form.status ne 'EN_PROCESO'}"
                                                      styleClass="ui-button-danger"
                                                      style="min-width:110px;"
                                                      onclick="if(!confirm('¿Eliminar permanentemente este registro?')) return false;"/>
@@ -621,6 +519,7 @@
 
                                 <!-- ══ TAB 1: DATOS DE LA VARIEDAD ══ -->
                                 <p:tab title="Datos de la Variedad" id="tabDatos">
+                                  <fieldset disabled="#{registroBean.form.status eq 'EN_PROCESO' ? 'disabled' : null}" style="border: none; padding: 0; margin: 0; min-width: 0;">
                                     <div class="sn-sec-title">
                                         <i class="pi pi-leaf"></i> Información General de la Variedad
                                     </div>
@@ -772,6 +671,7 @@
                                             Fuera de territorio
                                         </label>
                                     </div>
+                                  </fieldset>
 
                                     <div class="sn-tab-nav">
                                         <div></div>
@@ -786,6 +686,7 @@
 
                                 <!-- ══ TAB 2: INFORMACIÓN TÉCNICA ══ -->
                                 <p:tab title="Información Técnica" id="tabTecnica">
+                                  <fieldset disabled="#{registroBean.form.status eq 'EN_PROCESO' ? 'disabled' : null}" style="border: none; padding: 0; margin: 0; min-width: 0;">
                                     <div class="sn-sec-title">
                                         <i class="pi pi-file-edit"></i> Descripción y Características de la Variedad
                                     </div>
@@ -856,6 +757,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                  </fieldset>
 
                                     <div class="sn-tab-nav">
                                         <div>
@@ -881,22 +783,22 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="sn-fld">
-                                                <span class="sn-lbl">Estado del Registro <span class="sn-req">*</span></span>
-                                                <p:selectOneMenu value="#{registroBean.form.status}"
-                                                                 style="width:100%" required="true"
-                                                                 requiredMessage="El estado es obligatorio.">
-                                                    <f:selectItem itemLabel="Guardado"     itemValue="SAVED"/>
-                                                    <f:selectItem itemLabel="En Proceso"   itemValue="DELIVERED"/>
-                                                    <f:selectItem itemLabel="Aceptado"     itemValue="ACCEPTED"/>
-                                                    <f:selectItem itemLabel="Vista Previa" itemValue="PREVIEW"/>
-                                                    <f:selectItem itemLabel="Finalizado"   itemValue="FINISHED"/>
-                                                </p:selectOneMenu>
+                                                <span class="sn-lbl">Estado del Registro</span>
+                                                <div style="margin-top: 5px;">
+                                                    <span class="sn-badge sn-badge-#{registroBean.form.status}">
+                                                        <h:outputText value="#{registroBean.form.status eq 'EN_PROCESO' ? 'En Proceso' :
+                                                                              (registroBean.form.status eq 'ACCEPTED' ? 'Aceptado' :
+                                                                              (registroBean.form.status eq 'FINISHED' ? 'Finalizado' :
+                                                                              (registroBean.form.status eq 'PREVIEW'  ? 'Vista Previa' : 'Guardado')))}"/>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="sn-fld">
                                                 <span class="sn-lbl">Observación Técnica</span>
-                                                <p:selectOneMenu value="#{registroBean.form.observacionTecnica}" style="width:100%">
+                                                <p:selectOneMenu id="observacionTecnica" value="#{registroBean.form.observacionTecnica}" style="width:100%">
+                                                    <p:ajax update="panelFechaResolucion" />
                                                     <f:selectItem itemLabel="— Ninguna —" itemValue="#{null}" noSelectionOption="true"/>
                                                     <f:selectItem itemLabel="Aceptada a trámite y revisión de requisitos de fondo" itemValue="Aceptada a trámite y revisión de requisitos de fondo"/>
                                                     <f:selectItem itemLabel="Para publicar en gaceta" itemValue="Para publicar en gaceta"/>
@@ -907,11 +809,25 @@
                                                     <f:selectItem itemLabel="Para resolución" itemValue="Para resolución"/>
                                                 </p:selectOneMenu>
                                             </div>
+                                            <h:panelGroup id="panelFechaResolucion">
+                                                <h:panelGroup rendered="#{registroBean.form.observacionTecnica eq 'Para resolución'}" layout="block" class="sn-fld" style="margin-top: 15px;">
+                                                    <span class="sn-lbl">Fecha de Resolución <span style="color: red;">*</span></span>
+                                                    <p:datePicker id="fechaResolucion" value="#{registroBean.form.fechaResolucion}"
+                                                                  showIcon="true" focusOnError="true"
+                                                                  pattern="dd/MM/yyyy"
+                                                                  style="width:100%" placeholder="Seleccione la fecha"
+                                                                  required="#{registroBean.form.observacionTecnica eq 'Para resolución'}"
+                                                                  requiredMessage="La fecha de resolución es requerida para este estado."
+                                                                  locale="es">
+                                                    </p:datePicker>
+                                                </h:panelGroup>
+                                            </h:panelGroup>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="sn-fld">
                                                 <span class="sn-lbl">Publicación en Gaceta</span>
                                                 <p:inputText id="publicacionGaceta" value="#{registroBean.form.publicacionGaceta}" style="width:100%" placeholder="Escriba los datos de publicación"
+                                                             disabled="#{registroBean.form.status eq 'EN_PROCESO'}"
                                                              validatorMessage="La publicación en gaceta debe contener únicamente dígitos numéricos."
                                                              onkeypress="if (event.key &lt; '0' || event.key &gt; '9') event.preventDefault();"
                                                              oninput="this.value = this.value.replace(/[^0-9]/g, '')"
@@ -927,7 +843,8 @@
                                         <div class="col-md-6">
                                             <div class="sn-fld">
                                                 <span class="sn-lbl">Etapa Actual</span>
-                                                <p:selectOneMenu value="#{registroBean.form.etapaActual}" style="width:100%">
+                                                <p:selectOneMenu value="#{registroBean.form.etapaActual}" style="width:100%"
+                                                                 disabled="#{registroBean.form.status eq 'EN_PROCESO'}">
                                                     <f:selectItem itemLabel="— Seleccione —" itemValue="#{null}" noSelectionOption="true"/>
                                                     <f:selectItem itemLabel="Derecho concedido" itemValue="Derecho concedido"/>
                                                     <f:selectItem itemLabel="Dominio público" itemValue="Dominio público"/>
@@ -939,7 +856,8 @@
                                         <div class="col-md-6">
                                             <div class="sn-fld">
                                                 <span class="sn-lbl">Estado del Expediente</span>
-                                                <p:selectOneMenu value="#{registroBean.form.estadoExpediente}" style="width:100%">
+                                                <p:selectOneMenu value="#{registroBean.form.estadoExpediente}" style="width:100%"
+                                                                 disabled="#{registroBean.form.status eq 'EN_PROCESO'}">
                                                     <f:selectItem itemLabel="— Seleccione —" itemValue="#{null}" noSelectionOption="true"/>
                                                     <f:selectItem itemLabel="Protección vigente" itemValue="Protección vigente"/>
                                                     <f:selectItem itemLabel="Vencimiento de la protección" itemValue="Vencimiento de la protección"/>
@@ -1057,7 +975,7 @@
                                                     </div>
                                                 </h:panelGroup>
 
-                                                <h:panelGroup rendered="#{registroBean.editMode}">
+                                                <h:panelGroup rendered="#{registroBean.editMode and registroBean.form.status ne 'EN_PROCESO'}">
                                                     <div class="row sn-upload-grid">
                                                         <div class="col-md-4">
                                                             <div class="sn-upload-card">
@@ -1122,6 +1040,15 @@
                                                                          style="min-width:250px; font-size:14px;"/>
                                                     </div>
                                                 </h:panelGroup>
+
+                                                <h:panelGroup rendered="#{registroBean.editMode and registroBean.form.status eq 'EN_PROCESO'}">
+                                                    <div class="sn-info-amber sn-upload-hint" style="display:flex; align-items:center; gap:12px;">
+                                                        <i class="pi pi-lock" style="font-size:22px; color:#b45309;"/>
+                                                        <span style="font-weight:700; font-size:13px; color:#92400e;">
+                                                            La carga de documentos está bloqueada mientras el trámite esté en estado En Proceso.
+                                                        </span>
+                                                    </div>
+                                                </h:panelGroup>
                                             </h:panelGroup>
                                         </div>
                                     </div>
@@ -1161,13 +1088,15 @@
                                                     <i class="pi pi-external-link"/>
                                                 </h:outputLink>
                                             </p:column>
-                                            <p:column headerText="Eliminar" style="width:10%; text-align:center;">
+                                            <p:column headerText="Eliminar" style="width:10%; text-align:center;"
+                                                      rendered="#{registroBean.form.status ne 'EN_PROCESO'}">
                                                 <p:commandButton icon="pi pi-trash"
-                                                                title="Eliminar archivo"
-                                                                actionListener="#{registroBean.eliminarArchivo(arch)}"
-                                                                update=":frmRegistro :mensajes"
-                                                                process="@this"
-                                                                styleClass="ui-button-danger ui-button-sm">
+                                                                 rendered="#{arch.id ge 0}"
+                                                                 title="Eliminar archivo"
+                                                                 actionListener="#{registroBean.eliminarArchivo(arch)}"
+                                                                 update=":frmRegistro :mensajes"
+                                                                 process="@this"
+                                                                 styleClass="ui-button-danger ui-button-sm">
                                                     <p:confirm header="Confirmación"
                                                                message="¿Eliminar este archivo?"
                                                                icon="pi pi-trash"/>

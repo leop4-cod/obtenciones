@@ -22,6 +22,32 @@
         <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}" />
         <style>
             /* ══════════════════════════════════════════════════
+               DESTACADO SELECTOR DE ESTADOS (Persona 1)
+               ══════════════════════════════════════════════════ */
+            .sn-status-radio {
+                margin-left: 8px;
+            }
+            .sn-status-radio td {
+                padding: 0 15px 0 0 !important;
+            }
+            .sn-status-radio label {
+                font-weight: 700 !important;
+                color: #1e3a6e !important;
+                margin-left: 6px !important;
+                font-size: 13px !important;
+                cursor: pointer;
+            }
+            .sn-status-radio .ui-radiobutton-box.ui-state-active {
+                border-color: #c9a227 !important;
+                background: #c9a227 !important;
+                box-shadow: 0 0 6px rgba(201, 162, 39, 0.6) !important;
+            }
+            .sn-status-radio .ui-radiobutton-box.ui-state-active .ui-radiobutton-icon {
+                background: #143a6b !important;
+                border-radius: 50% !important;
+            }
+
+            /* ══════════════════════════════════════════════════
                LAYOUT PRINCIPAL
             ══════════════════════════════════════════════════ */
             html, body {
@@ -377,7 +403,7 @@
                 color: #1e3a6e !important; box-shadow: 0 4px 12px rgba(30,58,110,.15) !important;
                 transform: translateY(-1.5px) !important;
             }
-            .ui-selectoneradio label.pill-active {
+            .ui-selectoneradio td:has(.ui-radiobutton-box.ui-state-active) label {
                 background: linear-gradient(135deg, #2a5aad 0%, #0d1b35 100%) !important;
                 border-color: transparent !important; color: #ffffff !important;
                 box-shadow: 0 6px 16px rgba(30,58,110,0.35) !important;
@@ -504,145 +530,35 @@
                 </a>
 
                 <!-- Sección de Alertas Clasificadas -->
-                <div class="lm-sidebar-alerts">
-                    <div class="lm-sidebar-alerts-title" style="display: flex; align-items: center; justify-content: space-between;">
-                        <p:commandLink onclick="PF('dlgProxVencIndex').show(); return false;" style="display: flex; align-items: center; gap: 6px; color: inherit; text-decoration: none;" title="Ver todas las notificaciones">
-                            <i class="pi pi-bell" style="font-size: 13px; color: #fbbf24;"/>
-                            <span>Alertas Anualidades</span>
-                        </p:commandLink>
-                        <p:commandLink onclick="PF('dlgProxVencIndex').show(); return false;" style="text-decoration: none;">
-                            <span class="lm-sidebar-alerts-badge danger" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #ef4444; color: #fff;">
-                                #{anualidadBean.totalNotificaciones}
-                            </span>
-                        </p:commandLink>
+                <p:commandLink onclick="PF('dlgAlertasExpiradasIndex').show(); return false;" class="lm-nav-item" style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 16px); margin: 2px 8px; box-sizing: border-box;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="pi pi-exclamation-triangle" style="color: #ef4444;"/>
+                        <span>Alertas Expiradas</span>
                     </div>
+                    <span class="lm-sidebar-alerts-badge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #ef4444; color: #fff; line-height: 1;">
+                        #{anualidadBean.totalAlertasExpiradas}
+                    </span>
+                </p:commandLink>
 
-                    <!-- 1. Expiradas (Peligro) -->
-                    <div class="lm-sidebar-alerts-cat">
-                        <div class="lm-sidebar-alerts-cat-hdr">
-                            <span class="lm-sidebar-alerts-cat-title danger">
-                                <span class="lm-pulse-dot" style="background-color: #ef4444;"/>
-                                Expiradas
-                            </span>
-                            <span class="lm-sidebar-alerts-badge danger">
-                                #{anualidadBean.totalAlertasExpiradas}
-                            </span>
-                        </div>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasExpiradas == 0}">
-                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
-                        </ui:fragment>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasExpiradas &gt; 0}">
-                            <div class="lm-sidebar-alerts-list">
-                                <ui:repeat value="#{anualidadBean.alertasExpiradas}" var="al">
-                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" 
-                                       title="Ver Trámite"
-                                       class="lm-sidebar-alert-item danger">
-                                        <div class="lm-sidebar-alert-item-hdr">
-                                            <span class="lm-sidebar-alert-item-title danger">
-                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
-                                            </span>
-                                            <span class="lm-sidebar-alert-item-lbl danger">
-                                                #{al.etiqueta}
-                                            </span>
-                                        </div>
-                                        <div class="lm-sidebar-alert-item-date danger">
-                                            Expiró:&#160;
-                                            <h:outputText value="#{al.fechaLimiteGracia}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                            </h:outputText>
-                                        </div>
-                                    </a>
-                                </ui:repeat>
-                            </div>
-                        </ui:fragment>
+                <p:commandLink onclick="PF('dlgAlertasProxVencerIndex').show(); return false;" class="lm-nav-item" style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 16px); margin: 2px 8px; box-sizing: border-box;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="pi pi-clock" style="color: #f59e0b;"/>
+                        <span>Próx. a Vencer</span>
                     </div>
+                    <span class="lm-sidebar-alerts-badge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #f59e0b; color: #fff; line-height: 1;">
+                        #{anualidadBean.totalAlertasProximasVencer}
+                    </span>
+                </p:commandLink>
 
-                    <!-- 2. Próximas a Vencer (Advertencia) -->
-                    <div class="lm-sidebar-alerts-cat">
-                        <div class="lm-sidebar-alerts-cat-hdr">
-                            <span class="lm-sidebar-alerts-cat-title warning">
-                                <span class="lm-pulse-dot" style="background-color: #fbbf24;"/>
-                                Próximas a Vencer
-                            </span>
-                            <span class="lm-sidebar-alerts-badge warning">
-                                #{anualidadBean.totalAlertasProximasVencer}
-                            </span>
-                        </div>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasProximasVencer == 0}">
-                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
-                        </ui:fragment>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasProximasVencer &gt; 0}">
-                            <div class="lm-sidebar-alerts-list">
-                                <ui:repeat value="#{anualidadBean.alertasProximasVencer}" var="al">
-                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
-                                       title="Ver Trámite"
-                                       class="lm-sidebar-alert-item warning">
-                                        <div class="lm-sidebar-alert-item-hdr">
-                                            <span class="lm-sidebar-alert-item-title warning">
-                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
-                                            </span>
-                                            <span class="lm-sidebar-alert-item-lbl warning">
-                                                #{al.etiqueta}
-                                            </span>
-                                        </div>
-                                        <div class="lm-sidebar-alert-item-date warning">
-                                            Vence:&#160;
-                                            <h:outputText value="#{al.fechaLimitePago}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                            </h:outputText>
-                                        </div>
-                                    </a>
-                                </ui:repeat>
-                            </div>
-                        </ui:fragment>
+                <p:commandLink onclick="PF('dlgAlertasPendientesIndex').show(); return false;" class="lm-nav-item" style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 16px); margin: 2px 8px; box-sizing: border-box;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="pi pi-info-circle" style="color: #3b82f6;"/>
+                        <span>Alertas Pendientes</span>
                     </div>
-
-                    <!-- 3. Pendientes (Información / Normal) -->
-                    <div class="lm-sidebar-alerts-cat">
-                        <div class="lm-sidebar-alerts-cat-hdr">
-                            <span class="lm-sidebar-alerts-cat-title pending">
-                                <span class="lm-pulse-dot" style="background-color: #38bdf8;"/>
-                                Pendientes
-                            </span>
-                            <span class="lm-sidebar-alerts-badge pending">
-                                #{anualidadBean.totalAlertasPendientes}
-                            </span>
-                        </div>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasPendientes == 0}">
-                            <div style="font-size: 10.5px; color: rgba(255,255,255,.35); padding-left: 11px; font-style: italic;">Sin alertas</div>
-                        </ui:fragment>
-                        
-                        <ui:fragment rendered="#{anualidadBean.totalAlertasPendientes &gt; 0}">
-                            <div class="lm-sidebar-alerts-list">
-                                <ui:repeat value="#{anualidadBean.alertasPendientes}" var="al">
-                                    <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
-                                       title="Ver Trámite"
-                                       class="lm-sidebar-alert-item pending">
-                                        <div class="lm-sidebar-alert-item-hdr">
-                                            <span class="lm-sidebar-alert-item-title pending">
-                                                #{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}
-                                            </span>
-                                            <span class="lm-sidebar-alert-item-lbl pending">
-                                                #{al.etiqueta}
-                                            </span>
-                                        </div>
-                                        <div class="lm-sidebar-alert-item-date pending">
-                                            Límite:&#160;
-                                            <h:outputText value="#{al.fechaLimitePago}">
-                                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                            </h:outputText>
-                                        </div>
-                                    </a>
-                                </ui:repeat>
-                            </div>
-                        </ui:fragment>
-                    </div>
-                </div>
+                    <span class="lm-sidebar-alerts-badge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #3b82f6; color: #fff; line-height: 1;">
+                        #{anualidadBean.totalAlertasPendientes}
+                    </span>
+                </p:commandLink>
 
                 <div class="lm-sidebar-spacer"/>
 
@@ -669,17 +585,23 @@
                     var matched = false;
                     navItems.forEach(function(item) {
                         item.classList.remove("active");
-                        var itemUrl = item.href ? item.href.split('?')[0] : "";
-                        if (itemUrl && currentUrl === itemUrl) {
-                            item.classList.add("active");
-                            matched = true;
+                        var hrefAttr = item.getAttribute("href");
+                        if (hrefAttr && hrefAttr !== "#" && !hrefAttr.startsWith("javascript:")) {
+                            var itemUrl = item.href ? item.href.split('?')[0] : "";
+                            if (itemUrl && currentUrl === itemUrl) {
+                                item.classList.add("active");
+                                matched = true;
+                            }
                         }
                     });
                     if (!matched) {
                         navItems.forEach(function(item) {
-                            var itemUrl = item.href ? item.href.split('?')[0] : "";
-                            if (itemUrl && itemUrl.indexOf("index.xhtml") === -1 && currentUrl.indexOf(itemUrl.substring(0, itemUrl.lastIndexOf('/'))) !== -1) {
-                                item.classList.add("active");
+                            var hrefAttr = item.getAttribute("href");
+                            if (hrefAttr && hrefAttr !== "#" && !hrefAttr.startsWith("javascript:")) {
+                                var itemUrl = item.href ? item.href.split('?')[0] : "";
+                                if (itemUrl && itemUrl.indexOf("index.xhtml") === -1 && currentUrl.indexOf(itemUrl.substring(0, itemUrl.lastIndexOf('/'))) !== -1) {
+                                    item.classList.add("active");
+                                }
                             }
                         });
                     }
@@ -815,7 +737,7 @@
                                         <p style="font-weight:800; color:#1e3a6e; margin:0 0 10px;">Estados de solicitud:</p>
                                         <div style="display:flex; flex-direction:column; gap:8px;">
                                             <div style="display:flex; align-items:center; gap:10px;">
-                                                <span class="sn-badge sn-badge-DELIVERED">EN PROCESO</span>
+                                                <span class="sn-badge sn-badge-EN_PROCESO">EN PROCESO</span>
                                                 <span style="color:#555; font-size:12px;">Pendiente de revisión</span>
                                             </div>
                                             <div style="display:flex; align-items:center; gap:10px;">
@@ -866,7 +788,7 @@
                                     <i class="pi pi-info-circle" style="color:#1565c0; font-size:15px; flex-shrink:0; margin-top:1px;"/>
                                     <span>
                                         Ingrese el <strong>número de trámite</strong> del portal. Si está en estado
-                                        <strong>DELIVERED</strong> y no ha sido importado, podrá cargarlo como trámite EN PROCESO.
+                                        <strong>EN PROCESO</strong> y no ha sido importado, podrá cargarlo como trámite EN PROCESO.
                                     </span>
                                 </div>
 
@@ -997,7 +919,7 @@
                                 <div class="lm-filter-bar">
                                     <i class="pi pi-filter" style="color:#1e3a6e; font-size:15px;"/>
                                     <span style="font-size:12px; font-weight:700; color:#444;">ESTADO:</span>
-                                    <p:selectOneRadio id="line" value="#{vegetableBean.radioOption}" layout="lineDirection">
+                                    <p:selectOneRadio id="line" value="#{vegetableBean.radioOption}" layout="lineDirection" styleClass="sn-status-radio">
                                         <f:selectItem itemLabel="Entregados" itemValue="Iniciados"/>
                                         <f:selectItem itemLabel="Aceptados"  itemValue="Aceptados"/>
                                         <f:selectItem itemLabel="Todos"      itemValue="Todos"/>
@@ -1089,14 +1011,7 @@
                                         <h:outputText value="#{vegetable.varietalGroup}" style="font-size:11px;"/>
                                     </p:column>
 
-                                    <p:column headerText="Estado Actual" style="text-align:center; width:105px; white-space:normal; word-break:break-word;">
-                                        <span class="sn-badge sn-badge-#{vegetable.status}">
-                                            <h:outputText value="#{vegetable.status eq 'DELIVERED' ? 'EN PROCESO' :
-                                                                  (vegetable.status eq 'ACCEPTED' ? 'ACEPTADO' :
-                                                                  (vegetable.status eq 'FINISHED' ? 'FINALIZADO' :
-                                                                  (vegetable.status eq 'PREVIEW'  ? 'VISTA PREV.' : 'GUARDADO')))}"/>
-                                        </span>
-                                    </p:column>
+
 
                                     <p:column headerText="Etapa Actual" filterBy="#{vegetable.etapaActual}" style="text-align:center; width:120px;">
                                         <h:outputText value="#{not empty vegetable.etapaActual ? vegetable.etapaActual : '—'}" style="font-size:11px; color:#555;"/>
@@ -1117,7 +1032,7 @@
                                             <h:link outcome="actualizar"
                                                     styleClass="accion-btn btn-edit"
                                                     title="Editar registro"
-                                                    rendered="#{vegetable.status eq 'DELIVERED' or vegetable.status eq 'ACCEPTED'}">
+                                                    rendered="#{vegetable.status eq 'EN_PROCESO' or vegetable.status eq 'ACCEPTED'}">
                                                 <f:param name="id" value="#{vegetable.id}"/>
                                                 <i class="pi pi-pencil"/>
                                             </h:link>
@@ -1125,7 +1040,7 @@
                                             <h:link outcome="actualizar"
                                                     styleClass="accion-btn"
                                                     title="Ver registro (solo lectura)"
-                                                    rendered="#{vegetable.status ne 'DELIVERED' and vegetable.status ne 'ACCEPTED'}"
+                                                    rendered="#{vegetable.status ne 'EN_PROCESO' and vegetable.status ne 'ACCEPTED'}"
                                                     style="opacity:0.5; cursor:default; pointer-events:none;">
                                                 <f:param name="id" value="#{vegetable.id}"/>
                                                 <i class="pi pi-eye"/>
@@ -1144,12 +1059,14 @@
                                                                              target="#{vegetableBean.vegetableForms}"/>
                                             </p:commandButton>
 
-                                            <a href="historial/lista.xhtml?appNumber=#{vegetable.applicationNumber}"
-                                               class="accion-btn btn-history"
-                                               title="Ver historial"
-                                               style="display:inline-flex; align-items:center; justify-content:center;">
-                                                <i class="pi pi-history"/>
-                                            </a>
+                                            <ui:fragment rendered="#{not (vegetableBean.radioOption eq 'Iniciados' and vegetable.status eq 'EN_PROCESO')}">
+                                                <a href="historial/lista.xhtml?appNumber=#{vegetable.applicationNumber}"
+                                                   class="accion-btn btn-history"
+                                                   title="Ver historial"
+                                                   style="display:inline-flex; align-items:center; justify-content:center;">
+                                                    <i class="pi pi-history"/>
+                                                </a>
+                                            </ui:fragment>
 
 
                                         </div>
@@ -1330,33 +1247,35 @@
 
         <!-- ══ DIÁLOGO ALERTA ANUALIDADES ══ -->
         <!-- ══ DIÁLOGO ALERTA ANUALIDADES ══ -->
-        <p:dialog id="dlgProxVencIndex" modal="true" resizable="false"
-                  header="Alertas y Notificaciones de Anualidades"
-                  widgetVar="dlgProxVencIndex" style="width:600px; max-width:90vw;"
+        <!-- ══ DIÁLOGOS DE ALERTAS DE ANUALIDADES ══ -->
+        <!-- 1. DIÁLOGO: ALERTAS EXPIRADAS -->
+        <p:dialog id="dlgAlertasExpiradasIndex" modal="true" resizable="false"
+                  header="Alertas: Anualidades Expiradas"
+                  widgetVar="dlgAlertasExpiradasIndex" style="width:600px; max-width:90vw;"
                   showEffect="fade" hideEffect="fade" closeOnEscape="true">
             <div style="max-height:400px; overflow-y:auto; padding-right:5px;">
-                <p:dataList value="#{anualidadBean.todasLasNotificaciones}" var="al" paginator="false" type="none" emptyMessage="No hay alertas o notificaciones pendientes.">
-                    <div style="background:#{al.estado eq 'PENDIENTE' ? 'rgba(254,243,199,.75)' : 'rgba(254,226,226,.75)'};
+                <p:dataList value="#{anualidadBean.alertasExpiradas}" var="al" paginator="false" type="none" emptyMessage="No hay alertas de anualidades expiradas.">
+                    <div style="background:rgba(254,226,226,.75);
                                 border-radius:6px; padding:8px 12px; font-size:12px;
-                                color:#{al.estado eq 'PENDIENTE' ? '#78350f' : '#991b1b'};
-                                border:1px solid #{al.estado eq 'PENDIENTE' ? '#fde68a' : '#fca5a5'};
+                                color:#991b1b;
+                                border:1px solid #fca5a5;
                                 display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-                        <i class="pi #{al.estado eq 'PENDIENTE' ? 'pi-clock' : 'pi-exclamation-triangle'}"
-                           style="color:#{al.estado eq 'PENDIENTE' ? '#f59e0b' : '#ef4444'}; flex-shrink:0; font-size:14px;"/>
+                        <i class="pi pi-exclamation-triangle"
+                           style="color:#ef4444; flex-shrink:0; font-size:14px;"/>
                         <span>
                             <strong>#{anualidadBean.getVegetableForm(al.vegetableFormId) != null
                                 ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
                                 : al.vegetableFormId}</strong>
                             — #{al.etiqueta} —
-                            #{al.estado eq 'PENDIENTE' ? 'vence en:' : 'vencido el:'}&#160;
+                            vencido el:&#160;
                             <h:outputText value="#{al.fechaVencimiento}">
                                 <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
                             </h:outputText>
                         </span>
                         <span style="margin-left:auto; font-size:10px; font-weight:800;
-                                   background:#{al.estado eq 'PENDIENTE' ? '#fef3c7' : '#fee2e2'};
-                                   color:#{al.estado eq 'PENDIENTE' ? '#92400e' : '#991b1b'};
-                                   border:1px solid #{al.estado eq 'PENDIENTE' ? '#fbbf24' : '#f87171'};
+                                   background:#fee2e2;
+                                   color:#991b1b;
+                                   border:1px solid #f87171;
                                    border-radius:20px; padding:2px 8px; white-space:nowrap;">
                             #{al.estadoBadgeLabel}
                         </span>
@@ -1369,12 +1288,110 @@
                 </p:dataList>
             </div>
             <div style="text-align:right; margin-top:14px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e5e7eb; padding-top:10px;">
-                <a href="anualidades/lista.xhtml"
+                <a href="anualidades/lista.xhtml?mostrarAlerta=expirada"
                    style="font-size:12px; color:#1e3a6e; text-decoration:underline; font-weight:700;">
                     Ir al módulo de Anualidades →
                 </a>
                 <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
-                                 onclick="PF('dlgProxVencIndex').hide();"/>
+                                 onclick="PF('dlgAlertasExpiradasIndex').hide();"/>
+            </div>
+        </p:dialog>
+
+        <!-- 2. DIÁLOGO: ALERTAS PRÓXIMAS A VENCER -->
+        <p:dialog id="dlgAlertasProxVencerIndex" modal="true" resizable="false"
+                  header="Alertas: Anualidades Próximas a Vencer"
+                  widgetVar="dlgAlertasProxVencerIndex" style="width:600px; max-width:90vw;"
+                  showEffect="fade" hideEffect="fade" closeOnEscape="true">
+            <div style="max-height:400px; overflow-y:auto; padding-right:5px;">
+                <p:dataList value="#{anualidadBean.alertasProximasVencer}" var="al" paginator="false" type="none" emptyMessage="No hay alertas de anualidades próximas a vencer.">
+                    <div style="background:rgba(254,243,199,.75);
+                                border-radius:6px; padding:8px 12px; font-size:12px;
+                                color:#78350f;
+                                border:1px solid #fde68a;
+                                display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <i class="pi pi-clock"
+                           style="color:#f59e0b; flex-shrink:0; font-size:14px;"/>
+                        <span>
+                            <strong>#{anualidadBean.getVegetableForm(al.vegetableFormId) != null
+                                ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
+                                : al.vegetableFormId}</strong>
+                            — #{al.etiqueta} —
+                            vence en:&#160;
+                            <h:outputText value="#{al.fechaVencimiento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                            </h:outputText>
+                        </span>
+                        <span style="margin-left:auto; font-size:10px; font-weight:800;
+                                   background:#fef3c7;
+                                   color:#92400e;
+                                   border:1px solid #fbbf24;
+                                   border-radius:20px; padding:2px 8px; white-space:nowrap;">
+                            #{al.estadoBadgeLabel}
+                        </span>
+                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
+                           style="margin-left:8px; font-weight:bold; color:#1e3a6e; text-decoration:none;"
+                           title="Ver Trámite">
+                            <i class="pi pi-external-link" style="font-size:13px;"/>
+                        </a>
+                    </div>
+                </p:dataList>
+            </div>
+            <div style="text-align:right; margin-top:14px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e5e7eb; padding-top:10px;">
+                <a href="anualidades/lista.xhtml?mostrarAlerta=prox_vencer"
+                   style="font-size:12px; color:#1e3a6e; text-decoration:underline; font-weight:700;">
+                    Ir al módulo de Anualidades →
+                </a>
+                <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                 onclick="PF('dlgAlertasProxVencerIndex').hide();"/>
+            </div>
+        </p:dialog>
+
+        <!-- 3. DIÁLOGO: ALERTAS PENDIENTES -->
+        <p:dialog id="dlgAlertasPendientesIndex" modal="true" resizable="false"
+                  header="Alertas: Anualidades Pendientes"
+                  widgetVar="dlgAlertasPendientesIndex" style="width:600px; max-width:90vw;"
+                  showEffect="fade" hideEffect="fade" closeOnEscape="true">
+            <div style="max-height:400px; overflow-y:auto; padding-right:5px;">
+                <p:dataList value="#{anualidadBean.alertasPendientes}" var="al" paginator="false" type="none" emptyMessage="No hay alertas de anualidades pendientes.">
+                    <div style="background:rgba(219,234,254,.75);
+                                border-radius:6px; padding:8px 12px; font-size:12px;
+                                color:#1e3a8a;
+                                border:1px solid #bfdbfe;
+                                display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <i class="pi pi-info-circle"
+                           style="color:#3b82f6; flex-shrink:0; font-size:14px;"/>
+                        <span>
+                            <strong>#{anualidadBean.getVegetableForm(al.vegetableFormId) != null
+                                ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
+                                : al.vegetableFormId}</strong>
+                            — #{al.etiqueta} —
+                            vence el:&#160;
+                            <h:outputText value="#{al.fechaVencimiento}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                            </h:outputText>
+                        </span>
+                        <span style="margin-left:auto; font-size:10px; font-weight:800;
+                                   background:#eff6ff;
+                                   color:#1e40af;
+                                   border:1px solid #93c5fd;
+                                   border-radius:20px; padding:2px 8px; white-space:nowrap;">
+                            #{al.estadoBadgeLabel}
+                        </span>
+                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
+                           style="margin-left:8px; font-weight:bold; color:#1e3a6e; text-decoration:none;"
+                           title="Ver Trámite">
+                            <i class="pi pi-external-link" style="font-size:13px;"/>
+                        </a>
+                    </div>
+                </p:dataList>
+            </div>
+            <div style="text-align:right; margin-top:14px; display:flex; justify-content:space-between; align-items:center; border-top:1px solid #e5e7eb; padding-top:10px;">
+                <a href="anualidades/lista.xhtml?mostrarAlerta=pendiente"
+                   style="font-size:12px; color:#1e3a6e; text-decoration:underline; font-weight:700;">
+                    Ir al módulo de Anualidades →
+                </a>
+                <p:commandButton value="Cerrar" type="button" styleClass="sn-btn-secondary"
+                                 onclick="PF('dlgAlertasPendientesIndex').hide();"/>
             </div>
         </p:dialog>
 
@@ -1556,39 +1573,70 @@
             if (panel) panel.classList.add('active');
         }
 
-        /* ── Pill active state para radio filters ── */
-        function updateRadioPills() {
-            $('.ui-selectoneradio').each(function() {
-                $(this).find('.ui-radiobutton').each(function() {
-                    var $radioDiv = $(this);
-                    var $box = $radioDiv.find('.ui-radiobutton-box');
-                    var $input = $radioDiv.find('input[type="radio"]');
-                    var id = $input.attr('id');
-                    var $label = $('label[for="' + id + '"]');
-                    if ($label.length > 0) {
-                        if ($box.hasClass('ui-state-active') || $input.prop('checked')) {
-                            $label.addClass('pill-active');
-                        } else {
-                            $label.removeClass('pill-active');
-                        }
-                    }
-                });
-            });
-        }
-
         $(document).ready(function () {
             setTimeout(function () {
                 $('body').addClass('loaded');
-                updateRadioPills();
             }, 200);
-            $(document).on('click', '.ui-selectoneradio label', function() { setTimeout(updateRadioPills, 100); });
-            if (typeof PrimeFaces !== 'undefined') {
-                $(document).on('pfAjaxComplete', function() { setTimeout(updateRadioPills, 100); });
-            }
         });
 
         function otherpage(url) { setTimeout(function () { window.open(url, '_blank'); }, 0); }
         function logout(xhr, status, args) { setTimeout(function () { window.location = 'login.xhtml'; }, 500); }
+
+        // Cerrar diálogos modales de PrimeFaces al hacer clic fuera (en la máscara)
+        document.addEventListener('click', function(e) {
+            var target = e.target;
+            if (!target || !target.classList) return;
+            var isMask = target.classList.contains('ui-dialog-mask') || 
+                         target.classList.contains('ui-widget-overlay') ||
+                         (target.tagName === 'DIV' && target.style.position === 'fixed' && target.classList.contains('ui-dialog-visible'));
+            if (isMask) {
+                if (window.PrimeFaces) {
+                    var dialogEl = target.querySelector('.ui-dialog');
+                    if (!dialogEl) {
+                        var visibleDialogs = Array.from(document.querySelectorAll('.ui-dialog')).filter(function(el) {
+                            return window.getComputedStyle(el).display !== 'none';
+                        });
+                        if (visibleDialogs.length > 0) {
+                            visibleDialogs.sort(function(a, b) {
+                                var zA = parseInt(window.getComputedStyle(a).zIndex) || 0;
+                                var zB = parseInt(window.getComputedStyle(b).zIndex) || 0;
+                                return zB - zA;
+                            });
+                            dialogEl = visibleDialogs[0];
+                        }
+                    }
+                    if (dialogEl) {
+                        var widget = null;
+                        var id = dialogEl.id;
+                        if (id) {
+                            widget = findPrimeFacesWidget(id);
+                        }
+                        if (!widget && window.jQuery) {
+                            widget = window.jQuery(dialogEl).data('widget');
+                        }
+                        if (widget && widget.cfg.modal && widget.cfg.closable !== false) {
+                            widget.hide();
+                        }
+                    }
+                }
+            }
+        }, true);
+
+        function findPrimeFacesWidget(id) {
+            if (!window.PrimeFaces || !PrimeFaces.widgets) return null;
+            if (PrimeFaces.widgets[id]) return PrimeFaces.widgets[id];
+            if (typeof PrimeFaces.getWidgetById === 'function') {
+                var w = PrimeFaces.getWidgetById(id);
+                if (w) return w;
+            }
+            for (var key in PrimeFaces.widgets) {
+                var w = PrimeFaces.widgets[key];
+                if (w && (w.id === id || w.uuid === id)) {
+                    return w;
+                }
+            }
+            return null;
+        }
         //]]>
     </script>
 </html>

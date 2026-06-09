@@ -139,5 +139,64 @@
             </h:form>
         </p:dialog>
 
+        <!-- Cerrar diálogos modales de PrimeFaces al hacer clic fuera (en la máscara) -->
+        <script type="text/javascript">
+            //<![CDATA[
+            document.addEventListener('click', function(e) {
+                var target = e.target;
+                if (!target || !target.classList) return;
+                var isMask = target.classList.contains('ui-dialog-mask') || 
+                             target.classList.contains('ui-widget-overlay') ||
+                             (target.tagName === 'DIV' && target.style.position === 'fixed' && target.classList.contains('ui-dialog-visible'));
+                if (isMask) {
+                    if (window.PrimeFaces) {
+                        var dialogEl = target.querySelector('.ui-dialog');
+                        if (!dialogEl) {
+                            var visibleDialogs = Array.from(document.querySelectorAll('.ui-dialog')).filter(function(el) {
+                                return window.getComputedStyle(el).display !== 'none';
+                            });
+                            if (visibleDialogs.length > 0) {
+                                visibleDialogs.sort(function(a, b) {
+                                    var zA = parseInt(window.getComputedStyle(a).zIndex) || 0;
+                                    var zB = parseInt(window.getComputedStyle(b).zIndex) || 0;
+                                    return zB - zA;
+                                });
+                                dialogEl = visibleDialogs[0];
+                            }
+                        }
+                        if (dialogEl) {
+                            var widget = null;
+                            var id = dialogEl.id;
+                            if (id) {
+                                widget = findPrimeFacesWidget(id);
+                            }
+                            if (!widget && window.jQuery) {
+                                widget = window.jQuery(dialogEl).data('widget');
+                            }
+                            if (widget && widget.cfg.modal && widget.cfg.closable !== false) {
+                                widget.hide();
+                            }
+                        }
+                    }
+                }
+            }, true);
+
+            function findPrimeFacesWidget(id) {
+                if (!window.PrimeFaces || !PrimeFaces.widgets) return null;
+                if (PrimeFaces.widgets[id]) return PrimeFaces.widgets[id];
+                if (typeof PrimeFaces.getWidgetById === 'function') {
+                    var w = PrimeFaces.getWidgetById(id);
+                    if (w) return w;
+                }
+                for (var key in PrimeFaces.widgets) {
+                    var w = PrimeFaces.widgets[key];
+                    if (w && (w.id === id || w.uuid === id)) {
+                        return w;
+                    }
+                }
+                return null;
+            }
+            //]]>
+        </script>
     </h:body>
 </html>

@@ -40,6 +40,9 @@ public class Resolucion implements Serializable {
     @Column(name = "emitido_por")
     private String emitidoPor;
 
+    @Column(name = "fecha_creacion", nullable = false)
+    private Timestamp fechaCreacion;
+
     public Integer getId() { return id; }
     public void setId(Integer id) { this.id = id; }
 
@@ -60,4 +63,7 @@ public class Resolucion implements Serializable {
 
     public String getEmitidoPor() { return emitidoPor; }
     public void setEmitidoPor(String emitidoPor) { this.emitidoPor = emitidoPor; }
+
+    public Timestamp getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(Timestamp fechaCreacion) { this.fechaCreacion = fechaCreacion; }
 }

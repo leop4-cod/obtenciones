@@ -20,6 +20,8 @@ import senadi.gob.ec.adminob.model.Oposicion;
 import senadi.gob.ec.adminob.model.PublicacionGaceta;
 import senadi.gob.ec.adminob.model.Resolucion;
 import senadi.gob.ec.adminob.model.VegetableForms;
+import senadi.gob.ec.adminob.model.Anualidad;
+import senadi.gob.ec.adminob.dao.AnualidadDAO;
 import senadi.gob.ec.adminob.service.TramiteFlowService;
 import senadi.gob.ec.adminob.util.Controller;
 
@@ -78,6 +80,7 @@ public class MuestraFlowBean implements Serializable {
     private DictamenTecnico dictamenTecnico;
     private Resolucion resolucion;
     private CertificadoObtentor certificadoObtentor;
+    private List<Anualidad> anualidades;
 
     private final TramiteFlowService service = new TramiteFlowService();
     private final Controller controller = new Controller();
@@ -94,6 +97,7 @@ public class MuestraFlowBean implements Serializable {
         dictamenTecnico = service.getDictamenTecnicoByFormId(id);
         resolucion = service.getResolucionByFormId(id);
         certificadoObtentor = service.getCertificadoObtentorByFormId(id);
+        anualidades = new AnualidadDAO(null).buscarPorVegetableFormId(id);
         tieneOposicion = publicacionGaceta != null
             && Boolean.TRUE.equals(publicacionGaceta.getTieneOposicion());
     }
@@ -350,6 +354,8 @@ public class MuestraFlowBean implements Serializable {
     public DictamenTecnico getDictamenTecnico() { return dictamenTecnico; }
     public Resolucion getResolucion() { return resolucion; }
     public CertificadoObtentor getCertificadoObtentor() { return certificadoObtentor; }
+    public List<Anualidad> getAnualidades() { return anualidades; }
+    public void setAnualidades(List<Anualidad> anualidades) { this.anualidades = anualidades; }
 
     public EstadoOposicion[] getEstadosOposicion() { return EstadoOposicion.values(); }
     public TipoExamenDHE[] getTiposExamenDHE() { return TipoExamenDHE.values(); }

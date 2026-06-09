@@ -68,7 +68,7 @@ public class RegistroBean implements Serializable {
             if (loaded != null) {
                 form = loaded;
                 try {
-                    archivosSubidos = new ComprobantePagoDAO(null).getByVegetableFormId(form.getId());
+                    archivosSubidos = new ComprobantePagoDAO(null).getTodosLosArchivosPorVegetableFormId(form.getId());
                 } catch (Exception e) {
                     archivosSubidos = new ArrayList<>();
                 }
@@ -138,17 +138,117 @@ public class RegistroBean implements Serializable {
         if (!validarPublicacionGaceta()) return null;
 
         try {
+            if (!"Para resolución".equals(form.getObservacionTecnica())) {
+                form.setFechaResolucion(null);
+            }
             VegetableForms anterior = new VegetableFormsDAO(null).getVegetableFormsById(form.getId());
+
+            boolean transitioningToAccepted = false;
+            if (anterior != null && anterior.getStatus() == Status.EN_PROCESO) {
+                boolean esAccionPermitida = form.getObservacionTecnica() != null 
+                    && "Aceptada a trámite y revisión de requisitos de fondo".equals(form.getObservacionTecnica().trim());
+                if (!esAccionPermitida) {
+                    addError("El expediente está en estado EN PROCESO y la edición está bloqueada.");
+                    return null;
+                } else {
+                    form.setStatus(Status.ACCEPTED);
+                    transitioningToAccepted = true;
+                }
+            }
 
             new VegetableFormsDAO(null).actualizarCamposEditables(form);
 
+            if (transitioningToAccepted) {
+                try {
+                    senadi.gob.ec.adminob.dao.TramiteDAO tDao = new senadi.gob.ec.adminob.dao.TramiteDAO(null);
+                    senadi.gob.ec.adminob.model.Tramite t = tDao.buscarPorVegetableFormId(form.getId());
+                    if (t != null) {
+                        t.setEstadoActual("ACCEPTED");
+                        t.setPuedeEditar(true);
+                        tDao.actualizarCampos(t);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("[RegistroBean] Error al actualizar tramite a ACEPTADO: " + ex.getMessage());
+                }
+            }
+
             StringBuilder desc = new StringBuilder("Registro actualizado");
+            if (transitioningToAccepted) {
+                desc.append(". Trámite Aceptado automáticamente por cumplimiento de requisitos de fondo");
+            }
             if (anterior != null && anterior.getStatusFlow() != form.getStatusFlow()) {
                 String estadoAnterior = anterior.getManagementStatus();
                 String estadoNuevo = form.getManagementStatus();
                 desc.append(". Estado cambiado de '").append(estadoAnterior)
                     .append("' a '").append(estadoNuevo).append("'");
             }
+            if (anterior != null) {
+                String appNum = form.getApplicationNumber();
+                String idEnt = form.getApplicationNumber();
+                
+                // 1. Observación Técnica
+                verificarYRegistrarCambio(appNum, idEnt, "Observación Técnica", 
+                    anterior.getObservacionTecnica(), form.getObservacionTecnica(), 
+                    "Observación técnica actualizada", "ACTUALIZAR");
+
+                // 2. Fecha de Resolución
+                java.util.Date fecAnt = anterior.getFechaResolucion();
+                java.util.Date fecNue = form.getFechaResolucion();
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+                String strFecAnt = fecAnt != null ? sdf.format(fecAnt) : null;
+                String strFecNue = fecNue != null ? sdf.format(fecNue) : null;
+                verificarYRegistrarCambio(appNum, idEnt, "Fecha de Resolución", 
+                    strFecAnt, strFecNue, 
+                    "Fecha de resolución actualizada", "ACTUALIZAR");
+
+                // 3. Estado (Status)
+                verificarYRegistrarCambio(appNum, idEnt, "Estado del Registro", 
+                    getStatusLabel(anterior.getStatus()), getStatusLabel(form.getStatus()), 
+                    "Estado del registro actualizado", "CAMBIO_ESTADO");
+
+                // 4. Publicación en Gaceta
+                verificarYRegistrarCambio(appNum, idEnt, "Publicación en Gaceta", 
+                    anterior.getPublicacionGaceta(), form.getPublicacionGaceta(), 
+                    "Publicación en gaceta actualizada", "ACTUALIZAR");
+
+                // 5. Estado de Gestión (StatusFlow)
+                StatusFlow sfAnt = anterior.getStatusFlow();
+                StatusFlow sfNue = form.getStatusFlow();
+                verificarYRegistrarCambio(appNum, idEnt, "Estado de Gestión", 
+                    sfAnt != null ? sfAnt.name() : null, sfNue != null ? sfNue.name() : null, 
+                    "Estado de gestión actualizado", "CAMBIO_ESTADO");
+
+                // 6. Etapa Actual
+                verificarYRegistrarCambio(appNum, idEnt, "Etapa Actual", 
+                    anterior.getEtapaActual(), form.getEtapaActual(), 
+                    "Etapa actual actualizada", "ACTUALIZAR");
+
+                // 7. Estado de Expediente
+                verificarYRegistrarCambio(appNum, idEnt, "Estado de Expediente", 
+                    anterior.getEstadoExpediente(), form.getEstadoExpediente(), 
+                    "Estado de expediente actualizado", "ACTUALIZAR");
+
+                // 8. Nombre Común
+                verificarYRegistrarCambio(appNum, idEnt, "Nombre Común", 
+                    anterior.getCommonName(), form.getCommonName(), 
+                    "Nombre común actualizado", "ACTUALIZAR");
+
+                // 9. Taxón Botánico
+                verificarYRegistrarCambio(appNum, idEnt, "Taxón Botánico", 
+                    anterior.getBotanicalTaxon(), form.getBotanicalTaxon(), 
+                    "Taxón botánico actualizado", "ACTUALIZAR");
+
+                // 10. Denominación Genérica
+                verificarYRegistrarCambio(appNum, idEnt, "Denominación Genérica", 
+                    anterior.getGenericDenomination(), form.getGenericDenomination(), 
+                    "Denominación genérica actualizada", "ACTUALIZAR");
+
+                // 11. Designación Provisional
+                verificarYRegistrarCambio(appNum, idEnt, "Designación Provisional", 
+                    anterior.getProvitionalDesignation(), form.getProvitionalDesignation(), 
+                    "Designación provisional actualizada", "ACTUALIZAR");
+            }
+
             registrarHistorial(form, desc.toString());
 
             addInfo("CAMBIOS GUARDADOS CORRECTAMENTE");
@@ -239,12 +339,16 @@ public class RegistroBean implements Serializable {
     }
 
     public void uploadArchivo(FileUploadEvent event) {
+        if (form != null && form.getStatus() == Status.EN_PROCESO) {
+            addError("No se pueden modificar documentos cuando el trámite está EN PROCESO.");
+            return;
+        }
         try {
             UploadedFile file = event.getFile();
             if (file == null) return;
 
             if (guardarArchivo(file, nombrePersonalizado)) {
-                archivosSubidos = new ComprobantePagoDAO(null).getByVegetableFormId(form.getId());
+                archivosSubidos = new ComprobantePagoDAO(null).getTodosLosArchivosPorVegetableFormId(form.getId());
                 addInfo("ARCHIVO SUBIDO: " + (nombrePersonalizado != null && !nombrePersonalizado.trim().isEmpty()
                         ? nombrePersonalizado.trim() : file.getFileName()));
                 nombrePersonalizado = null;
@@ -255,6 +359,10 @@ public class RegistroBean implements Serializable {
     }
 
     public void subirTodosLosArchivos() {
+        if (form != null && form.getStatus() == Status.EN_PROCESO) {
+            addError("No se pueden modificar documentos cuando el trámite está EN PROCESO.");
+            return;
+        }
         if (!editMode || form == null || form.getId() == null) {
             addError("Guarde el registro antes de subir archivos.");
             return;
@@ -277,7 +385,7 @@ public class RegistroBean implements Serializable {
             }
 
             if (guardados > 0) {
-                archivosSubidos = new ComprobantePagoDAO(null).getByVegetableFormId(form.getId());
+                archivosSubidos = new ComprobantePagoDAO(null).getTodosLosArchivosPorVegetableFormId(form.getId());
                 addInfo("Se guardaron " + guardados + " archivo(s).");
                 archivoFormulario = null;
                 archivosFotos = null;
@@ -324,11 +432,33 @@ public class RegistroBean implements Serializable {
         }
     }
 
+    private void verificarYRegistrarCambio(String appNum, String idEnt, String campo, String valAnt, String valNue, String desc, String accion) {
+        if ((valAnt != null && !valAnt.equals(valNue)) || (valAnt == null && valNue != null)) {
+            try {
+                String user = (login != null ? login.getLogin() : "sistema");
+                new senadi.gob.ec.adminob.dao.HistoryDAO(null).registrar(
+                    appNum,
+                    "Solicitud",
+                    idEnt,
+                    accion != null ? accion : "ACTUALIZAR",
+                    campo,
+                    valAnt != null ? valAnt : "Ninguno",
+                    valNue != null ? valNue : "Ninguno",
+                    desc,
+                    user
+                );
+            } catch (Exception ex) {
+                System.err.println("[RegistroBean] Error al registrar cambio en " + campo + ": " + ex.getMessage());
+            }
+        }
+    }
+
     public String getStatusLabel(Status s) {
         if (s == null) return "—";
         switch (s) {
             case SAVED: return "Guardado";
-            case DELIVERED: return "En Proceso";
+            case ACCEPTED: return "Aceptado";
+            case EN_PROCESO: return "En Proceso";
             case PREVIEW: return "Vista Previa";
             case FINISHED: return "Finalizado";
             default: return s.name();
@@ -336,7 +466,14 @@ public class RegistroBean implements Serializable {
     }
 
     public void eliminarArchivo(ComprobantePago archivo) {
-
+        if (form != null && form.getStatus() == Status.EN_PROCESO) {
+            addError("No se pueden modificar documentos cuando el trámite está EN PROCESO.");
+            return;
+        }
+        if (archivo != null && archivo.getId() < 0) {
+            addError("No se pueden eliminar los documentos cargados en el portal público ni del trámite original.");
+            return;
+        }
         try {
 
             if (archivo == null) {
@@ -355,11 +492,41 @@ public class RegistroBean implements Serializable {
             }
 
             // ELIMINAR DE BASE DE DATOS
-            new ComprobantePagoDAO(null).delete(archivo.getId());
+            if (archivo.getId() <= -1000000 && archivo.getId() >= -1999999) {
+                // Archivo histórico en disco - ya fue eliminado físicamente arriba, no requiere borrado en base de datos
+            } else if (archivo.getId() <= -1000000000) {
+                // VegetableAnnexesData (Anexo del inicio)
+                int temp = -1000000000 - archivo.getId();
+                int annexId = temp % 100;
+                int formId = temp / 100;
+                javax.persistence.EntityManager em = null;
+                try {
+                    em = new ComprobantePagoDAO(null).getEntityManager();
+                    em.getTransaction().begin();
+                    javax.persistence.Query q = em.createQuery(
+                        "DELETE FROM VegetableAnnexesData d WHERE d.id.vegetableFormId = :fid AND d.id.vegetableAnnexesId = :aid");
+                    q.setParameter("fid", formId);
+                    q.setParameter("aid", annexId);
+                    q.executeUpdate();
+                    em.getTransaction().commit();
+                } catch (Exception e) {
+                    if (em != null && em.getTransaction().isActive()) em.getTransaction().rollback();
+                    throw e;
+                } finally {
+                    if (em != null) em.close();
+                }
+            } else if (archivo.getId() < 0) {
+                // Documento de trámite
+                int realDocId = -archivo.getId();
+                new senadi.gob.ec.adminob.dao.DocumentoTramiteDAO(null).deleteById(realDocId);
+            } else {
+                // Comprobante de pago normal
+                new ComprobantePagoDAO(null).delete(archivo.getId());
+            }
 
             // RECARGAR TABLA
             archivosSubidos = new ComprobantePagoDAO(null)
-                    .getByVegetableFormId(form.getId());
+                    .getTodosLosArchivosPorVegetableFormId(form.getId());
 
             addInfo("ARCHIVO ELIMINADO CORRECTAMENTE");
 

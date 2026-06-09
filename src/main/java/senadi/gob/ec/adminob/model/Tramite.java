@@ -36,13 +36,13 @@ public class Tramite implements Serializable {
     @Column(name = "denominacion", length = 300)
     private String denominacion;
 
-    /** Estado del expediente SENADI. Solo DELIVERED permite edición/eliminación. */
+    /** Estado del expediente SENADI. Solo ACCEPTED permite edición/eliminación. */
     @Column(name = "estado_actual", length = 100, nullable = false)
-    private String estadoActual = "DELIVERED";
+    private String estadoActual = "EN_PROCESO";
 
-    /** true cuando estadoActual == 'DELIVERED'. Se actualiza automáticamente en el bean. */
+    /** true cuando estadoActual == 'ACCEPTED'. Se actualiza automáticamente en el bean. */
     @Column(name = "puede_editar", nullable = false)
-    private boolean puedeEditar = true;
+    private boolean puedeEditar = false;
 
     @Column(name = "fecha_creacion", nullable = false)
     private Timestamp fechaCreacion;
@@ -88,7 +88,7 @@ public class Tramite implements Serializable {
     public String getEstadoActual() { return estadoActual; }
     public void setEstadoActual(String estadoActual) {
         this.estadoActual = estadoActual;
-        this.puedeEditar = "DELIVERED".equals(estadoActual);
+        this.puedeEditar = "ACCEPTED".equals(estadoActual);
     }
 
     public boolean isPuedeEditar() { return puedeEditar; }

@@ -90,10 +90,10 @@ public class VegetableBean implements Serializable {
 
     private void loadVegetables() {
         Controller c = new Controller();
-        radioOption = "Iniciados";
+        radioOption = "Aceptados";
         try {
             login = c.getLogin();
-            vegetables = c.buscarTodosByType("Iniciados");
+            vegetables = c.buscarTodosByType("Aceptados");
         } catch (Exception ex) {
             vegetables = new java.util.ArrayList<>();
             System.err.println("[VegetableBean] Error al cargar obtenciones: " + ex.getClass().getSimpleName() + ": " + ex.getMessage());
@@ -290,8 +290,8 @@ public class VegetableBean implements Serializable {
             Operations.message(Operations.ERROR, "No se encontró el trámite seleccionado.");
             return;
         }
-        if (current.getStatus() != Status.DELIVERED) {
-            Operations.message(Operations.AVISO, "Solo se pueden aceptar trámites en estado EN PROCESO (DELIVERED).");
+        if (current.getStatus() != Status.EN_PROCESO) {
+            Operations.message(Operations.AVISO, "Solo se pueden aceptar trámites en estado EN PROCESO.");
             return;
         }
         current.setStatus(Status.ACCEPTED);
@@ -645,13 +645,14 @@ public class VegetableBean implements Serializable {
         }
         if (text.contains("proceso") || text.contains("iniciado") || text.contains("delivered")
                 || text.contains("tramite") || text.contains("en tramite") || text.contains("ingresado")
-                || text.contains("entregado") || text.contains("recibido") || text.contains("presentado")) {
-            return Status.DELIVERED;
+                || text.contains("entregado") || text.contains("recibido") || text.contains("presentado")
+                || text.contains("en_proceso")) {
+            return Status.EN_PROCESO;
         }
         if (text.contains("vista") || text.contains("preview")) return Status.PREVIEW;
         if (text.contains("guardado") || text.contains("saved") || text.contains("borrador")) return Status.SAVED;
         // Los registros importados desde Excel son trámites activos por defecto
-        return Status.DELIVERED;
+        return Status.EN_PROCESO;
     }
 
     private StatusFlow parseStatusFlow(String value) {
@@ -694,8 +695,8 @@ public class VegetableBean implements Serializable {
                 mensajeBusquedaPortal = "No se encontró ningún trámite con el número: " + numero;
                 return;
             }
-            if (vf.getStatus() != Status.DELIVERED) {
-                mensajeBusquedaPortal = "El trámite " + numero + " no está en estado DELIVERED (estado: "
+            if (vf.getStatus() != Status.EN_PROCESO) {
+                mensajeBusquedaPortal = "El trámite " + numero + " no está en estado EN PROCESO (estado: "
                     + (vf.getStatus() != null ? vf.getStatus().name() : "desconocido") + ").";
                 return;
             }
@@ -724,8 +725,8 @@ public class VegetableBean implements Serializable {
             t.setNumeroTramite(vf.getApplicationNumber() != null ? vf.getApplicationNumber().trim() : "SIN-NUMERO");
             t.setDenominacion(vf.getCommonName() != null ? vf.getCommonName().trim() : null);
             t.setVegetableFormId(vf.getId());
-            t.setEstadoActual("DELIVERED");
-            t.setPuedeEditar(true);
+            t.setEstadoActual("EN_PROCESO");
+            t.setPuedeEditar(false);
             t.setFechaCreacion(new java.sql.Timestamp(System.currentTimeMillis()));
             t.setFechaModificacion(new java.sql.Timestamp(System.currentTimeMillis()));
             t.setUsuarioCreacion(usuario);
@@ -789,7 +790,7 @@ public class VegetableBean implements Serializable {
             return;
         }
         try {
-            archivosSubidos = new ComprobantePagoDAO(null).getByVegetableFormId(vegetableForms.getId());
+            archivosSubidos = new ComprobantePagoDAO(null).getTodosLosArchivosPorVegetableFormId(vegetableForms.getId());
         } catch (Exception e) {
             archivosSubidos = new java.util.ArrayList<>();
             Operations.message(Operations.ERROR, "No se pudieron cargar los archivos subidos.");

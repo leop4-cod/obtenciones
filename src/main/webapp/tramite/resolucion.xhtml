@@ -78,6 +78,48 @@
                                     Emitido por: #{muestraFlowBean.resolucion.emitidoPor}
                                 </div>
                             </div>
+
+                            <div style="margin-top:20px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                    <h5 style="color:#1e3a6e; font-weight:800; font-family:'Nunito Sans',sans-serif; margin:0; display:flex; align-items:center; gap:8px; font-size:14px;">
+                                        <i class="fa fa-calendar" style="color:#c9a227;"/> Anualidades Generadas para el Trámite
+                                    </h5>
+                                    <p:button value="Ir a Anualidades" icon="fa fa-external-link"
+                                              styleClass="sn-btn-gold" style="font-size:12px; padding:6px 14px;"
+                                              outcome="/anualidades/lista.xhtml?filtro=#{muestraFlowBean.selectedForm.applicationNumber}"/>
+                                </div>
+                                <p:dataTable value="#{muestraFlowBean.anualidades}" var="anu"
+                                             emptyMessage="No hay anualidades registradas para este trámite."
+                                             style="font-size:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05); border-radius:8px; overflow:hidden;">
+                                    
+                                    <p:column headerText="Año" style="text-align:center; width:80px;">
+                                        <span style="font-weight:700; color:#1e3a6e;">#{anu.etiqueta}</span>
+                                    </p:column>
+                                    
+                                    <p:column headerText="Fecha Vencimiento" style="text-align:center;">
+                                        <h:outputText value="#{anu.fechaVencimiento}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        </h:outputText>
+                                    </p:column>
+                                    
+                                    <p:column headerText="Fecha de Pago" style="text-align:center;">
+                                        <h:panelGroup rendered="#{anu.fechaPago != null}">
+                                            <h:outputText value="#{anu.fechaPago}">
+                                                <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                            </h:outputText>
+                                        </h:panelGroup>
+                                        <h:panelGroup rendered="#{anu.fechaPago == null}">
+                                            <span style="color:#dc2626; font-weight:700; font-size:11px;">PENDIENTE</span>
+                                        </h:panelGroup>
+                                    </p:column>
+                                    
+                                    <p:column headerText="Estado" style="text-align:center; width:140px;">
+                                        <span class="sn-badge #{anu.estado == 'PAGADO' ? 'sn-badge-ACCEPTED' : (anu.estado == 'VENCIDO' || anu.estado == 'PROCESO_EXPIRADO' ? 'sn-badge-DENIED' : 'sn-badge-SAVED')}">
+                                            #{anu.estadoLabel}
+                                        </span>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
                         </h:panelGroup>
                         <!-- Resolución ya emitida — NEGACIÓN -->
                         <h:panelGroup rendered="#{muestraFlowBean.resolucion.tipo == 'NEGACION'}">

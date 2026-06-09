@@ -93,6 +93,19 @@ public class TramiteDAO extends DAOAbstractM<Tramite> {
         }
     }
 
+    public Tramite buscarPorVegetableFormId(Integer formId) {
+        try {
+            return getEntityManager()
+                .createQuery("SELECT t FROM Tramite t WHERE t.vegetableFormId = :formId", Tramite.class)
+                .setParameter("formId", formId)
+                .getSingleResult();
+        } catch (javax.persistence.NoResultException e) {
+            return null;
+        } finally {
+            getEntityManager().close();
+        }
+    }
+
     public void deleteById(Integer id) throws Exception {
         EntityManager em = getEntityManager();
         em.getTransaction().begin();
