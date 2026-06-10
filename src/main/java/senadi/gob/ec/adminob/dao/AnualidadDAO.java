@@ -66,6 +66,10 @@ public class AnualidadDAO extends DAOAbstractM<Anualidad> {
         if (cantidad < 1) cantidad = 1;
         if (cantidad > 50) cantidad = 50;
         BigDecimal recargo = (porcentajeRecargo != null) ? porcentajeRecargo : new BigDecimal("10.00");
+
+        VegetableForms vf = new VegetableFormsDAO(null).getVegetableFormsById(vegetableFormId);
+        java.util.Date fechaResolucion = (vf != null) ? vf.getFechaResolucion() : null;
+
         EntityManager em = EntityManagerM.getEntityManager();
         em.getTransaction().begin();
         try {
@@ -80,6 +84,17 @@ public class AnualidadDAO extends DAOAbstractM<Anualidad> {
                 a.setUsuarioRegistro(usuarioRegistro);
                 a.setFechaCreacion(ahora);
                 a.setFechaModificacion(ahora);
+
+                if (fechaResolucion != null) {
+                    java.util.Calendar cal = java.util.Calendar.getInstance();
+                    cal.setTime(fechaResolucion);
+                    cal.add(java.util.Calendar.YEAR, i);
+                    java.sql.Date fechaVenc = new java.sql.Date(cal.getTimeInMillis());
+                    a.setFechaVencimiento(fechaVenc);
+                    a.setFechaLimitePago(calcularFechaLimitePago(fechaVenc));
+                    a.setFechaLimiteGracia(calcularFechaLimiteGracia(fechaVenc));
+                }
+
                 if (montoBase != null) {
                     BigDecimal montoAnio = calcularMontoConIncremento(montoBase, i, porcentajeIncremento);
                     int grupo = (i - 1) / 5;

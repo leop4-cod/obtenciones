@@ -28,7 +28,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
         EntityManager em = getEntityManager();
         try {
             return em.createQuery(
-                    "SELECT v FROM VegetableForms v ORDER BY v.id DESC",
+                    "SELECT v FROM VegetableForms v ORDER BY v.createDate DESC, v.id DESC",
                     VegetableForms.class)
                 .getResultList();
         } finally {
@@ -59,7 +59,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
             switch (t) {
                 case "Iniciados":
                     query = em.createQuery(
-                        "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id DESC",
+                        "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.createDate DESC, v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.EN_PROCESO);
                     break;
@@ -69,21 +69,28 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                         "SELECT v FROM VegetableForms v " +
                         "WHERE v.status = :st AND EXISTS " +
                         "(SELECT 1 FROM ComprobantePago cp WHERE cp.vegetableFormId = v.id) " +
-                        "ORDER BY v.id DESC",
+                        "ORDER BY v.createDate DESC, v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.FINISHED);
                     break;
 
                 case "Aceptados":
                     query = em.createQuery(
-                        "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id DESC",
+                        "SELECT v FROM VegetableForms v WHERE v.status = :st AND (v.observacionTecnica IS NULL OR v.observacionTecnica <> 'Para resolución') ORDER BY v.createDate DESC, v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.ACCEPTED);
                     break;
 
+                case "Resolucion":
+                    query = em.createQuery(
+                        "SELECT v FROM VegetableForms v WHERE v.observacionTecnica = :ot ORDER BY v.createDate DESC, v.id DESC",
+                        VegetableForms.class);
+                    query.setParameter("ot", "Para resolución");
+                    break;
+
                 case "Vista":
                     query = em.createQuery(
-                        "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.id DESC",
+                        "SELECT v FROM VegetableForms v WHERE v.status = :st ORDER BY v.createDate DESC, v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.PREVIEW);
                     break;
@@ -93,7 +100,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                 case "todos":
                 default:
                     query = em.createQuery(
-                        "SELECT v FROM VegetableForms v ORDER BY v.id DESC",
+                        "SELECT v FROM VegetableForms v ORDER BY v.createDate DESC, v.id DESC",
                         VegetableForms.class);
                     break;
             }
@@ -119,6 +126,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
             VegetableForms m = em.find(VegetableForms.class, src.getId());
             if (m == null) throw new Exception("Registro no encontrado id=" + src.getId());
 
+            m.setCreateDate(src.getCreateDate());
             m.setCommonName(src.getCommonName());
             m.setBotanicalTaxon(src.getBotanicalTaxon());
             m.setGenericDenomination(src.getGenericDenomination());
@@ -190,7 +198,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v " +
                         "WHERE v.status = :st AND v.applicationDate BETWEEN :start AND :end " +
-                        "ORDER BY v.id DESC",
+                        "ORDER BY v.createDate DESC, v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.EN_PROCESO);
                     break;
@@ -201,7 +209,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                         "WHERE v.status = :st " +
                         "AND EXISTS (SELECT 1 FROM ComprobantePago cp WHERE cp.vegetableFormId = v.id) " +
                         "AND v.applicationDate BETWEEN :start AND :end " +
-                        "ORDER BY v.id DESC",
+                        "ORDER BY v.createDate DESC, v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.FINISHED);
                     break;
@@ -209,17 +217,26 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                 case "Aceptados":
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v " +
-                        "WHERE v.status = :st AND v.applicationDate BETWEEN :start AND :end " +
-                        "ORDER BY v.id DESC",
+                        "WHERE v.status = :st AND (v.observacionTecnica IS NULL OR v.observacionTecnica <> 'Para resolución') AND v.applicationDate BETWEEN :start AND :end " +
+                        "ORDER BY v.createDate DESC, v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.ACCEPTED);
+                    break;
+
+                case "Resolucion":
+                    query = em.createQuery(
+                        "SELECT v FROM VegetableForms v " +
+                        "WHERE v.observacionTecnica = :ot AND v.applicationDate BETWEEN :start AND :end " +
+                        "ORDER BY v.createDate DESC, v.id DESC",
+                        VegetableForms.class);
+                    query.setParameter("ot", "Para resolución");
                     break;
 
                 case "Vista":
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v " +
                         "WHERE v.status = :st AND v.applicationDate BETWEEN :start AND :end " +
-                        "ORDER BY v.id DESC",
+                        "ORDER BY v.createDate DESC, v.id DESC",
                         VegetableForms.class);
                     query.setParameter("st", Status.PREVIEW);
                     break;
@@ -231,7 +248,7 @@ public class VegetableFormsDAO extends DAOAbstractM<VegetableForms> {
                     query = em.createQuery(
                         "SELECT v FROM VegetableForms v " +
                         "WHERE v.applicationDate BETWEEN :start AND :end " +
-                        "ORDER BY v.id DESC",
+                        "ORDER BY v.createDate DESC, v.id DESC",
                         VegetableForms.class);
                     break;
             }

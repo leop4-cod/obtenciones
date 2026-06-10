@@ -462,7 +462,7 @@ public class ComprobantePagoDAO extends DAOAbstractM<ComprobantePago> {
             e.printStackTrace();
         }
 
-        // 4. De las carpetas físicas en disco C:\uploads\<id>
+        // 4. De las carpetas fisicas en disco C:/uploads/id
         try {
             String baseDir = senadi.gob.ec.adminob.util.AppConfig.get("upload.base.path", "UPLOAD_BASE_PATH",
                 "C:" + java.io.File.separator + "uploads");

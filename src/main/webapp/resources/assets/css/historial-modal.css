@@ -1,0 +1,528 @@
+/* 
+ * historial-modal.css
+ * Estilos modernos, premium, compactos y coloreados para el modal de Historial de Auditoría de SENADI.
+ * Adaptado para combinar perfectamente con la paleta azul y oro de la aplicación.
+ */
+
+/* Contenedor del backdrop (fondo difuminado) */
+.historial-modal-backdrop {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(15, 23, 42, 0.45) !important; /* Azul/gris pizarra oscuro translúcido */
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    z-index: 99999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 0;
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Nunito Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+.historial-modal-backdrop.historial-modal-show {
+    opacity: 1 !important;
+}
+
+/* Caja del Modal (Tamaño optimizado y centrado) */
+.historial-modal-container {
+    background: #ffffff !important;
+    width: 85% !important;
+    max-width: 1000px !important;
+    height: 75% !important;
+    max-height: 680px !important;
+    margin: auto !important;
+    border-radius: 14px !important;
+    box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.3) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    transform: scale(0.96);
+    opacity: 0;
+    transition: transform 0.2s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.2s ease;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+}
+
+.historial-modal-backdrop.historial-modal-show .historial-modal-container {
+    transform: scale(1) !important;
+    opacity: 1 !important;
+}
+
+/* Cabecera del Modal (Azul marino con borde inferior dorado) */
+.historial-modal-header {
+    padding: 16px 20px !important;
+    background: linear-gradient(135deg, #1e3a6e 0%, #0d1b35 100%) !important;
+    border-bottom: 3.5px solid #c9a227 !important; /* Línea de acento dorada */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-shrink: 0 !important;
+}
+
+.historial-modal-header h3 {
+    margin: 0 !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    color: #ffffff !important; /* Texto blanco */
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.historial-modal-header h3 i {
+    color: #c9a227 !important; /* Icono dorado */
+    font-size: 18px !important;
+}
+
+/* Botón de Cerrar (X) */
+.historial-modal-close-btn {
+    background: transparent !important;
+    border: none !important;
+    font-size: 20px !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    cursor: pointer !important;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background-color 0.15s, color 0.15s !important;
+}
+
+.historial-modal-close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+}
+
+/* Pestañas (Tabs) */
+.historial-modal-tabs {
+    display: flex !important;
+    background: #f8fafc !important; /* Fondo grisáceo muy suave para distinguir cabecera */
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding: 0 20px !important;
+    gap: 20px !important;
+    flex-shrink: 0 !important;
+}
+
+.historial-modal-tab-item {
+    padding: 12px 2px !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: #64748b !important;
+    cursor: pointer !important;
+    position: relative !important;
+    transition: color 0.15s !important;
+    user-select: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.03em !important;
+}
+
+.historial-modal-tab-item:hover {
+    color: #1e3a6e !important;
+}
+
+.historial-modal-tab-item.active {
+    color: #1e3a6e !important;
+}
+
+.historial-modal-tab-item.active::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -1px !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3.5px !important;
+    background-color: #1e3a6e !important; /* Línea activa azul marino */
+    border-radius: 3px 3px 0 0 !important;
+}
+
+/* Cuerpo del Modal */
+.historial-modal-body {
+    flex: 1 !important;
+    overflow-y: auto !important;
+    background: #f1f5f9 !important; /* Fondo gris-azul ligeramente más oscuro */
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Panel de Contenido de la Pestaña */
+.historial-tab-panel {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    padding: 16px 20px !important;
+}
+
+.historial-tab-panel.active {
+    display: flex !important;
+}
+
+/* Sección de Filtros (Estilo adaptado a la página general) */
+.historial-filters-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%) !important; /* Fondo degradado a azul */
+    border: 1px solid #bfdbfe !important;
+    border-left: 5px solid #1e3a6e !important; /* Borde izquierdo azul marino */
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+    margin-bottom: 14px !important;
+    box-shadow: 0 2px 4px rgba(30, 58, 110, 0.04) !important;
+    flex-shrink: 0 !important;
+}
+
+.historial-filters-title {
+    font-size: 11px !important;
+    font-weight: 800 !important;
+    color: #1e3a6e !important; /* Título azul */
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    margin-bottom: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+
+.historial-filters-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+    gap: 10px !important;
+    align-items: flex-end !important;
+}
+
+.historial-filter-group {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+}
+
+.historial-filter-lbl {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #475569 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+.historial-filter-input {
+    background: #ffffff !important;
+    border: 1.5px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 7px 10px !important;
+    font-size: 12px !important;
+    color: #0f172a !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    font-family: inherit !important;
+    transition: border-color 0.15s, box-shadow 0.15s !important;
+    height: 34px !important;
+}
+
+.historial-filter-input:focus {
+    border-color: #1e3a6e !important;
+    box-shadow: 0 0 0 3px rgba(30, 58, 110, 0.15) !important;
+    outline: none !important;
+}
+
+/* Botones de Filtro */
+.historial-filter-actions {
+    display: flex !important;
+    gap: 8px !important;
+    align-items: flex-end !important;
+}
+
+.historial-btn-filter {
+    background: #1e3a6e !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    transition: background-color 0.15s !important;
+    font-family: inherit !important;
+    height: 34px !important;
+}
+
+.historial-btn-filter:hover {
+    background-color: #0d1b35 !important;
+}
+
+.historial-btn-clear {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    border: 1.5px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 7px 12px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    transition: background-color 0.15s, border-color 0.15s, color 0.15s !important;
+    font-family: inherit !important;
+    height: 34px !important;
+}
+
+.historial-btn-clear:hover {
+    background: #fee2e2 !important;
+    border-color: #fca5a5 !important;
+    color: #991b1b !important;
+}
+
+/* Contenedor de la Tabla */
+.historial-table-container {
+    background: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+}
+
+.historial-table-wrap {
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    flex: 1 !important;
+}
+
+/* Estilos de Tabla Refinados con Cabecera Azul */
+.historial-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    text-align: left !important;
+    font-size: 12px !important;
+}
+
+.historial-table th {
+    background: #1e3a6e !important; /* Cabecera azul */
+    color: #ffffff !important; /* Texto blanco */
+    font-weight: 700 !important;
+    padding: 12px 14px !important;
+    border-bottom: 2px solid #c9a227 !important; /* Línea dorada divisoria */
+    text-transform: uppercase !important;
+    font-size: 10px !important;
+    letter-spacing: 0.05em !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+}
+
+.historial-table td {
+    padding: 11px 14px !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #334155 !important;
+    vertical-align: middle !important;
+}
+
+.historial-table tr:last-child td {
+    border-bottom: none !important;
+}
+
+.historial-table tr:hover td {
+    background-color: #f8fafc !important;
+}
+
+/* Badges de Acción */
+.hist-modal-badge {
+    display: inline-block !important;
+    padding: 3px 8px !important;
+    border-radius: 99px !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+}
+
+.hist-modal-badge-crear      { background: #eff6ff !important; color: #1e3a8a !important; border: 1px solid #bfdbfe !important; }
+.hist-modal-badge-actualizar { background: #eff6ff !important; color: #1d4ed8 !important; border: 1px solid #93c5fd !important; }
+.hist-modal-badge-eliminar   { background: #fef2f2 !important; color: #991b1b !important; border: 1px solid #fca5a5 !important; }
+.hist-modal-badge-estado     { background: #fffbeb !important; color: #92400e !important; border: 1px solid #fde68a !important; }
+.hist-modal-badge-pago       { background: #faf5ff !important; color: #5b21b6 !important; border: 1px solid #e9d5ff !important; }
+.hist-modal-badge-default    { background: #f8fafc !important; color: #475569 !important; border: 1px solid #cbd5e1 !important; }
+
+/* Chips de Campo Modificado */
+.hist-modal-field-chip {
+    background: #f0f4fb !important;
+    border-radius: 4px !important;
+    padding: 2px 6px !important;
+    font-size: 10.5px !important;
+    font-family: monospace !important;
+    color: #1e3a6e !important;
+    border: 1px solid #c3d7f2 !important;
+    display: inline-block !important;
+}
+
+/* Cambios de Valor */
+.hist-modal-val-before {
+    font-size: 11.5px !important;
+    color: #b91c1c !important;
+    text-decoration: line-through !important;
+    margin-right: 4px !important;
+}
+
+.hist-modal-val-after {
+    font-size: 11.5px !important;
+    color: #166534 !important;
+    font-weight: 700 !important;
+    margin-left: 4px !important;
+}
+
+/* Paginación y Contador */
+.historial-footer {
+    padding: 10px 20px !important;
+    border-top: 1px solid #e2e8f0 !important;
+    background: #f8fafc !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-shrink: 0 !important;
+}
+
+.historial-pagination-info {
+    font-size: 11.5px !important;
+    color: #64748b !important;
+    font-weight: 600 !important;
+}
+
+.historial-pagination-controls {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.historial-page-select-wrap {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    font-size: 11.5px !important;
+    color: #64748b !important;
+}
+
+.historial-page-select {
+    padding: 4px 6px !important;
+    border: 1.5px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    background: #ffffff !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    color: #475569 !important;
+    cursor: pointer !important;
+}
+
+.historial-page-btn {
+    min-width: 28px !important;
+    height: 28px !important;
+    border-radius: 6px !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #ffffff !important;
+    color: #475569 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background-color 0.15s, border-color 0.15s !important;
+}
+
+.historial-page-btn:hover:not(:disabled) {
+    background: #f1f5f9 !important;
+    border-color: #94a3b8 !important;
+}
+
+.historial-page-btn.active {
+    background: #1e3a6e !important;
+    color: #ffffff !important;
+    border-color: #1e3a6e !important;
+}
+
+.historial-page-btn:disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+}
+
+/* Pestaña General */
+.historial-general-content {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    padding: 20px !important;
+    color: #334155 !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.01) !important;
+}
+
+.historial-general-content h4 {
+    margin-top: 0 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    margin-bottom: 10px !important;
+}
+
+.historial-general-content p {
+    font-size: 12.5px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 14px !important;
+}
+
+.historial-general-meta {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+    gap: 12px !important;
+    background: #f8fafc !important;
+    border-radius: 8px !important;
+    padding: 12px !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.historial-meta-item strong {
+    display: block !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    color: #64748b !important;
+    text-transform: uppercase !important;
+    margin-bottom: 2px !important;
+}
+
+.historial-meta-item span {
+    font-size: 12.5px !important;
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+
+/* Spinner de carga */
+.historial-spinner-wrap {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 40px 0 !important;
+    color: #64748b !important;
+    gap: 10px !important;
+    flex: 1 !important;
+}
+
+.historial-spinner {
+    width: 30px !important;
+    height: 30px !important;
+    border: 3px solid #e2e8f0 !important;
+    border-top-color: #1e3a6e !important;
+    border-radius: 50% !important;
+    animation: spin 0.8s linear infinite !important;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

@@ -23,15 +23,15 @@
         <link rel="stylesheet" type="text/css" href="#{resource['assets/css/senadi-theme.css']}"/>
         <link rel="stylesheet" type="text/css" href="#{resource['assets/css/style.css']}"/>
         <style>
-            /* ══════════════════════════════════════════════════
+            /* ==================================================
                LAYOUT
-            ══════════════════════════════════════════════════ */
+            ================================================== */
             html, body { margin: 0; padding: 0; }
             .lm-layout { display: flex; min-height: 100vh; }
 
-            /* ══════════════════════════════════════════════════
+            /* ==================================================
                SIDEBAR
-            ══════════════════════════════════════════════════ */
+            ================================================== */
             .lm-sidebar {
                 width: 255px; min-width: 255px;
                 background: linear-gradient(180deg, #0d1b35 0%, #1a2d52 60%, #0d1b35 100%);
@@ -63,9 +63,9 @@
             .lm-nav-item .pi { font-size: 15px; flex-shrink: 0; width: 18px; text-align: center; }
             .lm-sidebar-spacer { flex: 1; min-height: 20px; }
 
-            /* ══════════════════════════════════════════════════
+            /* ==================================================
                ÁREA PRINCIPAL
-            ══════════════════════════════════════════════════ */
+            ================================================== */
             .lm-main { margin-left: 255px; flex: 1; background: #edf1f8; min-height: 100vh; display: flex; flex-direction: column; }
             .lm-topbar { background: #fff; height: 58px; padding: 0 22px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,.07); position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
             .lm-topbar-right { display: flex; align-items: center; gap: 10px; }
@@ -76,9 +76,9 @@
             .lm-page-title { display: flex; align-items: center; gap: 11px; font-size: 18px; font-weight: 800; color: #1a1a2e; margin-bottom: 20px; }
             .lm-page-icon { width: 38px; height: 38px; border-radius: 9px; background: linear-gradient(135deg, #1e3a6e, #0d1b35); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 17px; flex-shrink: 0; }
 
-            /* ══════════════════════════════════════════════════
-               PESTAÑAS
-            ══════════════════════════════════════════════════ */
+            /* ==================================================
+               PESTAÃ‘AS
+            ================================================== */
             .lm-tabs { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
             .lm-tab-btn { padding: 12px 22px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: background .2s, transform .15s, box-shadow .2s; display: flex; align-items: center; gap: 8px; min-width: 150px; justify-content: center; font-family: 'Nunito Sans', sans-serif; outline: none; }
             .lm-tab-btn:not(.active) { background: #182d46; color: #fff; }
@@ -89,18 +89,18 @@
             .lm-tab-panel.active { display: block; }
             @keyframes tabIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
 
-            /* ══════════════════════════════════════════════════
+            /* ==================================================
                TARJETAS
-            ══════════════════════════════════════════════════ */
+            ================================================== */
             .lm-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 14px rgba(0,0,0,.06); border: 1px solid #e5ecf5; margin-bottom: 18px; overflow: hidden; }
             .lm-card-head { padding: 14px 20px; border-bottom: 1px solid #f0f5fc; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
             .lm-card-title { font-size: 15px; font-weight: 800; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
             .lm-card-title .pi { color: #1e3a6e; font-size: 16px; }
             .lm-card-body { padding: 18px 20px; }
 
-            /* ══════════════════════════════════════════════════
+            /* ==================================================
                ESTADÍSTICAS
-            ══════════════════════════════════════════════════ */
+            ================================================== */
             .lm-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 16px; margin-bottom: 22px; }
             .lm-stat { background: #fff; border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 10px rgba(0,0,0,.06); border-left: 5px solid #1e3a6e; transition: transform .18s, box-shadow .18s; }
             .lm-stat:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(0,0,0,.10); }
@@ -111,9 +111,9 @@
             .lm-stat-val { font-size: 32px; font-weight: 800; color: #1a1a2e; margin: 4px 0 0; line-height: 1; }
             .lm-stat-sub { font-size: 11px; color: #9ca3af; margin-top: 5px; }
 
-            /* ══════════════════════════════════════════════════
+            /* ==================================================
                BOTONES (preservados del original)
-            ══════════════════════════════════════════════════ */
+            ================================================== */
             button.ui-button.sn-btn-new, .sn-btn-new.ui-button, .sn-btn-new {
                 background: linear-gradient(135deg, #2a5aad 0%, #1e3a6e 55%, #135226 100%) !important;
                 border: 1px solid #0d1b35 !important; color: #ffffff !important; font-weight: 800 !important;
@@ -186,19 +186,37 @@
             .lm-logout-link .pi { color: #f87171; font-size: 15px; }
             .lm-logout-link:hover .pi { color: #fff; }
 
-            /* ══════════════════════════════════════════════════
+            /* ==================================================
                DIÁLOGOS
-            ══════════════════════════════════════════════════ */
-            .ui-dialog { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; z-index: 9000 !important; border-radius: 14px !important; overflow: hidden !important; box-shadow: 0 24px 64px rgba(0,0,0,.42) !important; }
-            .ui-dialog .ui-dialog-titlebar { background: linear-gradient(135deg, #041f10 0%, #0a3d1a 45%, #167030 100%) !important; color: #fff !important; font-weight: 700 !important; padding: 15px 22px !important; font-size: 14px !important; }
-            .ui-dialog .ui-dialog-titlebar-close { background: transparent !important; border: none !important; }
-            .ui-dialog .ui-dialog-titlebar-close .ui-icon { color: rgba(255,255,255,.85) !important; }
-            .ui-dialog .ui-dialog-content { background: #ffffff !important; padding: 24px 26px !important; border: none !important; max-height: 75vh !important; overflow-y: auto !important; }
-            .ui-widget-overlay { background: rgba(4,13,8,.65) !important; backdrop-filter: blur(3px) !important; z-index: 8999 !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; }
+            ================================================== */
+            .ui-dialog { position: fixed !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%) !important; z-index: 9000 !important; border-radius: 16px !important; overflow: hidden !important; box-shadow: 0 32px 80px rgba(0,0,0,.38), 0 0 0 1px rgba(255,255,255,.06) !important; }
+            .ui-dialog .ui-dialog-titlebar { background: linear-gradient(135deg, #0d1b35 0%, #1a2f5a 50%, #1e3a6e 100%) !important; color: #fff !important; font-weight: 700 !important; padding: 16px 22px !important; font-size: 14px !important; border-bottom: 1px solid rgba(255,255,255,.10) !important; }
+            .ui-dialog .ui-dialog-titlebar-close { background: rgba(255,255,255,.10) !important; border: 1px solid rgba(255,255,255,.18) !important; border-radius: 8px !important; width: 28px !important; height: 28px !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; transition: background .18s, transform .18s !important; }
+            .ui-dialog .ui-dialog-titlebar-close:hover { background: rgba(255,255,255,.22) !important; transform: rotate(90deg) !important; }
+            .ui-dialog .ui-dialog-titlebar-close .ui-icon { color: rgba(255,255,255,.90) !important; }
+            .ui-dialog .ui-dialog-content { background: #f8fafc !important; padding: 24px 26px !important; border: none !important; max-height: 75vh !important; overflow-y: auto !important; }
+            .ui-widget-overlay { background: rgba(5,10,30,.72) !important; backdrop-filter: blur(5px) !important; z-index: 8999 !important; position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; }
 
-            /* ══════════════════════════════════════════════════
+            /* === ALERTAS: header por tipo === */
+            .modern-alert-dialog.ui-dialog { border-radius: 16px !important; box-shadow: 0 32px 80px rgba(0,0,0,.35) !important; }
+            .modern-alert-dialog.ui-dialog .ui-dialog-titlebar { padding: 18px 24px !important; display: flex !important; align-items: center !important; }
+            .modern-alert-dialog.ui-dialog .ui-dialog-titlebar .ui-dialog-title { font-size: 15px !important; font-weight: 800 !important; letter-spacing: .02em !important; display: flex !important; align-items: center !important; gap: 10px !important; color: #93c5fd !important; text-shadow: 0 1px 6px rgba(0,0,0,.25) !important; }
+            .modern-alert-dialog.ui-dialog .ui-dialog-titlebar { color: #93c5fd !important; }
+            /* Expiradas -> rojo oscuro elegante */
+            #dlgAlertasExpiradas.ui-dialog .ui-dialog-titlebar,
+            #j_idt\$dlgAlertasExpiradas .ui-dialog-titlebar { background: linear-gradient(135deg, #3b0a0a 0%, #7f1d1d 50%, #991b1b 100%) !important; }
+            /* Próximas -> ámbar/naranja elegante */
+            #dlgAlertasProxVencer.ui-dialog .ui-dialog-titlebar,
+            #j_idt\$dlgAlertasProxVencer .ui-dialog-titlebar { background: linear-gradient(135deg, #451a03 0%, #78350f 50%, #92400e 100%) !important; }
+            /* Pendientes -> azul elegante */
+            #dlgAlertasPendientes.ui-dialog .ui-dialog-titlebar,
+            #j_idt\$dlgAlertasPendientes .ui-dialog-titlebar { background: linear-gradient(135deg, #0d1b35 0%, #1a2f5a 50%, #1e3a6e 100%) !important; }
+            /* Alert table inside modals */
+            .anualidad-alert-table th { background: #1e3a6e !important; color: #fff !important; }
+
+            /* ==================================================
                BADGES DE ESTADO
-            ══════════════════════════════════════════════════ */
+            ================================================== */
             .anu-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 10.5px; font-weight: 900; letter-spacing: .4px; text-transform: uppercase; box-shadow: 0 1px 4px rgba(0,0,0,.10); }
             .anu-pendiente  { background: linear-gradient(135deg, #fef9ec, #fef3c7); color: #78350f; border: 1px solid #fcd34d; }
             .anu-pagado     { background: linear-gradient(135deg, #1e3a6e, #0d2b6e); color: #fff; border: 1px solid #0d1b35; }
@@ -234,9 +252,9 @@
             .anu-mc-lbl { font-size: 10.5px; font-weight: 700; color: #6b7280; text-transform: uppercase; }
             .anu-mc-val { font-size: 14px; font-weight: 800; }
 
-            /* ══════════════════════════════════════════════════
-               TABLA ACORDEÓN
-            ══════════════════════════════════════════════════ */
+            /* ==================================================
+               TABLA ACORDEÃ“N
+            ================================================== */
             .anu-table th.ui-state-default { background: linear-gradient(180deg, #2a5aad 0%, #1e3a6e 55%, #0d2b6e 100%) !important; color: #fff !important; font-size: 11px !important; font-weight: 800 !important; letter-spacing: .35px !important; text-transform: uppercase !important; padding: 11px 10px !important; border-right: 1px solid rgba(255,255,255,.15) !important; white-space: nowrap !important; }
             .anu-table td { font-size:13px !important; vertical-align:middle !important; padding:8px 10px !important; border-bottom:1px solid #f0f4f0 !important; color: #111827 !important; }
             .anu-row-vencida > td { background:#fff1f2 !important; }
@@ -276,18 +294,18 @@
             .anu-acc-ctrl { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; cursor:pointer; color:#1e3a6e; background:#eff4ff; border:1px solid #bfdbfe; border-radius:6px; padding:4px 10px; transition:background .15s; }
             .anu-acc-ctrl:hover { background:#dbeafe; }
 
-            /* ══ FILTROS ══ */
+            /* == FILTROS == */
             .anu-filtros { background: linear-gradient(135deg, #f0f4ff, #e8f0fc) !important; border: 1px solid rgba(30,58,110,.16) !important; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; }
             .anu-filtros label { font-size: 11px; font-weight: 800; color: #0d1b35; display: block; margin-bottom: 5px; text-transform: uppercase; letter-spacing: .4px; }
 
-            /* ══ SELECTONEMENU ══ */
+            /* == SELECTONEMENU == */
             .ui-selectonemenu-panel { background: #ffffff !important; border: 1px solid rgba(30,58,110,.20) !important; border-radius: 10px !important; box-shadow: 0 8px 28px rgba(0,0,0,.20) !important; overflow: hidden !important; }
             .ui-selectonemenu-items { background: #ffffff !important; padding: 4px 0 !important; margin: 0 !important; }
             .ui-selectonemenu-item { background: #ffffff !important; color: #374151 !important; font-size: 12px !important; padding: 7px 14px !important; cursor: pointer !important; border-bottom: 1px solid #f3f4f6 !important; }
             .ui-selectonemenu-item:hover, .ui-selectonemenu-item.ui-state-hover { background: #eff4ff !important; color: #0d1b35 !important; }
             .ui-selectonemenu-item.ui-state-highlight { background: #1e3a6e !important; color: #ffffff !important; }
 
-            /* ══ DIÁLOGO CONTENIDO ══ */
+            /* == DIÁLOGO CONTENIDO == */
             .anu-dialog-info { background: linear-gradient(135deg, #eff4ff, #e0eafc) !important; border-radius: 10px; padding: 12px 16px; margin-bottom: 18px; border-left: 4px solid #1e3a6e; font-size: 12.5px; color: #0d1b35; }
             .anu-dlg-grid { width:100%; border-collapse:collapse; }
             .anu-dlg-grid td { padding: 6px 7px; vertical-align: middle; }
@@ -299,7 +317,7 @@
             .anu-section-sep.blue  { background: linear-gradient(135deg, #eff6ff, #dbeafe) !important; color: #1d4ed8; border-color: #93c5fd; }
             .anu-dlg-footer { display: flex; gap: 15px; justify-content: center; margin-top: 15px; padding: 18px 0 4px; border-top: 1px solid rgba(30,58,110,.12); }
 
-            /* ══ IMPORT RESULTS ══ */
+            /* == IMPORT RESULTS == */
             .anu-import-results { margin-top: 18px; background: rgba(255,255,255,.80); border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px 18px; }
             .anu-import-results-title { font-size: 13px; font-weight: 800; color: #1e3a8a; margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
             .anu-import-stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
@@ -309,7 +327,7 @@
             .anu-import-stat-err { background:#fff1f2; color:#be123c; border:1px solid #fca5a5; }
             .anu-import-errors { max-height: 180px; overflow-y: auto; font-size: 11.5px; color: #7f1d1d; background: #fff5f5; border-radius: 6px; padding: 8px 12px; border: 1px solid #fca5a5; }
 
-            /* ══ RESPONSIVE ══ */
+            /* == RESPONSIVE == */
             @media (max-width: 900px) {
                 .lm-sidebar { width: 64px; min-width: 64px; }
                 .lm-logo { padding: 12px 6px; gap: 0; }
@@ -324,6 +342,42 @@
                 .lm-content { padding: 14px 12px 30px; }
                 .lm-stats-grid { grid-template-columns: 1fr 1fr; }
             }
+            .anualidad-alert-table-wrap { max-height: 450px; overflow-y: auto; padding: 18px 24px 10px; }
+            .anualidad-alert-table { width: 100%; border-collapse: collapse; background: #fff; table-layout: fixed; }
+            .anualidad-alert-table th {
+                background: #1e3a6e; color: #fff; font-size: 11px; font-weight: 900;
+                text-transform: uppercase; padding: 11px 12px; text-align: left;
+            }
+            .anualidad-alert-table th:nth-child(2),
+            .anualidad-alert-table th:nth-child(3),
+            .anualidad-alert-table th:nth-child(4),
+            .anualidad-alert-table th:nth-child(6),
+            .anualidad-alert-table td:nth-child(2),
+            .anualidad-alert-table td:nth-child(3),
+            .anualidad-alert-table td:nth-child(4),
+            .anualidad-alert-table td:nth-child(6) { text-align: center; }
+            .anualidad-alert-table td {
+                padding: 9px 12px; border-bottom: 1px solid #edf1f5; color: #0f172a;
+                font-size: 12px; vertical-align: middle; height: 44px;
+            }
+            .anualidad-alert-tramite { color: #001b4f; font-weight: 900; }
+            .anualidad-alert-anio { display: inline-block; background: #1e3a6e; color: #fff; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: 900; }
+            .anualidad-alert-fecha { color: #dc2626; font-weight: 800; white-space: nowrap; }
+            .anualidad-alert-empty { padding: 32px 16px; text-align: center; color: #6b7280; font-size: 13px; }
+            .anualidad-alert-name { color: #374151; font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+            .anualidad-alert-action {
+                width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+                background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; text-decoration: none !important;
+            }
+            .anualidad-alert-action:hover { background: #dbeafe; color: #1d4ed8; }
+            .anualidad-alert-badge {
+                min-width: 94px; display: inline-flex; justify-content: center; align-items: center;
+                border-radius: 999px; padding: 5px 13px; font-size: 10px; font-weight: 900;
+                text-transform: uppercase; line-height: 1.15;
+            }
+            .anualidad-alert-badge-expirada { background: #211b1a; color: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+            .anualidad-alert-badge-prox { background: #1e3a6e; color: #fff; }
+            .anualidad-alert-badge-pendiente { background: #dbeafe; color: #1e3a6e; border: 1px solid #bfdbfe; }
         </style>
     </h:head>
 
@@ -427,7 +481,7 @@
         <h:form id="frmAnu" enctype="multipart/form-data">
         <div class="lm-layout">
 
-            <!-- ══════════════ SIDEBAR ══════════════ -->
+            <!-- ============== SIDEBAR ============== -->
             <div class="lm-sidebar">
                 <div class="lm-logo">
                     <img src="#{resource['images/sena_2.png']}" alt="SENADI"/>
@@ -457,32 +511,32 @@
                 </a>
 
                 <!-- Sección de Alertas Clasificadas -->
-                <p:commandLink onclick="PF('dlgAlertasExpiradas').show(); return false;" class="lm-nav-item" style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 16px); margin: 2px 8px; box-sizing: border-box;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
+                <p:commandLink onclick="PF('dlgAlertasExpiradas').show(); return false;" class="lm-nav-item sidebar-alert-link danger-alert">
+                    <div class="sidebar-alert-title">
                         <i class="pi pi-exclamation-triangle" style="color: #ef4444;"/>
                         <span>Alertas Expiradas</span>
                     </div>
-                    <span class="lm-sidebar-alerts-badge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #ef4444; color: #fff; line-height: 1;">
+                    <span class="sidebar-alert-badge danger">
                         #{anualidadBean.totalAlertasExpiradas}
                     </span>
                 </p:commandLink>
 
-                <p:commandLink onclick="PF('dlgAlertasProxVencer').show(); return false;" class="lm-nav-item" style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 16px); margin: 2px 8px; box-sizing: border-box;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
+                <p:commandLink onclick="PF('dlgAlertasProxVencer').show(); return false;" class="lm-nav-item sidebar-alert-link warning-alert">
+                    <div class="sidebar-alert-title">
                         <i class="pi pi-clock" style="color: #f59e0b;"/>
                         <span>Próx. a Vencer</span>
                     </div>
-                    <span class="lm-sidebar-alerts-badge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #f59e0b; color: #fff; line-height: 1;">
+                    <span class="sidebar-alert-badge warning">
                         #{anualidadBean.totalAlertasProximasVencer}
                     </span>
                 </p:commandLink>
 
-                <p:commandLink onclick="PF('dlgAlertasPendientes').show(); return false;" class="lm-nav-item" style="display: flex; justify-content: space-between; align-items: center; width: calc(100% - 16px); margin: 2px 8px; box-sizing: border-box;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
+                <p:commandLink onclick="PF('dlgAlertasPendientes').show(); return false;" class="lm-nav-item sidebar-alert-link info-alert">
+                    <div class="sidebar-alert-title">
                         <i class="pi pi-info-circle" style="color: #3b82f6;"/>
                         <span>Alertas Pendientes</span>
                     </div>
-                    <span class="lm-sidebar-alerts-badge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 8px; background: #3b82f6; color: #fff; line-height: 1;">
+                    <span class="sidebar-alert-badge info">
                         #{anualidadBean.totalAlertasPendientes}
                     </span>
                 </p:commandLink>
@@ -538,7 +592,7 @@
             //]]>
             </script>
 
-            <!-- ══════════════ ÁREA PRINCIPAL ══════════════ -->
+            <!-- ============== ÁREA PRINCIPAL ============== -->
             <div class="lm-main">
 
                 <!-- Barra superior -->
@@ -572,7 +626,7 @@
                         Gestión de Anualidades
                     </div>
 
-                    <!-- ══ 4 PESTAÑAS ══ -->
+                    <!-- == 4 PESTAÃ‘AS == -->
                     <div class="lm-tabs">
                         <button type="button" class="lm-tab-btn"
                                 onclick="switchTab('resumen', this)">
@@ -592,7 +646,7 @@
                         </button>
                     </div>
 
-                    <!-- ══════════ PESTAÑA 1: RESUMEN ══════════ -->
+                    <!-- ========== PESTAÃ‘A 1: RESUMEN ========== -->
                     <div id="tab-resumen" class="lm-tab-panel">
 
                         <p:outputPanel id="statsBar">
@@ -715,7 +769,7 @@
 
                     </div><!-- /tab-resumen -->
 
-                    <!-- ══════════ PESTAÑA 2: TABLA (activa) ══════════ -->
+                    <!-- ========== PESTAÃ‘A 2: TABLA (activa) ========== -->
                     <div id="tab-tabla" class="lm-tab-panel active">
 
                         <div class="lm-card">
@@ -970,7 +1024,7 @@
 
                     </div><!-- /tab-tabla -->
 
-                    <!-- ══════════ PESTAÑA 3: CREAR ANUALIDADES ══════════ -->
+                    <!-- ========== PESTAÃ‘A 3: CREAR ANUALIDADES ========== -->
                     <div id="tab-crear" class="lm-tab-panel">
 
                         <div class="lm-card">
@@ -984,13 +1038,13 @@
                                 <div style="display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; margin-bottom:16px;">
                                     <div>
                                         <label style="font-size:11px; font-weight:800; color:#0d1b35; display:block; margin-bottom:6px; text-transform:uppercase; letter-spacing:.4px;">
-                                            Trámite Aceptado
+                                            Trámite Listo (Para Resolución)
                                         </label>
                                         <p:selectOneMenu id="selTramite"
                                                          value="#{anualidadBean.tramiteSeleccionadoId}"
                                                          style="min-width:300px; max-width:420px; font-size:13px;"
                                                          filter="true" filterMatchMode="contains">
-                                            <f:selectItem itemLabel="— Seleccione un trámite Aceptado —" itemValue="" noSelectionOption="true"/>
+                                            <f:selectItem itemLabel="— Seleccione un trámite listo (Para resolución) —" itemValue="" noSelectionOption="true"/>
                                             <f:selectItems value="#{anualidadBean.tramites}" var="vf"
                                                            itemLabel="#{vf.applicationNumber}#{vf.commonName != null and vf.commonName != '' ? ' — '.concat(vf.commonName) : ''}"
                                                            itemValue="#{vf.id}"/>
@@ -1065,7 +1119,7 @@
 
                     </div><!-- /tab-crear -->
 
-                    <!-- ══════════ PESTAÑA 4: IMPORTAR EXCEL ══════════ -->
+                    <!-- ========== PESTAÃ‘A 4: IMPORTAR EXCEL ========== -->
                     <div id="tab-importar" class="lm-tab-panel">
 
                         <div class="lm-card">
@@ -1137,141 +1191,117 @@
 
         </div><!-- lm-layout -->
 
-        <!-- ══ DIÁLOGO: PRÓXIMOS VENCIMIENTOS ══ -->
-        <!-- ══ DIÁLOGOS DE ALERTAS DE ANUALIDADES (SEGMENTADOS) ══ -->
+        <!-- == DIÁLOGO: PRÃ“XIMOS VENCIMIENTOS == -->
+        <!-- == DIÁLOGOS DE ALERTAS DE ANUALIDADES (SEGMENTADOS) == -->
         <!-- 1. DIÁLOGO: ALERTAS EXPIRADAS -->
         <p:dialog id="dlgAlertasExpiradas"
                   header="Alertas: Anualidades Expiradas"
                   widgetVar="dlgAlertasExpiradas"
-                  modal="true" resizable="true" width="740" dynamic="true"
+                  modal="true" resizable="true" width="860" dynamic="true"
+                  styleClass="modern-alert-dialog" style="max-width:95vw;"
                   showEffect="fade" hideEffect="fade" closeOnEscape="true">
-            <h:panelGroup rendered="#{empty anualidadBean.alertasExpiradas}">
-                <div style="text-align:center; padding:30px; color:#6b7280; font-size:13px;">
-                    <i class="pi pi-check-circle" style="font-size:28px; color:#2a5aad; display:block; margin-bottom:10px;"/>
-                    No hay alertas de anualidades expiradas.
-                </div>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{not empty anualidadBean.alertasExpiradas}">
-                <div style="overflow-x:auto;">
-                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+            <div class="anualidad-alert-table-wrap">
+                <h:panelGroup rendered="#{empty anualidadBean.alertasExpiradas}">
+                    <div class="anualidad-alert-empty">No hay alertas de anualidades expiradas.</div>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty anualidadBean.alertasExpiradas}">
+                    <table class="anualidad-alert-table">
                         <thead>
-                            <tr style="background:linear-gradient(135deg,#0d1b35,#1e3a6e);">
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:left; font-size:11px; text-transform:uppercase;">N° Trámite</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Año</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Vencimiento</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Estado</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:left; font-size:11px; text-transform:uppercase;">Nombre Común</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase; width:80px;">Acción</th>
+                            <tr>
+                                <th style="width:18%;">N° Trámite</th>
+                                <th style="width:10%;">Año</th>
+                                <th style="width:18%;">Vencimiento</th>
+                                <th style="width:18%;">Estado</th>
+                                <th>Nombre común</th>
+                                <th style="width:12%;">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             <ui:repeat value="#{anualidadBean.alertasExpiradas}" var="al">
-                                <tr style="border-bottom:1px solid #f0f4f0;">
-                                    <td style="padding:9px 12px; font-weight:700; color:#0d1b35;">
-                                        #{anualidadBean.getVegetableForm(al.vegetableFormId) != null
-                                            ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
-                                            : al.vegetableFormId}
-                                    </td>
-                                    <td style="padding:9px 12px; text-align:center;">
-                                        <span class="anu-anio-chip">#{al.etiqueta}</span>
-                                    </td>
-                                    <td style="padding:9px 12px; text-align:center; font-weight:700; color:#b91c1c;">
-                                        <h:outputText value="#{al.fechaVencimiento}">
+                                <tr>
+                                    <td><span class="anualidad-alert-tramite">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}</span></td>
+                                    <td><span class="anualidad-alert-anio">#{al.etiqueta}</span></td>
+                                    <td>
+                                        <h:outputText value="#{al.fechaVencimiento}" styleClass="anualidad-alert-fecha" rendered="#{al.fechaVencimiento != null}">
                                             <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
                                         </h:outputText>
+                                        <h:outputText value="Sin fecha" rendered="#{al.fechaVencimiento == null}" styleClass="anu-dash"/>
                                     </td>
-                                    <td style="padding:9px 12px; text-align:center;">
-                                        <span class="#{al.estadoBadgeClass}">#{al.estadoBadgeLabel}</span>
-                                    </td>
-                                    <td style="padding:9px 12px; font-size:11px; color:#374151;">
-                                        #{anualidadBean.getVegetableForm(al.vegetableFormId) != null
-                                            ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : '—'}
-                                    </td>
-                                    <td style="padding:9px 12px; text-align:center;">
-                                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
-                                           style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px;
-                                                  background:#f0f5fc; border-radius:50%; border:1px solid #c9dcf8; color:#1e3a6e; text-decoration:none;"
-                                           title="Ver Trámite">
-                                            <i class="pi pi-external-link" style="font-size:12px;"/>
+                                    <td><span class="anualidad-alert-badge anualidad-alert-badge-expirada">#{al.estadoBadgeLabel}</span></td>
+                                    <td><span class="anualidad-alert-name">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : ''}</span></td>
+                                    <td>
+                                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" class="anualidad-alert-action" title="Ver Trámite y Gestionar">
+                                            <i class="pi pi-external-link"/>
                                         </a>
                                     </td>
                                 </tr>
                             </ui:repeat>
                         </tbody>
                     </table>
-                </div>
-            </h:panelGroup>
-            <div style="text-align:right; margin-top:14px; padding-top:12px; border-top:1px solid #e2e8e2;">
+                </h:panelGroup>
+            </div>
+            <div class="modern-alert-footer">
+                <a href="anualidades/lista.xhtml?mostrarAlerta=expirada" class="modern-alert-footer-link">
+                    Ir al módulo de Anualidades <i class="pi pi-arrow-right" style="font-size:10px;"/>
+                </a>
                 <p:commandButton value="Cerrar" type="button" styleClass="btn-cancelar"
-                                 icon="pi pi-times" onclick="PF('dlgAlertasExpiradas').hide();"/>
+                                 icon="pi pi-times" onclick="PF('dlgAlertasExpiradas').hide();" style="border-radius:20px; font-weight:700; font-size:12px;"/>
             </div>
         </p:dialog>
 
-        <!-- 2. DIÁLOGO: ALERTAS PRÓXIMAS A VENCER -->
+        <!-- 2. DIÁLOGO: ALERTAS PRÃ“XIMAS A VENCER -->
         <p:dialog id="dlgAlertasProxVencer"
                   header="Alertas: Anualidades Próximas a Vencer"
                   widgetVar="dlgAlertasProxVencer"
-                  modal="true" resizable="true" width="740" dynamic="true"
+                  modal="true" resizable="true" width="860" dynamic="true"
+                  styleClass="modern-alert-dialog" style="max-width:95vw;"
                   showEffect="fade" hideEffect="fade" closeOnEscape="true">
-            <h:panelGroup rendered="#{empty anualidadBean.alertasProximasVencer}">
-                <div style="text-align:center; padding:30px; color:#6b7280; font-size:13px;">
-                    <i class="pi pi-check-circle" style="font-size:28px; color:#2a5aad; display:block; margin-bottom:10px;"/>
-                    No hay alertas de anualidades próximas a vencer.
-                </div>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{not empty anualidadBean.alertasProximasVencer}">
-                <div style="overflow-x:auto;">
-                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+            <div class="anualidad-alert-table-wrap">
+                <h:panelGroup rendered="#{empty anualidadBean.alertasProximasVencer}">
+                    <div class="anualidad-alert-empty">No hay alertas de anualidades próximas a vencer.</div>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty anualidadBean.alertasProximasVencer}">
+                    <table class="anualidad-alert-table">
                         <thead>
-                            <tr style="background:linear-gradient(135deg,#0d1b35,#1e3a6e);">
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:left; font-size:11px; text-transform:uppercase;">N° Trámite</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Año</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Vencimiento</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Estado</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:left; font-size:11px; text-transform:uppercase;">Nombre Común</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase; width:80px;">Acción</th>
+                            <tr>
+                                <th style="width:18%;">N° Trámite</th>
+                                <th style="width:10%;">Año</th>
+                                <th style="width:18%;">Vencimiento</th>
+                                <th style="width:18%;">Estado</th>
+                                <th>Nombre común</th>
+                                <th style="width:12%;">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             <ui:repeat value="#{anualidadBean.alertasProximasVencer}" var="al">
-                                <tr style="border-bottom:1px solid #f0f4f0;">
-                                    <td style="padding:9px 12px; font-weight:700; color:#0d1b35;">
-                                        #{anualidadBean.getVegetableForm(al.vegetableFormId) != null
-                                            ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
-                                            : al.vegetableFormId}
-                                    </td>
-                                    <td style="padding:9px 12px; text-align:center;">
-                                        <span class="anu-anio-chip">#{al.etiqueta}</span>
-                                    </td>
-                                    <td style="padding:9px 12px; text-align:center; font-weight:700; color:#b45309;">
-                                        <h:outputText value="#{al.fechaVencimiento}">
+                                <tr>
+                                    <td><span class="anualidad-alert-tramite">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}</span></td>
+                                    <td><span class="anualidad-alert-anio">#{al.etiqueta}</span></td>
+                                    <td>
+                                        <h:outputText value="#{al.fechaVencimiento}" styleClass="anualidad-alert-fecha" rendered="#{al.fechaVencimiento != null}">
                                             <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
                                         </h:outputText>
+                                        <h:outputText value="Sin fecha" rendered="#{al.fechaVencimiento == null}" styleClass="anu-dash"/>
                                     </td>
-                                    <td style="padding:9px 12px; text-align:center;">
-                                        <span class="#{al.estadoBadgeClass}">#{al.estadoBadgeLabel}</span>
-                                    </td>
-                                    <td style="padding:9px 12px; font-size:11px; color:#374151;">
-                                        #{anualidadBean.getVegetableForm(al.vegetableFormId) != null
-                                            ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : '—'}
-                                    </td>
-                                    <td style="padding:9px 12px; text-align:center;">
-                                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
-                                           style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px;
-                                                  background:#f0f5fc; border-radius:50%; border:1px solid #c9dcf8; color:#1e3a6e; text-decoration:none;"
-                                           title="Ver Trámite">
-                                            <i class="pi pi-external-link" style="font-size:12px;"/>
+                                    <td><span class="anualidad-alert-badge anualidad-alert-badge-prox">#{al.estadoBadgeLabel}</span></td>
+                                    <td><span class="anualidad-alert-name">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : ''}</span></td>
+                                    <td>
+                                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" class="anualidad-alert-action" title="Ver Trámite y Gestionar">
+                                            <i class="pi pi-external-link"/>
                                         </a>
                                     </td>
                                 </tr>
                             </ui:repeat>
                         </tbody>
                     </table>
-                </div>
-            </h:panelGroup>
-            <div style="text-align:right; margin-top:14px; padding-top:12px; border-top:1px solid #e2e8e2;">
+                </h:panelGroup>
+            </div>
+            <div class="modern-alert-footer">
+                <a href="anualidades/lista.xhtml?mostrarAlerta=prox_vencer" class="modern-alert-footer-link">
+                    Ir al módulo de Anualidades <i class="pi pi-arrow-right" style="font-size:10px;"/>
+                </a>
                 <p:commandButton value="Cerrar" type="button" styleClass="btn-cancelar"
-                                 icon="pi pi-times" onclick="PF('dlgAlertasProxVencer').hide();"/>
+                                 icon="pi pi-times" onclick="PF('dlgAlertasProxVencer').hide();" style="border-radius:20px; font-weight:700; font-size:12px;"/>
             </div>
         </p:dialog>
 
@@ -1279,71 +1309,59 @@
         <p:dialog id="dlgAlertasPendientes"
                   header="Alertas: Anualidades Pendientes"
                   widgetVar="dlgAlertasPendientes"
-                  modal="true" resizable="true" width="740" dynamic="true"
+                  modal="true" resizable="true" width="860" dynamic="true"
+                  styleClass="modern-alert-dialog" style="max-width:95vw;"
                   showEffect="fade" hideEffect="fade" closeOnEscape="true">
-            <h:panelGroup rendered="#{empty anualidadBean.alertasPendientes}">
-                <div style="text-align:center; padding:30px; color:#6b7280; font-size:13px;">
-                    <i class="pi pi-check-circle" style="font-size:28px; color:#2a5aad; display:block; margin-bottom:10px;"/>
-                    No hay alertas de anualidades pendientes.
-                </div>
-            </h:panelGroup>
-            <h:panelGroup rendered="#{not empty anualidadBean.alertasPendientes}">
-                <div style="overflow-x:auto;">
-                    <table style="width:100%; border-collapse:collapse; font-size:12px;">
+            <div class="anualidad-alert-table-wrap">
+                <h:panelGroup rendered="#{empty anualidadBean.alertasPendientes}">
+                    <div class="anualidad-alert-empty">No hay alertas de anualidades pendientes.</div>
+                </h:panelGroup>
+                <h:panelGroup rendered="#{not empty anualidadBean.alertasPendientes}">
+                    <table class="anualidad-alert-table">
                         <thead>
-                            <tr style="background:linear-gradient(135deg,#0d1b35,#1e3a6e);">
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:left; font-size:11px; text-transform:uppercase;">N° Trámite</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Año</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Vencimiento</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase;">Estado</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:left; font-size:11px; text-transform:uppercase;">Nombre Común</th>
-                                <th style="padding:10px 12px; color:#fff; font-weight:800; text-align:center; font-size:11px; text-transform:uppercase; width:80px;">Acción</th>
+                            <tr>
+                                <th style="width:18%;">N° Trámite</th>
+                                <th style="width:10%;">Año</th>
+                                <th style="width:18%;">Vencimiento</th>
+                                <th style="width:18%;">Estado</th>
+                                <th>Nombre común</th>
+                                <th style="width:12%;">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             <ui:repeat value="#{anualidadBean.alertasPendientes}" var="al">
-                                <tr style="border-bottom:1px solid #f0f4f0;">
-                                    <td style="padding:9px 12px; font-weight:700; color:#0d1b35;">
-                                        #{anualidadBean.getVegetableForm(al.vegetableFormId) != null
-                                            ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber
-                                            : al.vegetableFormId}
-                                    </td>
-                                    <td style="padding:9px 12px; text-align:center;">
-                                        <span class="anu-anio-chip">#{al.etiqueta}</span>
-                                    </td>
-                                    <td style="padding:9px 12px; text-align:center; font-weight:700; color:#3b82f6;">
-                                        <h:outputText value="#{al.fechaVencimiento}">
+                                <tr>
+                                    <td><span class="anualidad-alert-tramite">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}</span></td>
+                                    <td><span class="anualidad-alert-anio">#{al.etiqueta}</span></td>
+                                    <td>
+                                        <h:outputText value="#{al.fechaVencimiento}" styleClass="anualidad-alert-fecha" rendered="#{al.fechaVencimiento != null}">
                                             <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
                                         </h:outputText>
+                                        <h:outputText value="Sin fecha" rendered="#{al.fechaVencimiento == null}" styleClass="anu-dash"/>
                                     </td>
-                                    <td style="padding:9px 12px; text-align:center;">
-                                        <span class="#{al.estadoBadgeClass}">#{al.estadoBadgeLabel}</span>
-                                    </td>
-                                    <td style="padding:9px 12px; font-size:11px; color:#374151;">
-                                        #{anualidadBean.getVegetableForm(al.vegetableFormId) != null
-                                            ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : '—'}
-                                    </td>
-                                    <td style="padding:9px 12px; text-align:center;">
-                                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}"
-                                           style="display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px;
-                                                  background:#f0f5fc; border-radius:50%; border:1px solid #c9dcf8; color:#1e3a6e; text-decoration:none;"
-                                           title="Ver Trámite">
-                                            <i class="pi pi-external-link" style="font-size:12px;"/>
+                                    <td><span class="anualidad-alert-badge anualidad-alert-badge-pendiente">#{al.estadoBadgeLabel}</span></td>
+                                    <td><span class="anualidad-alert-name">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : ''}</span></td>
+                                    <td>
+                                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" class="anualidad-alert-action" title="Ver Trámite y Gestionar">
+                                            <i class="pi pi-external-link"/>
                                         </a>
                                     </td>
                                 </tr>
                             </ui:repeat>
                         </tbody>
                     </table>
-                </div>
-            </h:panelGroup>
-            <div style="text-align:right; margin-top:14px; padding-top:12px; border-top:1px solid #e2e8e2;">
+                </h:panelGroup>
+            </div>
+            <div class="modern-alert-footer">
+                <a href="anualidades/lista.xhtml?mostrarAlerta=pendiente" class="modern-alert-footer-link">
+                    Ir al módulo de Anualidades <i class="pi pi-arrow-right" style="font-size:10px;"/>
+                </a>
                 <p:commandButton value="Cerrar" type="button" styleClass="btn-cancelar"
-                                 icon="pi pi-times" onclick="PF('dlgAlertasPendientes').hide();"/>
+                                 icon="pi pi-times" onclick="PF('dlgAlertasPendientes').hide();" style="border-radius:20px; font-weight:700; font-size:12px;"/>
             </div>
         </p:dialog>
 
-        <!-- ══ DIÁLOGO: EDICIÓN ══ -->
+        <!-- == DIÁLOGO: EDICIÃ“N == -->
         <p:dialog id="dlgEdit"
                   header="Editar Anualidad — #{anualidadBean.anualidadEnEdicion != null ? anualidadBean.anualidadEnEdicion.etiqueta : ''}"
                   widgetVar="dlgEdit"
@@ -1572,5 +1590,32 @@
         </p:dialog>
 
         </h:form>
+
+        <script type="text/javascript">
+        //<![CDATA[
+        /* Forzar titulo azul en dialogos de alertas */
+        function fixAlertTitlesLista() {
+            document.querySelectorAll('.modern-alert-dialog .ui-dialog-titlebar').forEach(function(tb) {
+                tb.style.setProperty('color', '#93c5fd', 'important');
+                var t = tb.querySelector('.ui-dialog-title');
+                if (t) {
+                    t.style.setProperty('color', '#93c5fd', 'important');
+                    t.style.setProperty('font-weight', '800', 'important');
+                    t.style.setProperty('font-size', '15px', 'important');
+                }
+            });
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            fixAlertTitlesLista();
+            new MutationObserver(function(muts) {
+                muts.forEach(function(m) {
+                    m.addedNodes.forEach(function(n) { if (n.nodeType === 1) fixAlertTitlesLista(); });
+                    if (m.type === 'attributes' &amp;&amp; m.target.classList &amp;&amp; m.target.classList.contains('ui-dialog')) fixAlertTitlesLista();
+                });
+            }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style','class'] });
+        });
+        //]]>
+        </script>
     </h:body>
 </html>
+

@@ -108,7 +108,14 @@ public class AnualidadBean implements Serializable {
             System.err.println("[AnualidadBean] Error al cargar: " + e.getMessage());
         }
         try {
-            tramites = new VegetableFormsDAO(null).buscarTodosByType("Aceptados");
+            List<VegetableForms> todosResolucion = new VegetableFormsDAO(null).buscarTodosByType("Resolucion");
+            List<VegetableForms> filtrados = new ArrayList<>();
+            for (VegetableForms vf : todosResolucion) {
+                if (vf.getFechaResolucion() != null) {
+                    filtrados.add(vf);
+                }
+            }
+            tramites = filtrados;
         } catch (Exception e) {
             tramites = new ArrayList<>();
             System.err.println("[AnualidadBean] Error al cargar trámites: " + e.getMessage());
@@ -195,6 +202,15 @@ public class AnualidadBean implements Serializable {
     public void crearAnualidades() {
         if (tramiteSeleccionadoId == null) {
             Operations.message(Operations.ERROR, "Seleccione un trámite válido.");
+            return;
+        }
+        VegetableForms vf = getVegetableForm(tramiteSeleccionadoId);
+        if (vf == null) {
+            Operations.message(Operations.ERROR, "El trámite seleccionado no existe.");
+            return;
+        }
+        if (!"Para resolución".equals(vf.getObservacionTecnica()) || vf.getFechaResolucion() == null) {
+            Operations.message(Operations.ERROR, "Solo se pueden crear anualidades para trámites en 'Para resolución' con fecha de resolución.");
             return;
         }
         if (tieneAnualidades(tramiteSeleccionadoId)) {
@@ -444,6 +460,7 @@ public class AnualidadBean implements Serializable {
             }
         }
         list.sort((a, b) -> {
+            if (a.getFechaVencimiento() == null && b.getFechaVencimiento() == null) return 0;
             if (a.getFechaVencimiento() == null) return 1;
             if (b.getFechaVencimiento() == null) return -1;
             return a.getFechaVencimiento().compareTo(b.getFechaVencimiento());
@@ -461,6 +478,7 @@ public class AnualidadBean implements Serializable {
             }
         }
         list.sort((a, b) -> {
+            if (a.getFechaVencimiento() == null && b.getFechaVencimiento() == null) return 0;
             if (a.getFechaVencimiento() == null) return 1;
             if (b.getFechaVencimiento() == null) return -1;
             return a.getFechaVencimiento().compareTo(b.getFechaVencimiento());
@@ -478,6 +496,7 @@ public class AnualidadBean implements Serializable {
             }
         }
         list.sort((a, b) -> {
+            if (a.getFechaVencimiento() == null && b.getFechaVencimiento() == null) return 0;
             if (a.getFechaVencimiento() == null) return 1;
             if (b.getFechaVencimiento() == null) return -1;
             return a.getFechaVencimiento().compareTo(b.getFechaVencimiento());
@@ -504,6 +523,7 @@ public class AnualidadBean implements Serializable {
         if (alertas != null) list.addAll(alertas);
         if (alertasVencidas != null) list.addAll(alertasVencidas);
         list.sort((a, b) -> {
+            if (a.getFechaVencimiento() == null && b.getFechaVencimiento() == null) return 0;
             if (a.getFechaVencimiento() == null) return 1;
             if (b.getFechaVencimiento() == null) return -1;
             return a.getFechaVencimiento().compareTo(b.getFechaVencimiento());

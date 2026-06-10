@@ -35,6 +35,17 @@ public class RegistroBean implements Serializable {
     private VegetableForms form;
     private LoginBean login;
     private List<ComprobantePago> archivosSubidos;
+    private String originalObservacionTecnica;
+
+    private static final List<String> OBSERVACIONES_ORDENADAS = java.util.Arrays.asList(
+        "Aceptada a trámite y revisión de requisitos de fondo",
+        "Para publicar en gaceta",
+        "Para consulta de resultados de examen DHE",
+        "Para realización de examen DHE",
+        "En espera de resultados de examen DHE",
+        "Para dictamen técnico",
+        "Para resolución"
+    );
 
     private UploadedFile archivoFormulario;
     private UploadedFiles archivosFotos;
@@ -54,6 +65,7 @@ public class RegistroBean implements Serializable {
         form.setCreateDate(new Timestamp(System.currentTimeMillis()));
         archivosSubidos = new ArrayList<>();
         editMode = false;
+        originalObservacionTecnica = null;
         FacesContext ctx = FacesContext.getCurrentInstance();
         if (ctx != null) {
             login = (LoginBean) ctx.getExternalContext().getSessionMap().get("loginBean");
@@ -67,6 +79,7 @@ public class RegistroBean implements Serializable {
             VegetableForms loaded = c.getVegetableFormsById(editId);
             if (loaded != null) {
                 form = loaded;
+                originalObservacionTecnica = loaded.getObservacionTecnica();
                 try {
                     archivosSubidos = new ComprobantePagoDAO(null).getTodosLosArchivosPorVegetableFormId(form.getId());
                 } catch (Exception e) {
@@ -80,6 +93,10 @@ public class RegistroBean implements Serializable {
 
     public String saveRegistro() {
         if (!validarPublicacionGaceta()) return null;
+        if (isObservacionTecnicaOptionDisabled(form.getObservacionTecnica())) {
+            addError("Transición de Observación Técnica no permitida. Debe avanzar secuencialmente.");
+            return null;
+        }
         try {
             if (form.getStatus() == null) form.setStatus(Status.SAVED);
             if (form.getFlowPhase() == null) form.setFlowPhase(FlowPhase.INITIAL);
@@ -94,6 +111,7 @@ public class RegistroBean implements Serializable {
             VegetableFormsDAO dao = new VegetableFormsDAO(form);
             dao.persist();
 
+            originalObservacionTecnica = form.getObservacionTecnica();
             registrarHistorial(form, "Registro creado");
             return "index?faces-redirect=true";
         } catch (Exception e) {
@@ -105,6 +123,10 @@ public class RegistroBean implements Serializable {
 
     public String saveRegistroAndStay() {
         if (!validarPublicacionGaceta()) return null;
+        if (isObservacionTecnicaOptionDisabled(form.getObservacionTecnica())) {
+            addError("Transición de Observación Técnica no permitida. Debe avanzar secuencialmente.");
+            return null;
+        }
         try {
             if (form.getStatus() == null) form.setStatus(Status.SAVED);
             if (form.getFlowPhase() == null) form.setFlowPhase(FlowPhase.INITIAL);
@@ -120,6 +142,7 @@ public class RegistroBean implements Serializable {
             dao.persist();
 
             editMode = true;
+            originalObservacionTecnica = form.getObservacionTecnica();
             archivosSubidos = new ArrayList<>();
             registrarHistorial(form, "Registro creado");
             addInfo("Registro guardado. Ahora puede subir los documentos.");
@@ -136,10 +159,18 @@ public class RegistroBean implements Serializable {
 
         System.out.println("ENTRO A UPDATE");
         if (!validarPublicacionGaceta()) return null;
+        if (isObservacionTecnicaOptionDisabled(form.getObservacionTecnica())) {
+            addError("Transición de Observación Técnica no permitida. Debe avanzar secuencialmente y guardar cada estado.");
+            return null;
+        }
 
         try {
             if (!"Para resolución".equals(form.getObservacionTecnica())) {
                 form.setFechaResolucion(null);
+            }
+            if ("Para resolución".equals(form.getObservacionTecnica()) && form.getFechaResolucion() == null) {
+                addError("La fecha de resolución es requerida para el estado 'Para resolución'.");
+                return null;
             }
             VegetableForms anterior = new VegetableFormsDAO(null).getVegetableFormsById(form.getId());
 
@@ -156,7 +187,23 @@ public class RegistroBean implements Serializable {
                 }
             }
 
+            form.setCreateDate(new Timestamp(System.currentTimeMillis()));
             new VegetableFormsDAO(null).actualizarCamposEditables(form);
+            originalObservacionTecnica = form.getObservacionTecnica();
+
+            // Generación automática de anualidades al pasar a "Para resolución" con fecha de resolución
+            if ("Para resolución".equals(form.getObservacionTecnica()) && form.getFechaResolucion() != null) {
+                try {
+                    senadi.gob.ec.adminob.dao.AnualidadDAO aDao = new senadi.gob.ec.adminob.dao.AnualidadDAO(null);
+                    if (!aDao.existenAnualidades(form.getId())) {
+                        String user = (login != null ? login.getLogin() : "sistema");
+                        aDao.generarAnualidadesAutomaticas(form.getId(), form.getFechaResolucion(), user);
+                        System.out.println("[RegistroBean] Anualidades generadas automáticamente tras guardar trámite: " + form.getId());
+                    }
+                } catch (Exception ex) {
+                    System.err.println("[RegistroBean] Error al generar anualidades automáticas: " + ex.getMessage());
+                }
+            }
 
             if (transitioningToAccepted) {
                 try {
@@ -590,5 +637,40 @@ public class RegistroBean implements Serializable {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public boolean isObservacionTecnicaOptionDisabled(String optionValue) {
+        String original = originalObservacionTecnica;
+        
+        if (original != null && original.trim().isEmpty()) {
+            original = null;
+        }
+        String normalizedOption = optionValue;
+        if (normalizedOption != null && normalizedOption.trim().isEmpty()) {
+            normalizedOption = null;
+        }
+        
+        if (original == null && normalizedOption == null) {
+            return false;
+        }
+        if (original != null && original.equals(normalizedOption)) {
+            return false;
+        }
+        
+        int originalIdx = -1;
+        if (original != null) {
+            originalIdx = OBSERVACIONES_ORDENADAS.indexOf(original);
+        }
+        
+        int optionIdx = -1;
+        if (normalizedOption != null) {
+            optionIdx = OBSERVACIONES_ORDENADAS.indexOf(normalizedOption);
+        }
+        
+        if (optionIdx == originalIdx + 1) {
+            return false;
+        }
+        
+        return true;
     }
 }

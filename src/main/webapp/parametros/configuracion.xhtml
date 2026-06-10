@@ -21,7 +21,7 @@
     <h:body>
         <p:growl id="mensajes" showDetail="true" life="6000" sticky="false"/>
 
-        <!-- ════ HEADER ════ -->
+        <!-- ==== HEADER ==== -->
         <div class="sn-header">
             <a href="../index.xhtml" class="sn-header-brand">
                 <img src="#{resource['images/sena_2.png']}" alt="SENADI"/>
@@ -30,7 +30,7 @@
         </div>
         <div class="sn-header-gold-line"/>
 
-        <!-- ════ BREADCRUMB ════ -->
+        <!-- ==== BREADCRUMB ==== -->
         <div class="sn-breadcrumb">
             <i class="pi pi-home" style="font-size:11px;"/>
             <a href="../index.xhtml">Inicio</a>
@@ -51,7 +51,7 @@
                                  styleClass="sn-btn-secondary"/>
             </div>
 
-            <!-- ════ TABLA DE PARÁMETROS ════ -->
+            <!-- ==== TABLA DE PARÁMETROS ==== -->
             <p:dataTable id="tblParametros" value="#{parametroBean.parametros}" var="param"
                          tableStyleClass="sn-table" rowStyleClass="sn-row"
                          emptyMessage="No hay parámetros configurados.">
@@ -94,7 +94,7 @@
 
         </div><!-- /sn-wrap -->
 
-        <!-- ════ DIÁLOGO DE EDICIÓN ════ -->
+        <!-- ==== DIÁLOGO DE EDICIÓN ==== -->
         <p:dialog header="Editar Parámetro" widgetVar="dlgParam"
                   modal="true" resizable="false" width="500"
                   position="center">
