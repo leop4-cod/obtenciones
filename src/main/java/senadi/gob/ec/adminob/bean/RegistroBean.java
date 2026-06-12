@@ -25,6 +25,9 @@ import senadi.gob.ec.adminob.model.History;
 import senadi.gob.ec.adminob.model.VegetableForms;
 import senadi.gob.ec.adminob.util.AppConfig;
 import senadi.gob.ec.adminob.util.Controller;
+import senadi.gob.ec.adminob.integration.ExternalAppRestClient;
+import senadi.gob.ec.adminob.integration.dto.ExternalVarietyDataDTO;
+import senadi.gob.ec.adminob.integration.dto.TechnicalInfoDTO;
 
 @ManagedBean(name = "registroBean")
 @ViewScoped
@@ -85,9 +88,123 @@ public class RegistroBean implements Serializable {
                 } catch (Exception e) {
                     archivosSubidos = new ArrayList<>();
                 }
+                autoJalarDatosExternos();
             } else {
                 addError("No se encontró el registro con ID: " + editId);
             }
+        }
+    }
+
+    public void autoJalarDatosExternos() {
+        if (form == null || form.getApplicationNumber() == null || form.getApplicationNumber().trim().isEmpty()) {
+            return;
+        }
+        boolean isFresh = (form.getGenealogy() == null || form.getGenealogy().trim().isEmpty())
+                       && (form.getReproductionMechanism() == null || form.getReproductionMechanism().trim().isEmpty());
+        if (!isFresh) {
+            return;
+        }
+        try {
+            ExternalAppRestClient client = new ExternalAppRestClient();
+            ExternalVarietyDataDTO extData = client.obtenerDatos(form.getApplicationNumber());
+            if (extData != null) {
+                if (extData.getEnTerritorio() != null) {
+                    form.setInTerritory(true);
+                }
+                if (extData.getFueraTerritorio() != null) {
+                    form.setOutTerritory(true);
+                }
+                if (extData.getInformacionTecnica() != null) {
+                    TechnicalInfoDTO tech = extData.getInformacionTecnica();
+                    if (tech.getTaxon() != null && !tech.getTaxon().trim().isEmpty()) {
+                        form.setBotanicalTaxon(tech.getTaxon().trim());
+                    }
+                    if (tech.getNombreComun() != null && !tech.getNombreComun().trim().isEmpty()) {
+                        form.setCommonName(tech.getNombreComun().trim());
+                    }
+                    if (tech.getMecanismoReproducccion() != null && !tech.getMecanismoReproducccion().trim().isEmpty()) {
+                        form.setReproductionMechanism(tech.getMecanismoReproducccion().trim());
+                    }
+                    if (tech.getOrigenGeografico() != null && !tech.getOrigenGeografico().trim().isEmpty()) {
+                        form.setGeographicalMaterialOrigin(tech.getOrigenGeografico().trim());
+                    }
+                    if (tech.getGenealogy() != null && !tech.getGenealogy().trim().isEmpty()) {
+                        form.setGenealogy(tech.getGenealogy().trim());
+                    }
+                    if (tech.getObservaciones() != null && !tech.getObservaciones().trim().isEmpty()) {
+                        form.setAdditionalInformation(tech.getObservaciones().trim());
+                    }
+                }
+            }
+        } catch (Exception e) {
+            java.util.logging.Logger.getLogger(getClass().getName()).log(java.util.logging.Level.WARNING, 
+                "[RegistroBean] Error al auto-sincronizar con el aplicativo externo: " + e.getMessage());
+        }
+    }
+
+    public void sincronizarDatosExternos() {
+        if (form == null || form.getApplicationNumber() == null || form.getApplicationNumber().trim().isEmpty()) {
+            addError("No se puede sincronizar: el número de trámite está vacío.");
+            return;
+        }
+        try {
+            ExternalAppRestClient client = new ExternalAppRestClient();
+            ExternalVarietyDataDTO extData = client.obtenerDatos(form.getApplicationNumber());
+            if (extData == null) {
+                addError("No se encontraron datos en el aplicativo externo para el trámite: " + form.getApplicationNumber());
+                return;
+            }
+
+            int count = 0;
+            if (extData.getEnTerritorio() != null) {
+                form.setInTerritory(true);
+                count++;
+            } else {
+                form.setInTerritory(false);
+            }
+            if (extData.getFueraTerritorio() != null) {
+                form.setOutTerritory(true);
+                count++;
+            } else {
+                form.setOutTerritory(false);
+            }
+
+            if (extData.getInformacionTecnica() != null) {
+                TechnicalInfoDTO tech = extData.getInformacionTecnica();
+                if (tech.getTaxon() != null && !tech.getTaxon().trim().isEmpty()) {
+                    form.setBotanicalTaxon(tech.getTaxon().trim());
+                    count++;
+                }
+                if (tech.getNombreComun() != null && !tech.getNombreComun().trim().isEmpty()) {
+                    form.setCommonName(tech.getNombreComun().trim());
+                    count++;
+                }
+                if (tech.getMecanismoReproducccion() != null && !tech.getMecanismoReproducccion().trim().isEmpty()) {
+                    form.setReproductionMechanism(tech.getMecanismoReproducccion().trim());
+                    count++;
+                }
+                if (tech.getOrigenGeografico() != null && !tech.getOrigenGeografico().trim().isEmpty()) {
+                    form.setGeographicalMaterialOrigin(tech.getOrigenGeografico().trim());
+                    count++;
+                }
+                if (tech.getGenealogy() != null && !tech.getGenealogy().trim().isEmpty()) {
+                    form.setGenealogy(tech.getGenealogy().trim());
+                    count++;
+                }
+                if (tech.getObservaciones() != null && !tech.getObservaciones().trim().isEmpty()) {
+                    form.setAdditionalInformation(tech.getObservaciones().trim());
+                    count++;
+                }
+            }
+
+            if (count > 0) {
+                addInfo("Sincronización exitosa. Se actualizaron los campos con datos del aplicativo externo.");
+            } else {
+                addInfo("El trámite existe en el aplicativo externo pero no contiene datos técnicos adicionales.");
+            }
+        } catch (Exception e) {
+            addError("Error al conectar con el aplicativo externo: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

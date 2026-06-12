@@ -34,7 +34,7 @@
             ================================================== */
             .lm-sidebar {
                 width: 255px; min-width: 255px;
-                background: linear-gradient(180deg, #0d1b35 0%, #1a2d52 60%, #0d1b35 100%);
+                background: linear-gradient(180deg, #0a1931 0%, #15305b 60%, #0a1931 100%);
                 display: flex; flex-direction: column;
                 position: fixed; left: 0; top: 0; bottom: 0;
                 overflow-y: auto; z-index: 200;
@@ -74,20 +74,19 @@
             .lm-icon-btn:hover { background: #dbeafe; color: #1e3a6e; text-decoration: none !important; }
             .lm-content { padding: 20px 24px 40px; flex: 1; }
             .lm-page-title { display: flex; align-items: center; gap: 11px; font-size: 18px; font-weight: 800; color: #1a1a2e; margin-bottom: 20px; }
-            .lm-page-icon { width: 38px; height: 38px; border-radius: 9px; background: linear-gradient(135deg, #1e3a6e, #0d1b35); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 17px; flex-shrink: 0; }
+            .lm-page-icon { width: 38px; height: 38px; border-radius: 9px; background: linear-gradient(135deg, #3b82f6, #1e40af); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 17px; flex-shrink: 0; }
 
             /* ==================================================
                PESTAÃ‘AS
             ================================================== */
             .lm-tabs { display: flex; gap: 10px; margin-bottom: 22px; flex-wrap: wrap; }
-            .lm-tab-btn { padding: 12px 22px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: background .2s, transform .15s, box-shadow .2s; display: flex; align-items: center; gap: 8px; min-width: 150px; justify-content: center; font-family: 'Nunito Sans', sans-serif; outline: none; }
+            .lm-tab-btn { padding: 12px 22px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: background .2s, transform .15s, box-shadow .2s; display: flex; align-items: center; gap: 8px; min-width: 150px; justify-content: center; font-family: 'Nunito Sans', sans-serif; outline: none; text-decoration: none !important; }
             .lm-tab-btn:not(.active) { background: #182d46; color: #fff; }
             .lm-tab-btn:not(.active):hover { background: #1e3c5e; transform: translateY(-1px); }
             .lm-tab-btn.active { background: #c9a227; color: #fff; box-shadow: 0 4px 14px rgba(201,162,39,.38); transform: translateY(-1px); }
             .lm-tab-btn .pi { font-size: 14px; }
-            .lm-tab-panel { display: none; animation: tabIn .22s ease; }
+            .lm-tab-panel { display: none; }
             .lm-tab-panel.active { display: block; }
-            @keyframes tabIn { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
 
             /* ==================================================
                TARJETAS
@@ -95,14 +94,14 @@
             .lm-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 14px rgba(0,0,0,.06); border: 1px solid #e5ecf5; margin-bottom: 18px; overflow: hidden; }
             .lm-card-head { padding: 14px 20px; border-bottom: 1px solid #f0f5fc; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
             .lm-card-title { font-size: 15px; font-weight: 800; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
-            .lm-card-title .pi { color: #1e3a6e; font-size: 16px; }
+            .lm-card-title .pi { color: #2563eb; font-size: 16px; }
             .lm-card-body { padding: 18px 20px; }
 
             /* ==================================================
                ESTADÍSTICAS
             ================================================== */
             .lm-stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 16px; margin-bottom: 22px; }
-            .lm-stat { background: #fff; border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 10px rgba(0,0,0,.06); border-left: 5px solid #1e3a6e; transition: transform .18s, box-shadow .18s; }
+            .lm-stat { background: #fff; border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 10px rgba(0,0,0,.06); border-left: 5px solid #2563eb; transition: transform .18s, box-shadow .18s; }
             .lm-stat:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(0,0,0,.10); }
             .lm-stat.gold { border-left-color: #c9a227; }
             .lm-stat.red  { border-left-color: #dc2626; }
@@ -115,30 +114,30 @@
                BOTONES (preservados del original)
             ================================================== */
             button.ui-button.sn-btn-new, .sn-btn-new.ui-button, .sn-btn-new {
-                background: linear-gradient(135deg, #2a5aad 0%, #1e3a6e 55%, #135226 100%) !important;
-                border: 1px solid #0d1b35 !important; color: #ffffff !important; font-weight: 800 !important;
+                background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+                border: 1px solid #2563eb !important; color: #ffffff !important; font-weight: 800 !important;
                 font-size: 13px !important; border-radius: 8px !important; padding: 10px 24px !important;
                 display: inline-flex !important; align-items: center !important; gap: 7px !important;
-                cursor: pointer !important; box-shadow: 0 2px 10px rgba(27,107,58,.40) !important;
+                cursor: pointer !important; box-shadow: 0 2px 10px rgba(37,99,235,.40) !important;
                 transition: all .22s ease !important; white-space: nowrap !important;
             }
             button.ui-button.sn-btn-new:hover, .sn-btn-new.ui-button:hover, .sn-btn-new:hover {
-                background: linear-gradient(135deg, #2fa355 0%, #2a5aad 55%, #1e3a6e 100%) !important;
-                box-shadow: 0 5px 18px rgba(27,107,58,.52) !important; transform: translateY(-2px) !important;
+                background: linear-gradient(135deg, #60a5fa, #3b82f6) !important;
+                box-shadow: 0 5px 18px rgba(37,99,235,.52) !important; transform: translateY(-2px) !important;
             }
             .sn-btn-new .ui-button-text { color: #fff !important; font-weight: 800 !important; }
             .sn-btn-new .pi { color: #fff !important; }
 
             button.ui-button.sn-btn-outline, .sn-btn-outline.ui-button, .sn-btn-outline {
-                background: transparent !important; border: 2px solid rgba(27,107,58,.60) !important;
-                color: #1e3a6e !important; font-weight: 700 !important; font-size: 12px !important;
+                background: transparent !important; border: 2px solid rgba(37,99,235,.60) !important;
+                color: #2563eb !important; font-weight: 700 !important; font-size: 12px !important;
                 border-radius: 8px !important; padding: 8px 18px !important;
                 display: inline-flex !important; align-items: center !important; gap: 6px !important;
                 cursor: pointer !important; transition: all .20s ease !important; white-space: nowrap !important;
             }
             button.ui-button.sn-btn-outline:hover, .sn-btn-outline.ui-button:hover {
-                background: linear-gradient(135deg, #1e3a6e, #0d1b35) !important;
-                border-color: #0d1b35 !important; color: #fff !important; transform: translateY(-1px) !important;
+                background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+                border-color: #2563eb !important; color: #fff !important; transform: translateY(-1px) !important;
             }
             .sn-btn-outline .ui-button-text { color: inherit !important; font-weight: 700 !important; }
             .sn-btn-outline .pi { color: inherit !important; }
@@ -158,15 +157,15 @@
             .btn-cancelar .pi { color: #374151 !important; }
 
             button.ui-button.sn-btn-import, .sn-btn-import.ui-button, .sn-btn-import {
-                background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 55%, #1e40af 100%) !important;
-                border: 1px solid #1e3a8a !important; color: #ffffff !important; font-weight: 800 !important;
+                background: linear-gradient(135deg, #3b82f6 0%, #2563eb 55%, #1e40af 100%) !important;
+                border: 1px solid #1e40af !important; color: #ffffff !important; font-weight: 800 !important;
                 font-size: 13px !important; border-radius: 8px !important; padding: 10px 22px !important;
                 display: inline-flex !important; align-items: center !important; gap: 7px !important;
                 cursor: pointer !important; box-shadow: 0 2px 10px rgba(37,99,235,.40) !important;
                 transition: all .22s ease !important; white-space: nowrap !important;
             }
             button.ui-button.sn-btn-import:hover, .sn-btn-import.ui-button:hover {
-                background: linear-gradient(135deg, #3b82f6 0%, #2563eb 55%, #1d4ed8 100%) !important;
+                background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 55%, #2563eb 100%) !important;
                 box-shadow: 0 5px 18px rgba(37,99,235,.52) !important; transform: translateY(-2px) !important;
             }
             .sn-btn-import .ui-button-text { color: #fff !important; font-weight: 800 !important; }
@@ -219,7 +218,7 @@
             ================================================== */
             .anu-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 10.5px; font-weight: 900; letter-spacing: .4px; text-transform: uppercase; box-shadow: 0 1px 4px rgba(0,0,0,.10); }
             .anu-pendiente  { background: linear-gradient(135deg, #fef9ec, #fef3c7); color: #78350f; border: 1px solid #fcd34d; }
-            .anu-pagado     { background: linear-gradient(135deg, #1e3a6e, #0d2b6e); color: #fff; border: 1px solid #0d1b35; }
+            .anu-pagado     { background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff; border: 1px solid #2563eb; }
             .anu-vencido    { background: linear-gradient(135deg, #fff1f2, #ffe4e6); color: #881337; border: 1px solid #fca5a5; }
             .anu-alerta     { background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #78350f; border: 1px solid #fbbf24; }
             .anu-gracia     { background: linear-gradient(135deg, #fff7ed, #ffedd5); color: #9a3412; border: 1px solid #fb923c; }
@@ -247,7 +246,7 @@
             .anu-monto-card { border-radius: 8px; padding: 9px 14px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; border: 1px solid; }
             .anu-monto-card-base     { background: #f8fafc; border-color: #cbd5e1; }
             .anu-monto-card-recargo  { background: #fff7ed; border-color: #fb923c; }
-            .anu-monto-card-total    { background: linear-gradient(135deg,#0d1b35,#1e3a6e); color:#fff; border-color: #0d1b35; }
+            .anu-monto-card-total    { background: linear-gradient(135deg, #3b82f6, #2563eb); color:#fff; border-color: #2563eb; }
             .anu-monto-card-total .anu-mc-lbl { color: rgba(255,255,255,.80); }
             .anu-mc-lbl { font-size: 10.5px; font-weight: 700; color: #6b7280; text-transform: uppercase; }
             .anu-mc-val { font-size: 14px; font-weight: 800; }
@@ -255,7 +254,7 @@
             /* ==================================================
                TABLA ACORDEÃ“N
             ================================================== */
-            .anu-table th.ui-state-default { background: linear-gradient(180deg, #2a5aad 0%, #1e3a6e 55%, #0d2b6e 100%) !important; color: #fff !important; font-size: 11px !important; font-weight: 800 !important; letter-spacing: .35px !important; text-transform: uppercase !important; padding: 11px 10px !important; border-right: 1px solid rgba(255,255,255,.15) !important; white-space: nowrap !important; }
+            .anu-table th.ui-state-default { background: linear-gradient(180deg, #3b82f6 0%, #2563eb 55%, #1e40af 100%) !important; color: #fff !important; font-size: 11px !important; font-weight: 800 !important; letter-spacing: .35px !important; text-transform: uppercase !important; padding: 11px 10px !important; border-right: 1px solid rgba(255,255,255,.15) !important; white-space: nowrap !important; }
             .anu-table td { font-size:13px !important; vertical-align:middle !important; padding:8px 10px !important; border-bottom:1px solid #f0f4f0 !important; color: #111827 !important; }
             .anu-row-vencida > td { background:#fff1f2 !important; }
             .anu-row-alerta  > td { background:#fffbeb !important; }
@@ -288,7 +287,7 @@
             .anu-detail-row.anu-row-pagada:hover  > td { background: #dbeafe !important; }
             .anu-detail-row.anu-row-vencida:hover > td { background: #ffe4e6 !important; }
             .anu-detail-row.anu-row-alerta:hover  > td { background: #fef3c7 !important; }
-            .anu-acc-thead th { background: linear-gradient(135deg,#0d1b35,#1e3a6e) !important; color:#fff !important; font-size:11px !important; font-weight:800 !important; letter-spacing:.3px !important; text-transform:uppercase !important; padding:10px 10px !important; border-right:1px solid rgba(255,255,255,.15) !important; white-space:nowrap !important; }
+            .anu-acc-thead th { background: linear-gradient(180deg, #3b82f6 0%, #2563eb 55%, #1e40af 100%) !important; color:#fff !important; font-size:11px !important; font-weight:800 !important; letter-spacing:.3px !important; text-transform:uppercase !important; padding:10px 10px !important; border-right:1px solid rgba(255,255,255,.15) !important; white-space:nowrap !important; }
             .anu-empty-acc { text-align: center; padding: 48px 20px; color: #9ca3af; font-size: 13px; }
             .anu-empty-acc i { display:block; font-size:36px; margin-bottom:12px; }
             .anu-acc-ctrl { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; cursor:pointer; color:#1e3a6e; background:#eff4ff; border:1px solid #bfdbfe; border-radius:6px; padding:4px 10px; transition:background .15s; }
@@ -342,6 +341,159 @@
                 .lm-content { padding: 14px 12px 30px; }
                 .lm-stats-grid { grid-template-columns: 1fr 1fr; }
             }
+            .modern-alert-footer {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 20px;
+                padding-top: 16px;
+                border-top: 1px solid #e2e8f0;
+            }
+            .modern-alert-footer-link {
+                font-size: 13px !important;
+                color: #1e3a6e !important;
+                font-weight: 700 !important;
+                text-decoration: none !important;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                transition: color 0.2s, transform 0.2s;
+            }
+            .modern-alert-footer-link:hover {
+                color: #c9a227 !important;
+                transform: translateX(4px);
+            }
+            .modern-alert-close-btn {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 5px !important;
+                background-color: #0f172a !important;
+                border: 1px solid #0f172a !important;
+                color: #ffffff !important;
+                font-family: 'Nunito Sans', sans-serif !important;
+                font-size: 12px !important;
+                font-weight: 700 !important;
+                border-radius: 8px !important;
+                padding: 7px 18px !important;
+                cursor: pointer !important;
+                transition: all 0.2s ease !important;
+                outline: none !important;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+                text-decoration: none !important;
+            }
+            .modern-alert-close-btn:hover {
+                background-color: #1e293b !important;
+                border-color: #1e293b !important;
+                color: #ffffff !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06) !important;
+            }
+            .modern-alert-close-btn:active {
+                transform: scale(0.97) !important;
+            }
+            .modern-alert-close-btn .pi {
+                color: #ffffff !important;
+                font-size: 11px !important;
+            }
+            /* ── Modales HTML puros (sin PrimeFaces) ── */
+            .cm-overlay {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(15,23,42,.42);
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+                z-index: 9990;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+                overflow-y: auto;
+            }
+            .cm-overlay.open { display: flex; }
+            .cm-box {
+                background: #fff;
+                border-radius: 16px;
+                box-shadow:
+                    0 24px 50px -12px rgba(15,23,42,.18),
+                    0 0 0 1px rgba(15,23,42,.06);
+                width: 900px;
+                max-width: 96vw;
+                max-height: 92vh;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                animation: cmIn .24s cubic-bezier(.34,1.38,.64,1);
+            }
+            @keyframes cmIn {
+                from { transform: scale(.95) translateY(18px); opacity: 0; }
+                to   { transform: scale(1)   translateY(0);    opacity: 1; }
+            }
+            /* ── Titlebar: fondo limpio blanco + franja de color ── */
+            .cm-titlebar {
+                padding: 20px 24px 16px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-shrink: 0;
+                color: #0f172a;
+                font-family: 'Nunito Sans', sans-serif;
+                font-weight: 800;
+                font-size: 16px;
+                letter-spacing: .01em;
+                background: #ffffff;
+                position: relative;
+                border-bottom: 1px solid #f1f5f9;
+            }
+            .cm-titlebar::after {
+                content: '';
+                position: absolute;
+                top: 0; left: 0; right: 0;
+                height: 4px;
+            }
+            .cm-titlebar-exp::after  { background: #ef4444; }
+            .cm-titlebar-prox::after { background: #f59e0b; }
+            .cm-titlebar-pend::after { background: #3b82f6; }
+            
+            /* Icono de alerta con fondo de badge semitransparente */
+            .cm-titlebar-icon {
+                display: flex; align-items: center; gap: 11px;
+                position: relative; z-index: 1;
+                font-size: 15px;
+                color: #0f172a;
+            }
+            .cm-titlebar-icon i {
+                width: 32px; height: 32px;
+                border-radius: 8px;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 14px;
+                flex-shrink: 0;
+            }
+            .cm-titlebar-exp  .cm-titlebar-icon i { background: rgba(239,68,68,.08);  border: 1px solid rgba(239,68,68,.16);  color: #ef4444; }
+            .cm-titlebar-prox .cm-titlebar-icon i { background: rgba(245,158,11,.08); border: 1px solid rgba(245,158,11,.16); color: #d97706; }
+            .cm-titlebar-pend .cm-titlebar-icon i { background: rgba(59,130,246,.08);  border: 1px solid rgba(59,130,246,.16); color: #2563eb; }
+            
+            /* Botón X con rotación en hover */
+            .cm-x-btn {
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                color: #64748b;
+                width: 28px; height: 28px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 11px;
+                display: flex; align-items: center; justify-content: center;
+                transition: all .2s ease;
+                flex-shrink: 0;
+                position: relative; z-index: 1;
+            }
+            .cm-x-btn:hover {
+                background: #f1f5f9;
+                border-color: #cbd5e1;
+                color: #334155;
+                transform: rotate(90deg);
+            }
+            .cm-body { overflow-y: auto; flex: 1; background: #ffffff; }
             .anualidad-alert-table-wrap { max-height: 450px; overflow-y: auto; padding: 18px 24px 10px; }
             .anualidad-alert-table { width: 100%; border-collapse: collapse; background: #fff; table-layout: fixed; }
             .anualidad-alert-table th {
@@ -367,9 +519,9 @@
             .anualidad-alert-name { color: #374151; font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
             .anualidad-alert-action {
                 width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
-                background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; text-decoration: none !important;
+                background: #e6f0fb; color: #2a5aad; border: 1px solid #c3d7f2; text-decoration: none !important;
             }
-            .anualidad-alert-action:hover { background: #dbeafe; color: #1d4ed8; }
+            .anualidad-alert-action:hover { background: #dbeafe; color: #1e3a6e; }
             .anualidad-alert-badge {
                 min-width: 94px; display: inline-flex; justify-content: center; align-items: center;
                 border-radius: 999px; padding: 5px 13px; font-size: 10px; font-weight: 900;
@@ -416,6 +568,14 @@
                 if (btn) btn.classList.add('active');
                 var panel = document.getElementById('tab-' + tabId);
                 if (panel) panel.classList.add('active');
+            }
+            function showAlertModal(id) {
+                var el = document.getElementById(id);
+                if (el) { el.classList.add('open'); document.body.style.overflow = 'hidden'; }
+            }
+            function hideAlertModal(id) {
+                var el = document.getElementById(id);
+                if (el) { el.classList.remove('open'); document.body.style.overflow = ''; }
             }
 
             // Cerrar diálogos modales de PrimeFaces al hacer clic fuera (en la máscara)
@@ -511,7 +671,7 @@
                 </a>
 
                 <!-- Sección de Alertas Clasificadas -->
-                <p:commandLink onclick="PF('dlgAlertasExpiradas').show(); return false;" class="lm-nav-item sidebar-alert-link danger-alert">
+                <a href="javascript:void(0)" onclick="showAlertModal('cmAlertasExpiradas');" class="lm-nav-item sidebar-alert-link danger-alert">
                     <div class="sidebar-alert-title">
                         <i class="pi pi-exclamation-triangle" style="color: #ef4444;"/>
                         <span>Alertas Expiradas</span>
@@ -519,9 +679,9 @@
                     <span class="sidebar-alert-badge danger">
                         #{anualidadBean.totalAlertasExpiradas}
                     </span>
-                </p:commandLink>
+                </a>
 
-                <p:commandLink onclick="PF('dlgAlertasProxVencer').show(); return false;" class="lm-nav-item sidebar-alert-link warning-alert">
+                <a href="javascript:void(0)" onclick="showAlertModal('cmAlertasProxVencer');" class="lm-nav-item sidebar-alert-link warning-alert">
                     <div class="sidebar-alert-title">
                         <i class="pi pi-clock" style="color: #f59e0b;"/>
                         <span>Próx. a Vencer</span>
@@ -529,17 +689,17 @@
                     <span class="sidebar-alert-badge warning">
                         #{anualidadBean.totalAlertasProximasVencer}
                     </span>
-                </p:commandLink>
+                </a>
 
-                <p:commandLink onclick="PF('dlgAlertasPendientes').show(); return false;" class="lm-nav-item sidebar-alert-link info-alert">
+                <a href="javascript:void(0)" onclick="showAlertModal('cmAlertasPendientes');" class="lm-nav-item sidebar-alert-link info-alert">
                     <div class="sidebar-alert-title">
-                        <i class="pi pi-info-circle" style="color: #3b82f6;"/>
+                        <i class="pi pi-info-circle" style="color: #2563eb;"/>
                         <span>Alertas Pendientes</span>
                     </div>
                     <span class="sidebar-alert-badge info">
                         #{anualidadBean.totalAlertasPendientes}
                     </span>
-                </p:commandLink>
+                </a>
 
                 <div class="lm-sidebar-spacer"/>
 
@@ -582,11 +742,11 @@
                     var params = new URLSearchParams(window.location.search);
                     var mostrarAlerta = params.get('mostrarAlerta');
                     if (mostrarAlerta === 'expirada') {
-                        PF('dlgAlertasExpiradas').show();
+                        showAlertModal('cmAlertasExpiradas');
                     } else if (mostrarAlerta === 'prox_vencer') {
-                        PF('dlgAlertasProxVencer').show();
+                        showAlertModal('cmAlertasProxVencer');
                     } else if (mostrarAlerta === 'pendiente') {
-                        PF('dlgAlertasPendientes').show();
+                        showAlertModal('cmAlertasPendientes');
                     }
                 });
             //]]>
@@ -626,24 +786,24 @@
                         Gestión de Anualidades
                     </div>
 
-                    <!-- == 4 PESTAÃ‘AS == -->
+                    <!-- == 4 PESTAÑAS == -->
                     <div class="lm-tabs">
-                        <button type="button" class="lm-tab-btn"
-                                onclick="switchTab('resumen', this)">
+                        <a href="javascript:void(0)" class="lm-tab-btn"
+                           onclick="switchTab('resumen', this);">
                             <i class="pi pi-chart-bar"/> Resumen
-                        </button>
-                        <button type="button" class="lm-tab-btn active"
-                                onclick="switchTab('tabla', this)">
+                        </a>
+                        <a href="javascript:void(0)" class="lm-tab-btn active"
+                           onclick="switchTab('tabla', this);">
                             <i class="pi pi-table"/> Tabla de Anualidades
-                        </button>
-                        <button type="button" class="lm-tab-btn"
-                                onclick="switchTab('crear', this)">
+                        </a>
+                        <a href="javascript:void(0)" class="lm-tab-btn"
+                           onclick="switchTab('crear', this);">
                             <i class="pi pi-plus-circle"/> Crear Anualidades
-                        </button>
-                        <button type="button" class="lm-tab-btn"
-                                onclick="switchTab('importar', this)">
+                        </a>
+                        <a href="javascript:void(0)" class="lm-tab-btn"
+                           onclick="switchTab('importar', this);">
                             <i class="pi pi-file-excel"/> Importar Excel
-                        </button>
+                        </a>
                     </div>
 
                     <!-- ========== PESTAÃ‘A 1: RESUMEN ========== -->
@@ -666,12 +826,12 @@
                                 <div class="lm-stat-val" style="color:#9a3412;">#{anualidadBean.totalEnGracia}</div>
                                 <div class="lm-stat-sub">Pago con recargo activo</div>
                             </div>
-                            <div class="lm-stat red" style="cursor:pointer;" onclick="PF('dlgAlertasExpiradas').show();" title="Ver alertas expiradas">
+                            <div class="lm-stat red" style="cursor:pointer;" onclick="showAlertModal('cmAlertasExpiradas');" title="Ver alertas expiradas">
                                 <div class="lm-stat-lbl">Proceso Expirado</div>
                                 <div class="lm-stat-val" style="color:#be123c;">#{anualidadBean.totalExpiradas}</div>
                                 <div class="lm-stat-sub">Venció período de gracia</div>
                             </div>
-                            <div class="lm-stat gold" style="cursor:pointer;" onclick="PF('dlgAlertasProxVencer').show();" title="Ver vencimientos próximos">
+                            <div class="lm-stat gold" style="cursor:pointer;" onclick="showAlertModal('cmAlertasProxVencer');" title="Ver vencimientos próximos">
                                 <div class="lm-stat-lbl">Próx. Vencimiento (15 días)</div>
                                 <div class="lm-stat-val" style="color:#92400e;">#{anualidadBean.totalAlertas}</div>
                                 <div class="lm-stat-sub" style="display:flex;align-items:center;gap:4px;">
@@ -679,7 +839,7 @@
                                     <i class="pi pi-external-link" style="font-size:9px;color:#c9a227;"/>
                                 </div>
                             </div>
-                            <div class="lm-stat" style="border-left-color:#eab308; cursor:pointer;" onclick="PF('dlgAlertasPendientes').show();" title="Ver alertas pendientes">
+                            <div class="lm-stat" style="border-left-color:#eab308; cursor:pointer;" onclick="showAlertModal('cmAlertasPendientes');" title="Ver alertas pendientes">
                                 <div class="lm-stat-lbl">Pendientes</div>
                                 <div class="lm-stat-val" style="color:#854d0e;">#{anualidadBean.totalPendientes}</div>
                                 <div class="lm-stat-sub">Dentro del plazo normal</div>
@@ -701,7 +861,7 @@
                                     <p:commandButton value="Ver detalle completo" type="button"
                                                      icon="pi pi-external-link"
                                                      styleClass="sn-btn-outline"
-                                                     onclick="PF('dlgAlertasProxVencer').show();"/>
+                                                     onclick="showAlertModal('cmAlertasProxVencer');"/>
                                 </div>
                                 <div class="lm-card-body">
                                     <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:7px;">
@@ -946,7 +1106,7 @@
                                                                 <!-- Monto Base -->
                                                                 <td style="text-align:right;">
                                                                     <h:panelGroup rendered="#{anu.montoOriginal != null}">
-                                                                        <span style="font-size:12px; font-weight:700; color:#1e40af;">
+                                                                        <span style="font-size:12px; font-weight:700; color:#2563eb;">
                                                                             <h:outputText value="#{anu.montoOriginal}">
                                                                                 <f:convertNumber type="currency" currencySymbol="$" groupingUsed="true" minFractionDigits="2"/>
                                                                             </h:outputText>
@@ -1191,175 +1351,195 @@
 
         </div><!-- lm-layout -->
 
-        <!-- == DIÁLOGO: PRÃ“XIMOS VENCIMIENTOS == -->
-        <!-- == DIÁLOGOS DE ALERTAS DE ANUALIDADES (SEGMENTADOS) == -->
-        <!-- 1. DIÁLOGO: ALERTAS EXPIRADAS -->
-        <p:dialog id="dlgAlertasExpiradas"
-                  header="Alertas: Anualidades Expiradas"
-                  widgetVar="dlgAlertasExpiradas"
-                  modal="true" resizable="true" width="860" dynamic="true"
-                  styleClass="modern-alert-dialog" style="max-width:95vw;"
-                  showEffect="fade" hideEffect="fade" closeOnEscape="true">
-            <div class="anualidad-alert-table-wrap">
-                <h:panelGroup rendered="#{empty anualidadBean.alertasExpiradas}">
-                    <div class="anualidad-alert-empty">No hay alertas de anualidades expiradas.</div>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{not empty anualidadBean.alertasExpiradas}">
-                    <table class="anualidad-alert-table">
-                        <thead>
-                            <tr>
-                                <th style="width:18%;">N° Trámite</th>
-                                <th style="width:10%;">Año</th>
-                                <th style="width:18%;">Vencimiento</th>
-                                <th style="width:18%;">Estado</th>
-                                <th>Nombre común</th>
-                                <th style="width:12%;">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ui:repeat value="#{anualidadBean.alertasExpiradas}" var="al">
-                                <tr>
-                                    <td><span class="anualidad-alert-tramite">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}</span></td>
-                                    <td><span class="anualidad-alert-anio">#{al.etiqueta}</span></td>
-                                    <td>
-                                        <h:outputText value="#{al.fechaVencimiento}" styleClass="anualidad-alert-fecha" rendered="#{al.fechaVencimiento != null}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                        </h:outputText>
-                                        <h:outputText value="Sin fecha" rendered="#{al.fechaVencimiento == null}" styleClass="anu-dash"/>
-                                    </td>
-                                    <td><span class="anualidad-alert-badge anualidad-alert-badge-expirada">#{al.estadoBadgeLabel}</span></td>
-                                    <td><span class="anualidad-alert-name">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : ''}</span></td>
-                                    <td>
-                                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" class="anualidad-alert-action" title="Ver Trámite y Gestionar">
-                                            <i class="pi pi-external-link"/>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </ui:repeat>
-                        </tbody>
-                    </table>
-                </h:panelGroup>
-            </div>
-            <div class="modern-alert-footer">
-                <a href="anualidades/lista.xhtml?mostrarAlerta=expirada" class="modern-alert-footer-link">
-                    Ir al módulo de Anualidades <i class="pi pi-arrow-right" style="font-size:10px;"/>
-                </a>
-                <p:commandButton value="Cerrar" type="button" styleClass="btn-cancelar"
-                                 icon="pi pi-times" onclick="PF('dlgAlertasExpiradas').hide();" style="border-radius:20px; font-weight:700; font-size:12px;"/>
-            </div>
-        </p:dialog>
+        <!-- == MODALES DE ALERTAS (HTML puro — sin PrimeFaces) == -->
 
-        <!-- 2. DIÁLOGO: ALERTAS PRÃ“XIMAS A VENCER -->
-        <p:dialog id="dlgAlertasProxVencer"
-                  header="Alertas: Anualidades Próximas a Vencer"
-                  widgetVar="dlgAlertasProxVencer"
-                  modal="true" resizable="true" width="860" dynamic="true"
-                  styleClass="modern-alert-dialog" style="max-width:95vw;"
-                  showEffect="fade" hideEffect="fade" closeOnEscape="true">
-            <div class="anualidad-alert-table-wrap">
-                <h:panelGroup rendered="#{empty anualidadBean.alertasProximasVencer}">
-                    <div class="anualidad-alert-empty">No hay alertas de anualidades próximas a vencer.</div>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{not empty anualidadBean.alertasProximasVencer}">
-                    <table class="anualidad-alert-table">
-                        <thead>
-                            <tr>
-                                <th style="width:18%;">N° Trámite</th>
-                                <th style="width:10%;">Año</th>
-                                <th style="width:18%;">Vencimiento</th>
-                                <th style="width:18%;">Estado</th>
-                                <th>Nombre común</th>
-                                <th style="width:12%;">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ui:repeat value="#{anualidadBean.alertasProximasVencer}" var="al">
-                                <tr>
-                                    <td><span class="anualidad-alert-tramite">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}</span></td>
-                                    <td><span class="anualidad-alert-anio">#{al.etiqueta}</span></td>
-                                    <td>
-                                        <h:outputText value="#{al.fechaVencimiento}" styleClass="anualidad-alert-fecha" rendered="#{al.fechaVencimiento != null}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                        </h:outputText>
-                                        <h:outputText value="Sin fecha" rendered="#{al.fechaVencimiento == null}" styleClass="anu-dash"/>
-                                    </td>
-                                    <td><span class="anualidad-alert-badge anualidad-alert-badge-prox">#{al.estadoBadgeLabel}</span></td>
-                                    <td><span class="anualidad-alert-name">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : ''}</span></td>
-                                    <td>
-                                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" class="anualidad-alert-action" title="Ver Trámite y Gestionar">
-                                            <i class="pi pi-external-link"/>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </ui:repeat>
-                        </tbody>
-                    </table>
-                </h:panelGroup>
+        <!-- 1. MODAL: ALERTAS EXPIRADAS -->
+        <div id="cmAlertasExpiradas" class="cm-overlay"
+             onclick="if(event.target===this){hideAlertModal('cmAlertasExpiradas');}">
+            <div class="cm-box">
+                <div class="cm-titlebar cm-titlebar-exp">
+                    <div class="cm-titlebar-icon">
+                        <i class="pi pi-exclamation-triangle"/>
+                        Alertas: Anualidades Expiradas
+                    </div>
+                    <button type="button" class="cm-x-btn" onclick="hideAlertModal('cmAlertasExpiradas')">&#x2715;</button>
+                </div>
+                <div class="cm-body">
+                    <div class="anualidad-alert-table-wrap">
+                        <h:panelGroup rendered="#{empty anualidadBean.alertasExpiradas}">
+                            <div class="anualidad-alert-empty">No hay alertas de anualidades expiradas.</div>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not empty anualidadBean.alertasExpiradas}">
+                            <table class="anualidad-alert-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:18%;">N° Trámite</th>
+                                        <th style="width:10%;">Año</th>
+                                        <th style="width:18%;">Vencimiento</th>
+                                        <th style="width:18%;">Estado</th>
+                                        <th>Nombre común</th>
+                                        <th style="width:12%;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ui:repeat value="#{anualidadBean.alertasExpiradas}" var="al">
+                                        <tr>
+                                            <td><span class="anualidad-alert-tramite">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}</span></td>
+                                            <td><span class="anualidad-alert-anio">#{al.etiqueta}</span></td>
+                                            <td>
+                                                <h:outputText value="#{al.fechaVencimiento}" styleClass="anualidad-alert-fecha" rendered="#{al.fechaVencimiento != null}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                                </h:outputText>
+                                                <h:outputText value="Sin fecha" rendered="#{al.fechaVencimiento == null}" styleClass="anu-dash"/>
+                                            </td>
+                                            <td><span class="anualidad-alert-badge anualidad-alert-badge-expirada">#{al.estadoBadgeLabel}</span></td>
+                                            <td><span class="anualidad-alert-name">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : ''}</span></td>
+                                            <td>
+                                                <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" class="anualidad-alert-action" title="Ver Trámite y Gestionar">
+                                                    <i class="pi pi-external-link"/>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </ui:repeat>
+                                </tbody>
+                            </table>
+                        </h:panelGroup>
+                    </div>
+                    <div class="modern-alert-footer" style="padding:0 24px 18px;">
+                        <span/>
+                        <button type="button" class="modern-alert-close-btn" onclick="hideAlertModal('cmAlertasExpiradas');">
+                            <i class="pi pi-times"/> Cerrar
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="modern-alert-footer">
-                <a href="anualidades/lista.xhtml?mostrarAlerta=prox_vencer" class="modern-alert-footer-link">
-                    Ir al módulo de Anualidades <i class="pi pi-arrow-right" style="font-size:10px;"/>
-                </a>
-                <p:commandButton value="Cerrar" type="button" styleClass="btn-cancelar"
-                                 icon="pi pi-times" onclick="PF('dlgAlertasProxVencer').hide();" style="border-radius:20px; font-weight:700; font-size:12px;"/>
-            </div>
-        </p:dialog>
+        </div>
 
-        <!-- 3. DIÁLOGO: ALERTAS PENDIENTES -->
-        <p:dialog id="dlgAlertasPendientes"
-                  header="Alertas: Anualidades Pendientes"
-                  widgetVar="dlgAlertasPendientes"
-                  modal="true" resizable="true" width="860" dynamic="true"
-                  styleClass="modern-alert-dialog" style="max-width:95vw;"
-                  showEffect="fade" hideEffect="fade" closeOnEscape="true">
-            <div class="anualidad-alert-table-wrap">
-                <h:panelGroup rendered="#{empty anualidadBean.alertasPendientes}">
-                    <div class="anualidad-alert-empty">No hay alertas de anualidades pendientes.</div>
-                </h:panelGroup>
-                <h:panelGroup rendered="#{not empty anualidadBean.alertasPendientes}">
-                    <table class="anualidad-alert-table">
-                        <thead>
-                            <tr>
-                                <th style="width:18%;">N° Trámite</th>
-                                <th style="width:10%;">Año</th>
-                                <th style="width:18%;">Vencimiento</th>
-                                <th style="width:18%;">Estado</th>
-                                <th>Nombre común</th>
-                                <th style="width:12%;">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <ui:repeat value="#{anualidadBean.alertasPendientes}" var="al">
-                                <tr>
-                                    <td><span class="anualidad-alert-tramite">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}</span></td>
-                                    <td><span class="anualidad-alert-anio">#{al.etiqueta}</span></td>
-                                    <td>
-                                        <h:outputText value="#{al.fechaVencimiento}" styleClass="anualidad-alert-fecha" rendered="#{al.fechaVencimiento != null}">
-                                            <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
-                                        </h:outputText>
-                                        <h:outputText value="Sin fecha" rendered="#{al.fechaVencimiento == null}" styleClass="anu-dash"/>
-                                    </td>
-                                    <td><span class="anualidad-alert-badge anualidad-alert-badge-pendiente">#{al.estadoBadgeLabel}</span></td>
-                                    <td><span class="anualidad-alert-name">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : ''}</span></td>
-                                    <td>
-                                        <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" class="anualidad-alert-action" title="Ver Trámite y Gestionar">
-                                            <i class="pi pi-external-link"/>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </ui:repeat>
-                        </tbody>
-                    </table>
-                </h:panelGroup>
+        <!-- 2. MODAL: ALERTAS PRÓXIMAS A VENCER -->
+        <div id="cmAlertasProxVencer" class="cm-overlay"
+             onclick="if(event.target===this){hideAlertModal('cmAlertasProxVencer');}">
+            <div class="cm-box">
+                <div class="cm-titlebar cm-titlebar-prox">
+                    <div class="cm-titlebar-icon">
+                        <i class="pi pi-clock"/>
+                        Alertas: Próximas a Vencer
+                    </div>
+                    <button type="button" class="cm-x-btn" onclick="hideAlertModal('cmAlertasProxVencer')">&#x2715;</button>
+                </div>
+                <div class="cm-body">
+                    <div class="anualidad-alert-table-wrap">
+                        <h:panelGroup rendered="#{empty anualidadBean.alertasProximasVencer}">
+                            <div class="anualidad-alert-empty">No hay alertas de anualidades próximas a vencer.</div>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not empty anualidadBean.alertasProximasVencer}">
+                            <table class="anualidad-alert-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:18%;">N° Trámite</th>
+                                        <th style="width:10%;">Año</th>
+                                        <th style="width:18%;">Vencimiento</th>
+                                        <th style="width:18%;">Estado</th>
+                                        <th>Nombre común</th>
+                                        <th style="width:12%;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ui:repeat value="#{anualidadBean.alertasProximasVencer}" var="al">
+                                        <tr>
+                                            <td><span class="anualidad-alert-tramite">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}</span></td>
+                                            <td><span class="anualidad-alert-anio">#{al.etiqueta}</span></td>
+                                            <td>
+                                                <h:outputText value="#{al.fechaVencimiento}" styleClass="anualidad-alert-fecha" rendered="#{al.fechaVencimiento != null}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                                </h:outputText>
+                                                <h:outputText value="Sin fecha" rendered="#{al.fechaVencimiento == null}" styleClass="anu-dash"/>
+                                            </td>
+                                            <td><span class="anualidad-alert-badge anualidad-alert-badge-prox">#{al.estadoBadgeLabel}</span></td>
+                                            <td><span class="anualidad-alert-name">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : ''}</span></td>
+                                            <td>
+                                                <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" class="anualidad-alert-action" title="Ver Trámite y Gestionar">
+                                                    <i class="pi pi-external-link"/>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </ui:repeat>
+                                </tbody>
+                            </table>
+                        </h:panelGroup>
+                    </div>
+                    <div class="modern-alert-footer" style="padding:0 24px 18px;">
+                        <span/>
+                        <button type="button" class="modern-alert-close-btn" onclick="hideAlertModal('cmAlertasProxVencer');">
+                            <i class="pi pi-times"/> Cerrar
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="modern-alert-footer">
-                <a href="anualidades/lista.xhtml?mostrarAlerta=pendiente" class="modern-alert-footer-link">
-                    Ir al módulo de Anualidades <i class="pi pi-arrow-right" style="font-size:10px;"/>
-                </a>
-                <p:commandButton value="Cerrar" type="button" styleClass="btn-cancelar"
-                                 icon="pi pi-times" onclick="PF('dlgAlertasPendientes').hide();" style="border-radius:20px; font-weight:700; font-size:12px;"/>
+        </div>
+
+        <!-- 3. MODAL: ALERTAS PENDIENTES -->
+        <div id="cmAlertasPendientes" class="cm-overlay"
+             onclick="if(event.target===this){hideAlertModal('cmAlertasPendientes');}">
+            <div class="cm-box">
+                <div class="cm-titlebar cm-titlebar-pend">
+                    <div class="cm-titlebar-icon">
+                        <i class="pi pi-info-circle"/>
+                        Alertas: Pendientes
+                    </div>
+                    <button type="button" class="cm-x-btn" onclick="hideAlertModal('cmAlertasPendientes')">&#x2715;</button>
+                </div>
+                <div class="cm-body">
+                    <div class="anualidad-alert-table-wrap">
+                        <h:panelGroup rendered="#{empty anualidadBean.alertasPendientes}">
+                            <div class="anualidad-alert-empty">No hay alertas de anualidades pendientes.</div>
+                        </h:panelGroup>
+                        <h:panelGroup rendered="#{not empty anualidadBean.alertasPendientes}">
+                            <table class="anualidad-alert-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:18%;">N° Trámite</th>
+                                        <th style="width:10%;">Año</th>
+                                        <th style="width:18%;">Vencimiento</th>
+                                        <th style="width:18%;">Estado</th>
+                                        <th>Nombre común</th>
+                                        <th style="width:12%;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <ui:repeat value="#{anualidadBean.alertasPendientes}" var="al">
+                                        <tr>
+                                            <td><span class="anualidad-alert-tramite">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).applicationNumber : al.vegetableFormId}</span></td>
+                                            <td><span class="anualidad-alert-anio">#{al.etiqueta}</span></td>
+                                            <td>
+                                                <h:outputText value="#{al.fechaVencimiento}" styleClass="anualidad-alert-fecha" rendered="#{al.fechaVencimiento != null}">
+                                                    <f:convertDateTime pattern="dd/MM/yyyy" timeZone="America/Guayaquil"/>
+                                                </h:outputText>
+                                                <h:outputText value="Sin fecha" rendered="#{al.fechaVencimiento == null}" styleClass="anu-dash"/>
+                                            </td>
+                                            <td><span class="anualidad-alert-badge anualidad-alert-badge-pendiente">#{al.estadoBadgeLabel}</span></td>
+                                            <td><span class="anualidad-alert-name">#{anualidadBean.getVegetableForm(al.vegetableFormId) != null ? anualidadBean.getVegetableForm(al.vegetableFormId).commonName : ''}</span></td>
+                                            <td>
+                                                <a href="#{request.contextPath}/actualizar.xhtml?id=#{al.vegetableFormId}" class="anualidad-alert-action" title="Ver Trámite y Gestionar">
+                                                    <i class="pi pi-external-link"/>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </ui:repeat>
+                                </tbody>
+                            </table>
+                        </h:panelGroup>
+                    </div>
+                    <div class="modern-alert-footer" style="padding:0 24px 18px;">
+                        <span/>
+                        <button type="button" class="modern-alert-close-btn" onclick="hideAlertModal('cmAlertasPendientes');">
+                            <i class="pi pi-times"/> Cerrar
+                        </button>
+                    </div>
+                </div>
             </div>
-        </p:dialog>
+        </div>
+
+
 
         <!-- == DIÁLOGO: EDICIÃ“N == -->
         <p:dialog id="dlgEdit"
@@ -1414,7 +1594,7 @@
                 <h:panelGroup rendered="#{anualidadBean.anualidadEnEdicion.montoOriginal != null and anualidadBean.anualidadEnEdicion.estado != 'PAGADO'}">
                     <div class="anu-monto-card anu-monto-card-base">
                         <div><div class="anu-mc-lbl">Monto Base</div>
-                            <div class="anu-mc-val" style="color:#1e40af;">
+                            <div class="anu-mc-val" style="color:#2563eb;">
                                 <h:outputText value="#{anualidadBean.anualidadEnEdicion.montoOriginal}">
                                     <f:convertNumber type="currency" currencySymbol="$" groupingUsed="true" minFractionDigits="2"/>
                                 </h:outputText>
@@ -1547,14 +1727,14 @@
                             <div style="background:#eff4ff; border:2px solid #bfdbfe; border-radius:8px; padding:12px 16px; display:flex; align-items:center; gap:10px;">
                                 <h:selectBooleanCheckbox id="chkCompletado" value="#{anualidadBean.completado}"
                                                          style="width:18px; height:18px; cursor:pointer;"/>
-                                <span style="font-size:13px; font-weight:700; color:#1e3a6e;">
+                                <span style="font-size:13px; font-weight:700; color:#2563eb;">
                                     <i class="pi pi-check-circle" style="margin-right:5px;"/>
                                     Marcar como Completado (Pago Total Registrado)
                                 </span>
                             </div>
                             <h:panelGroup rendered="#{anualidadBean.anioSiguiente gt 0}">
                                 <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:8px 12px; margin-top:8px; display:flex; align-items:center; gap:8px;">
-                                    <i class="pi pi-calendar-plus" style="color:#3b82f6; font-size:13px;"/>
+                                    <i class="pi pi-calendar-plus" style="color:#2563eb; font-size:13px;"/>
                                     <span style="font-size:11px; color:#1e40af;">
                                         Al completar, se asignará la fecha de vencimiento del
                                         <strong>Año #{anualidadBean.anioSiguiente}</strong> (fecha de pago + 1 año)

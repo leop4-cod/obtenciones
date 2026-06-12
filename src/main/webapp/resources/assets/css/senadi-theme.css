@@ -11,9 +11,9 @@
    VARIABLES GLOBALES
    ═══════════════════════════════════════════════════════════ */
 :root {
-    --primary:       #1e3a6e;
-    --primary-light: #2a5aad;
-    --primary-dark:  #0d1b35;
+    --primary:       #2563eb;
+    --primary-light: #3b82f6;
+    --primary-dark:  #1e40af;
     --secondary:     #f2b500;
     --accent:        #e6f0fb;
 
@@ -1336,7 +1336,7 @@ html body .ui-tabs .ui-tabs-nav li.ui-state-active > a > span {
     font-size: 10.5px; font-weight: 800; text-transform: uppercase;
     letter-spacing: .07em; white-space: nowrap; line-height: 1.6;
 }
-.sn-badge-SAVED     { background: #dbeafe; color: #1e40af; }
+.sn-badge-SAVED     { background: #e0f2fe; color: #2563eb; }
 .sn-badge-DELIVERED { background: #fef3c7; color: #92400e; }
 .sn-badge-EN_PROCESO { background: #fef3c7; color: #92400e; }
 .sn-badge-ACCEPTED  { background: #e0f2fe; color: #0369a1; }
@@ -1348,7 +1348,7 @@ html body .ui-tabs .ui-tabs-nav li.ui-state-active > a > span {
 .sn-badge-EXPIRED   { background: #fef9c3; color: #92400e; }
 .sn-badge-NONE      { background: #f3f4f6; color: #9ca3af; }
 
-.badge.badge-SAVED     { background: #dbeafe; color: #1e40af; padding: 4px 13px; border-radius: var(--radius-full); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.badge.badge-SAVED     { background: #e0f2fe; color: #2563eb; padding: 4px 13px; border-radius: var(--radius-full); font-size: 11px; font-weight: 800; text-transform: uppercase; }
 .badge.badge-DELIVERED { background: #fef3c7; color: #92400e; padding: 4px 13px; border-radius: var(--radius-full); font-size: 11px; font-weight: 800; text-transform: uppercase; }
 .badge.badge-EN_PROCESO { background: #fef3c7; color: #92400e; padding: 4px 13px; border-radius: var(--radius-full); font-size: 11px; font-weight: 800; text-transform: uppercase; }
 .badge.badge-ACCEPTED  { background: #e0f2fe; color: #0369a1; padding: 4px 13px; border-radius: var(--radius-full); font-size: 11px; font-weight: 800; text-transform: uppercase; }

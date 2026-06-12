@@ -39,7 +39,7 @@
             ================================================== */
             .lm-sidebar {
                 width: 255px; min-width: 255px;
-                background: linear-gradient(180deg, #0d1b35 0%, #1a2d52 60%, #0d1b35 100%);
+                background: linear-gradient(180deg, #0a1931 0%, #15305b 60%, #0a1931 100%);
                 display: flex; flex-direction: column;
                 position: fixed; left: 0; top: 0; bottom: 0;
                 overflow-y: auto; z-index: 200;
@@ -149,7 +149,7 @@
             }
             .ac-header-icon {
                 width: 44px; height: 44px; border-radius: 11px;
-                background: linear-gradient(135deg, #1e3a6e, #0d1b35);
+                background: linear-gradient(135deg, #3b82f6, #1e40af);
                 display: flex; align-items: center; justify-content: center;
                 color: #fff; font-size: 20px; flex-shrink: 0;
             }
@@ -189,7 +189,7 @@
             /* == PrimeFaces TabView overrides == */
             html body .ui-tabs .ui-tabs-nav,
             html body .ui-tabview .ui-tabview-nav {
-                background: linear-gradient(135deg, #0d1b35 0%, #1e3a6e 100%) !important;
+                background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
                 border-bottom: 3px solid #c9a227 !important;
                 padding: 0 8px !important;
                 display: flex !important;
@@ -336,7 +336,7 @@
                 </a>
 
                 <!-- Sección de Alertas Clasificadas -->
-                <p:commandLink onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml?mostrarAlerta=expirada'; return false;" class="lm-nav-item sidebar-alert-link">
+                <a href="#" onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml?mostrarAlerta=expirada'; return false;" class="lm-nav-item sidebar-alert-link">
                     <div class="sidebar-alert-title">
                         <i class="pi pi-exclamation-triangle" style="color: #ef4444;"/>
                         <span>Alertas Expiradas</span>
@@ -344,9 +344,9 @@
                     <span class="sidebar-alert-badge danger">
                         #{anualidadBean.totalAlertasExpiradas}
                     </span>
-                </p:commandLink>
+                </a>
 
-                <p:commandLink onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml?mostrarAlerta=prox_vencer'; return false;" class="lm-nav-item sidebar-alert-link">
+                <a href="#" onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml?mostrarAlerta=prox_vencer'; return false;" class="lm-nav-item sidebar-alert-link">
                     <div class="sidebar-alert-title">
                         <i class="pi pi-clock" style="color: #f59e0b;"/>
                         <span>Próx. a Vencer</span>
@@ -354,17 +354,17 @@
                     <span class="sidebar-alert-badge warning">
                         #{anualidadBean.totalAlertasProximasVencer}
                     </span>
-                </p:commandLink>
+                </a>
 
-                <p:commandLink onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml?mostrarAlerta=pendiente'; return false;" class="lm-nav-item sidebar-alert-link">
+                <a href="#" onclick="window.location.href='#{request.contextPath}/anualidades/lista.xhtml?mostrarAlerta=pendiente'; return false;" class="lm-nav-item sidebar-alert-link">
                     <div class="sidebar-alert-title">
-                        <i class="pi pi-info-circle" style="color: #3b82f6;"/>
+                        <i class="pi pi-info-circle" style="color: #2563eb;"/>
                         <span>Alertas Pendientes</span>
                     </div>
                     <span class="sidebar-alert-badge info">
                         #{anualidadBean.totalAlertasPendientes}
                     </span>
-                </p:commandLink>
+                </a>
 
                 <div class="lm-sidebar-spacer"/>
 
